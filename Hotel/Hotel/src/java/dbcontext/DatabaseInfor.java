@@ -12,5 +12,5 @@ public interface DatabaseInfor {
     public static String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     public static String url = "jdbc:sqlserver://127.0.0.1:1433;databaseName=G2HotelTest;";
     public static String user = "sa";
-    public static String pass = "123456";
+    public static String pass = "123";
 }
