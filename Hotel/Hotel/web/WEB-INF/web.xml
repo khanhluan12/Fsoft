@@ -168,6 +168,10 @@
         <servlet-name>BanAccountController</servlet-name>
         <servlet-class>controller.BanAccountController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServicesRedirectServlet</servlet-name>
+        <servlet-class>controller.ServicesRedirectServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>G2HomeServlet</servlet-name>
         <url-pattern>/home</url-pattern>
@@ -335,6 +339,10 @@
     <servlet-mapping>
         <servlet-name>BanAccountController</servlet-name>
         <url-pattern>/BanAccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServicesRedirectServlet</servlet-name>
+        <url-pattern>/service</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>customer_home.jsp</welcome-file>
