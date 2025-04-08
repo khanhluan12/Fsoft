@@ -3,11 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/SWP/Hotel/Hotel/src/java/dao/BookingDAO.java</file>
-            <file>file:/D:/SWP/Hotel/Hotel/web/owner_index.jsp</file>
-            <file>file:/D:/SWP/Hotel/Hotel/web/Account.jsp</file>
-            <file>file:/D:/SWP/Hotel/Hotel/src/java/controller/RevenueDataServlet.java</file>
-            <file>file:/D:/SWP/Hotel/Hotel/web/revenue.jsp</file>
+            <file>file:/F:/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/dao/ShiftDAO.java</file>
+            <file>file:/F:/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/ShiftServlet.java</file>
+            <file>file:/F:/Documents/GitHub/Fsoft/Hotel/Hotel/web/customer_services.jsp</file>
+            <file>file:/F:/Documents/GitHub/Fsoft/Hotel/Hotel/web/view_Shift.jsp</file>
+            <file>file:/F:/Documents/GitHub/Fsoft/Hotel/Hotel/web/manage_shift.jsp</file>
+            <file>file:/F:/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/ManageShifts.java</file>
         </group>
     </open-files>
 </project-private>

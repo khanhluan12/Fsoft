@@ -21,9 +21,11 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                 <ul class="nav navbar-nav menu_nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="loadRevenue">Static</a></li> 
+                    <li class="nav-item"><a class="nav-link" href="loadRevenue">Static</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ManageShifts">Shifts</a></li> 
                     <li class="nav-item"><a class="nav-link" href="showBooking">Manage bookings</a></li>
                     <li class="nav-item"><a class="nav-link" href="showRoomType">Manage room</a></li>
+                    <li class="nav-item"><a class="nav-link" href="showServices">Services</a></li> 
                     <li class="nav-item"><a class="nav-link" href="showContact">FAQ</a></li>
                     <li class="nav-item"><a class="nav-link" href="feedbackAdmin">Manage Feedback</a></li>
                     <!--<li class="nav-item"><a class="nav-link" href="customer_services.jsp">Services</a></li>-->

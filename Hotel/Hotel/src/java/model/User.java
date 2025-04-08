@@ -47,6 +47,9 @@ public class User {
         this.isAcive = isActive;
     }
 
+    public User() {
+    }
+
     public boolean isIsBan() {
         return isBan;
     }

@@ -5,14 +5,12 @@
 package dbcontext;
 
 import dao.ManagerDao;
-import dao.UserDao;
 import model.User;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import model.CheckRoomValid;
 /**
  *
  * @author admin
@@ -21,7 +19,7 @@ public class DBContext {
     public static Connection getConnection() {
         Connection connection = null;
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-        String serverName = "LAPTOP-GOCR7MGB\\SQLEXPRESS";
+        String serverName = "DESKTOP-NC2Q8T6";
         String databaseName = "G2HotelTest";
         String port = "1433";
         String user = "sa";
