@@ -22,6 +22,7 @@
         <link rel="stylesheet" href="vendors/owl-carousel/owl.carousel.min.css">
         <link rel="stylesheet" href="vendors/lightbox/simpleLightbox.css">
         <!-- main css -->
+        <!--<link rel="stylesheet" href="css/styleServices.css">-->
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
     </head>
@@ -42,6 +43,83 @@
             </div>
         </section>
         <!--================Breadcrumb Area =================-->
+
+        <section class="services section_gap">
+            <div class="container">
+                <div class="section_title text-center">
+                    <h2 class="title_color">Our Hotel Services</h2>
+                    <p>Experience unmatched hospitality and amenities.</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="service-icon fas fa-bell-concierge"></i>
+                                <h5 class="card-title mt-3">Room Service</h5>
+                                <p class="card-text">Enjoy 24/7 room service for food and beverages.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="service-icon fas fa-hands-helping"></i>
+                                <h5 class="card-title mt-3">Concierge</h5>
+                                <p class="card-text">Get assistance with tours, bookings, and local info.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="service-icon fas fa-broom"></i>
+                                <h5 class="card-title mt-3">Housekeeping</h5>
+                                <p class="card-text">Daily room cleaning and maintenance services.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="extra-services section_gap bg-light">
+            <div class="container">
+                <div class="row">
+                    <!-- Food Service -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card text-white text-center clickable-card service-card" onclick="location.href = 'service?type=food'">
+                            <div class="card-bg" style="background-image: url('image/gallery/services_cooking.jpg');"></div>
+                            <div class="card-body overlay-service">
+                                <h5 class="card-title">Food Service</h5>
+                                <p class="card-text">Delicious dining options delivered to your room.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Laundry Service -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card text-white text-center clickable-card service-card" onclick="location.href = 'service?type=laundry'">
+                            <div class="card-bg" style="background-image: url('image/gallery/services_laundry.jpg');"></div>
+                            <div class="card-body overlay-service">
+                                <h5 class="card-title">Laundry Service</h5>
+                                <p class="card-text">Professional laundry and dry cleaning available.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Car Rental -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card text-white text-center clickable-card service-card" onclick="location.href = 'service?type=car'">
+                            <div class="card-bg" style="background-image: url('image/gallery/services_car_rental.jpg');"></div>
+                            <div class="card-body overlay-service">
+                                <h5 class="card-title">Car Rental</h5>
+                                <p class="card-text">Rent a car for city exploration and convenience.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <section class="services section_gap py-5">
             <div class="container">
@@ -145,22 +223,22 @@
                             </div>
                         </div>
                     </div>
-                        <div class="col-md-4 gallery_item">
-                            <div class="gallery_img">
-                                <img src="image/gallery/06.jpg" alt="">
-                                <div class="hover">
-                                    <a class="light" href="image/gallery/05.jpg"><i class="fa fa-expand"></i></a>
-                                </div>
+                    <div class="col-md-4 gallery_item">
+                        <div class="gallery_img">
+                            <img src="image/gallery/06.jpg" alt="">
+                            <div class="hover">
+                                <a class="light" href="image/gallery/05.jpg"><i class="fa fa-expand"></i></a>
                             </div>
                         </div>
-                        <div class="col-md-4 gallery_item">
-                            <div class="gallery_img">
-                                <img src="image/gallery/05.jpg" alt="">
-                                <div class="hover">
-                                    <a class="light" href="image/gallery/06.jpg"><i class="fa fa-expand"></i></a>
-                                </div>
+                    </div>
+                    <div class="col-md-4 gallery_item">
+                        <div class="gallery_img">
+                            <img src="image/gallery/05.jpg" alt="">
+                            <div class="hover">
+                                <a class="light" href="image/gallery/06.jpg"><i class="fa fa-expand"></i></a>
                             </div>
                         </div>
+                    </div>
                     <div class="col-md-4 mb-4">
                         <div class="card text-center">
                             <div class="card-body">

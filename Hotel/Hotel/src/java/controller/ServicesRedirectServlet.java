@@ -17,9 +17,9 @@ import model.ServiceItem;
 
 /**
  *
- * @author ADMIN
+ * @author plmin
  */
-public class ServiceDetailServlet extends HttpServlet {
+public class ServicesRedirectServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +38,10 @@ public class ServiceDetailServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ServiceDetailServlet</title>");
+            out.println("<title>Servlet ServicesRedirecServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ServiceDetailServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ServicesRedirecServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,29 +57,47 @@ public class ServiceDetailServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    String serviceIdParam = request.getParameter("id");
-    if (serviceIdParam == null || !serviceIdParam.matches("\\d+")) {
-        response.sendRedirect("errorPage.jsp"); 
-        return;
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String type = request.getParameter("type"); // "food", "laundry", or "car"
+        int serviceId;
+
+        String destination = "";
+
+        switch (type) {
+            case "food":
+                serviceId = 1; // ID này phải đúng với DB
+                destination = "service_food.jsp";
+                break;
+            case "laundry":
+                serviceId = 2;
+                destination = "service_laundry.jsp";
+                break;
+            case "car":
+                serviceId = 3;
+                destination = "service_car_rental.jsp";
+                break;
+            default:
+                System.out.println("[ERROR] Invalid service type: " + type);
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid service type");
+                return;
+        }
+
+        System.out.println("[DEBUG] Redirecting to: " + destination + " with serviceId = " + serviceId);
+
+        ServiceItemDAO itemDAO = new ServiceItemDAO();
+        List<ServiceItem> items = itemDAO.getItemsByServiceId(serviceId);
+
+        if (items == null || items.isEmpty()) {
+            System.out.println("[DEBUG] No items returned from DAO.");
+        } else {
+            System.out.println("[DEBUG] Passing " + items.size() + " items to JSP.");
+        }
+
+        request.setAttribute("items", items);
+        RequestDispatcher rd = request.getRequestDispatcher(destination);
+        rd.forward(request, response);
     }
-    int serviceID = Integer.parseInt(serviceIdParam);
-    ServiceItemDAO serviceItem = new ServiceItemDAO();
-        List<ServiceItem> service = serviceItem.getItemsByServiceId(serviceID);
-        System.out.println(service);
-    if (service == null) {
-        System.out.println("Service không tồn tại cho ID: " + serviceID);
-        response.sendRedirect("errorPage.jsp");
-        return;
-    }
-    System.out.println("Service tìm thấy: ");
-    request.setAttribute("service", service);
-    RequestDispatcher dispatcher = request.getRequestDispatcher("/serviceDetail.jsp");
-    dispatcher.forward(request, response);
-}
-
-
-
 
     /**
      * Handles the HTTP <code>POST</code> method.
