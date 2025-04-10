@@ -24,13 +24,15 @@
                     <li class="nav-item"><a class="nav-link" href="loadRevenue">Static</a></li> 
                     <li class="nav-item"><a class="nav-link" href="showBooking">Manage bookings</a></li>
                     <li class="nav-item"><a class="nav-link" href="showRoomType">Manage room</a></li>
-                    <li class="nav-item"><a class="nav-link" href="showContact">FAQ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="showServices">Service</a></li>
+<!--                    <li class="nav-item"><a class="nav-link" href="showContact">FAQ</a></li>-->
                     <li class="nav-item"><a class="nav-link" href="feedbackAdmin">Manage Feedback</a></li>
                     <!--<li class="nav-item"><a class="nav-link" href="customer_services.jsp">Services</a></li>-->
                     <li class="nav-item submenu dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More</a>
                         <ul class="dropdown-menu">
                             <li class="nav-item"><a class="nav-link" href="showDiscount">Discount</a></li>
+<!--                            <li class="nav-item"><a class="nav-link" href="ManageShifts">Shifts</a></li>-->
                             <li class="nav-item"><a class="nav-link" href="showAccount">Account</a></li>
                         </ul>
                     </li> 

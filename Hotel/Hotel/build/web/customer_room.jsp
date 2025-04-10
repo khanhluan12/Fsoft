@@ -55,74 +55,114 @@
 
         <h2 style="color: green; text-align: center;" >${booksuccess} </h2>
         <!--</div>-->        <!--================ Accomodation Area  =================-->
-        <section class="accomodation_area section_gap">
+        <section class="accomodation_area py-5 ">
             <div class="container">
                 <p class="text-center text-danger" ><strong>${mess}</strong></p>
                 <div class="section_title text-center">
                     <h2 class="title_color">LIST ROOM TYPE</h2>
                     <p>Celebrate in stylish ease in our guest accommodations, which offer generous indoor-outdoor areas to enjoy time with loved ones, calmed by fresh breezes and secluded in nature.</p>
                 </div>
-                <form action="loadRoomToBook" method="get">
-                    <input type="hidden" name="numOfDays" value="${numOfDays}">
-                    <c:if test="${requestScope.pagegRoom == null}">
-                        <c:if test="${sessionScope.userA != null}">
-                            <button type="submit" class="btn btn-sm btn-dark rounded mb-5 justify-content-center w-100 p-3">Book Now</button>
-                        </c:if>
-                    </c:if>
-                    <div class="row g-4">
-                        <!--================Database (Khi nao co database thi dung)=================--> 
+                <!-- FORM TÌM KIẾM & FILTER -->
+<form action="checkRoomValid" method="get" class="mb-5 p-4 bg-light shadow-sm rounded">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label for="check_in" class="form-label">Check-in Date</label>
+            <input type="date" class="form-control" id="check_in" name="check_in" value="${param.checkin}">
+        </div>
+        <div class="col-md-3">
+            <label for="check_out" class="form-label">Check-out Date</label>
+            <input type="date" class="form-control" id="check_out" name="check_out" value="${param.checkout}">
+        </div>
+        <div class="col-md-3">
+            <label for="roomType" class="form-label">Room Type</label>
+            <select class="form-select" name="roomType" id="roomType">
+                <option value="">All</option>
+                <option value="Single" ${param.roomType == 'Single' ? 'selected' : ''}>Single</option>
+                <option value="Double" ${param.roomType == 'Double' ? 'selected' : ''}>Double</option>
+                <option value="VIP" ${param.roomType == 'VIP' ? 'selected' : ''}>VIP</option>
+                <!-- Thêm loại phòng khác nếu cần -->
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-dark w-100">Search Rooms</button>
+        </div>
+    </div>
+</form>
 
-                        <c:forEach items="${requestScope.listRoom}" var="r">
-                            <c:if test="${r.getRoomFree()>0}">
-                                <div class="col-lg-4 col-md-12 wow fadeInUp" data-wow-delay="0.1s">
-                                    <div class="room-item shadow rounded overflow-hidden">
-                                        <div class="position-relative">
-                                            <img class="img-fluid" src="images/${r.getImage()}" alt="">
-                                            <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">${r.getPrice()}$/Night</small>
-                                        </div>
-                                        <div class="p-4 mt-2">
-                                            <div class="d-flex justify-content-between mb-3">
-                                                <h5 class="mb-0">${r.getNameRoomType()}</h5>
-                                                <div class="ps-2">
-                                                    <small class="fa fa-star text-primary"></small>
-                                                    <small class="fa fa-star text-primary"></small>
-                                                    <small class="fa fa-star text-primary"></small>
-                                                    <small class="fa fa-star text-primary"></small>
-                                                    <small class="fa fa-star text-primary"></small>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex mb-3">
-                                                <small class="border-end me-3 pe-3"><i class="fa fa-bed text-primary me-2"></i>${r.getNumberOfBed()} Bed</small>
-                                                <small class="border-end me-3 pe-3"><i class="fa fa-bath text-primary me-2"></i>${r.getNumberOfBath()} Bath</small>
-                                                <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
-                                            </div>
-                                            <div class="d-flex">
-                                                <p class="text-body mb-3 mr-5">${r.getContent()}</p>
-                                                <c:if test="${requestScope.pagegRoom == null}">
-                                                    <p class="text-body mb-3">Rooms Free: <strong class="text-danger">${r.getRoomFree()}</strong></p>
-                                                    </c:if>
-                                            </div>
-                                            <div class="d-flex justify-content-between">
-                                                <a class="btn btn-sm btn-primary rounded py-2 px-4" href="roomDetail?id=${r.getIDRoomType()}">View Details</a>
-                                                <c:if test="${requestScope.pagegRoom == null}">
-                                                    <c:if test="${sessionScope.userA != null}">
-                                                        <input type="hidden" value="${r.getIDRoomType()}" name="IDRoomType"/>
-                                                        <input type="number" name="roomBook" min="0" max="${r.getRoomFree()}" oninput="validateRange(this,${r.getRoomFree()})" value="0">
-                                                        <!--<a class="btn btn-sm btn-dark rounded py-2 px-4" href="loadRoomToBook?IDRoomType=${r.getIDRoomType()}">Book Now</a>-->
-                                                    </c:if>
-                                                    <c:if test="${sessionScope.userA == null}">  
-                                                        <a class="btn btn-sm btn-dark rounded py-2 px-4" href="login.jsp">Book Now(Login)</a>
-                                                    </c:if>
-                                                </c:if>
-                                            </div>
-                                        </div>
-                                    </div> 
+<c:set var="hasRoom" value="false" />
+<c:forEach items="${requestScope.listRoom}" var="r">
+    <c:if test="${r.getRoomFree() == null || r.getRoomFree() > 0}">
+        <c:set var="hasRoom" value="true" />
+    </c:if>
+</c:forEach>
+
+<!-- Nếu không có phòng -->
+<c:if test="${!hasRoom}">
+    <div class="alert alert-warning text-center w-100" role="alert">
+        Không tìm thấy phòng trống phù hợp với yêu cầu của bạn!
+    </div>
+</c:if>
+
+<!-- Phần form và vòng lặp phòng -->
+<form action="loadRoomToBook" method="get">
+    <input type="hidden" name="numOfDays" value="${numOfDays}">
+    <c:if test="${requestScope.pagegRoom == null}">
+        <c:if test="${sessionScope.userA != null && hasRoom}">
+            <button type="submit" class="btn btn-sm btn-dark rounded mb-5 justify-content-center w-100 p-3">Book Now</button>
+        </c:if>
+    </c:if>
+
+    <div class="row g-4">
+        <c:forEach items="${requestScope.listRoom}" var="r">
+            <c:if test="${r.getRoomFree() == null || r.getRoomFree() > 0}">
+                <div class="col-lg-4 col-md-12 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="room-item shadow rounded overflow-hidden">
+                        <div class="position-relative">
+                            <img class="img-fluid" src="images/${r.getImage()}" alt="">
+                            <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">${r.getPrice()}$/Night</small>
+                        </div>
+                        <div class="p-4 mt-2">
+                            <div class="d-flex justify-content-between mb-3">
+                                <h5 class="mb-0">${r.getNameRoomType()}</h5>
+                                <div class="ps-2">
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small class="fa fa-star text-primary"></small>
                                 </div>
-                            </c:if>
-                        </c:forEach>
-                        <!--================Database =================-->
+                            </div>
+                            <div class="d-flex mb-3">
+                                <small class="border-end me-3 pe-3"><i class="fa fa-bed text-primary me-2"></i>${r.getNumberOfBed()} Bed</small>
+                                <small class="border-end me-3 pe-3"><i class="fa fa-bath text-primary me-2"></i>${r.getNumberOfBath()} Bath</small>
+                                <small><i class="fa fa-wifi text-primary me-2"></i>Wifi</small>
+                            </div>
+                            <div class="d-flex">
+                                <p class="text-body mb-3 mr-5">${r.getContent()}</p>
+                                <c:if test="${requestScope.pagegRoom == null}">
+                                    <p class="text-body mb-3">Rooms Free: <strong class="text-danger">${r.getRoomFree()}</strong></p>
+                                </c:if>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <a class="btn btn-sm btn-primary rounded py-2 px-4" href="roomDetail?id=${r.getIDRoomType()}">View Details</a>
+                                <c:if test="${requestScope.pagegRoom == null}">
+                                    <c:if test="${sessionScope.userA != null}">
+                                        <input type="hidden" value="${r.getIDRoomType()}" name="IDRoomType"/>
+                                        <input type="number" name="roomBook" min="0" max="${r.getRoomFree()}" oninput="validateRange(this,${r.getRoomFree()})" value="0">
+                                    </c:if>
+                                    <c:if test="${sessionScope.userA == null}">
+                                        <a class="btn btn-sm btn-dark rounded py-2 px-4" href="login.jsp">Book Now(Login)</a>
+                                    </c:if>
+                                </c:if>
+                            </div>
+                        </div>
                     </div>
-                </form>
+                </div>
+            </c:if>
+        </c:forEach>
+    </div>
+</form>
+
             </div>
         </section>
         <script>

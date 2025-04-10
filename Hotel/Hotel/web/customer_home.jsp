@@ -60,29 +60,29 @@
                         extremely fast, </p>
                 </div>
                 <div class="row mb_30">
-        <c:forEach items="${sessionScope.listRoom}" var="r">
-            <div class="col-lg-3 col-sm-6">
-                <div class="accomodation_item text-center">
-                    <div class="hotel_img">
-                        <img src="image/room1.jpg" alt="">
-            <c:if test="${sessionScope.userA != null}">
-                <a class="btn theme_btn button_hover"
-                    href="loadRoomToBook?IDRoomType=${r.getIDRoomType()}">Book Now</a>
-            </c:if>
-            <c:if test="${sessionScope.userA == null}">
-                <a class="btn theme_btn button_hover" href="login.jsp">Book Now</a>
-            </c:if>
-        </div>
-        <a href="#">
-            <h4 class="sec_h4">${r.getNameRoomType()}</h4>
-        </a>
-        <h5>${r.getPrice()}$<small>/night</small></h5>
-    </div>
-</div>
-        </c:forEach>
-    </div>
-</div>
-</section>
+                    <c:forEach items="${sessionScope.listRoom}" var="r">
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="accomodation_item text-center">
+                                <div class="hotel_img">
+                                    <img src="image/room1.jpg" alt="">
+                                    <c:if test="${sessionScope.userA != null}">
+                                        <a class="btn theme_btn button_hover"
+                                           href="loadRoomToBook?IDRoomType=${r.getIDRoomType()}">Book Now</a>
+                                    </c:if>
+                                    <c:if test="${sessionScope.userA == null}">
+                                        <a class="btn theme_btn button_hover" href="login.jsp">Book Now</a>
+                                    </c:if>
+                                </div>
+                                <a href="#">
+                                    <h4 class="sec_h4">${r.getNameRoomType()}</h4>
+                                </a>
+                                <h5>${r.getPrice()}$<small>/night</small></h5>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </div>
+        </section>
         <!--================ Accomodation Area  =================-->
 
         <!--================ Facilities Area  =================-->
@@ -337,6 +337,47 @@
         <script src="js/stellar.js"></script>
         <script src="vendors/lightbox/simpleLightbox.min.js"></script>
         <script src="js/custom.js"></script>
+        <c:if test="${param.vnp_ResponseCode eq '00'}">
+            <script>
+                window.onload = function () {
+                    const toast = document.createElement("div");
+                    toast.innerText = "Payment successful! Thank you for booking with us 🌴";
+                    toast.style.position = "fixed";
+                    toast.style.top = "20px";
+                    toast.style.right = "20px";
+                    toast.style.background = "#4BB543";
+                    toast.style.color = "white";
+                    toast.style.padding = "15px 20px";
+                    toast.style.borderRadius = "8px";
+                    toast.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
+                    toast.style.zIndex = "9999";
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 5000);
+                };
+            </script>
+        </c:if>
+        <c:if test="${param.vnp_ResponseCode eq '24'}">
+            <script>
+                window.onload = function () {
+                    const toast = document.createElement("div");
+                    toast.innerText = "Payment failed or was cancelled. Please try again 💳";
+                    toast.style.position = "fixed";
+                    toast.style.top = "20px";
+                    toast.style.right = "20px";
+                    toast.style.background = "#D8000C";
+                    toast.style.color = "white";
+                    toast.style.padding = "15px 20px";
+                    toast.style.borderRadius = "8px";
+                    toast.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
+                    toast.style.zIndex = "9999";
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 5000);
+                };
+            </script>
+        </c:if>
+
+
+
     </body>
 
 </html>

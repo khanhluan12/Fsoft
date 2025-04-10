@@ -196,6 +196,10 @@
         <servlet-name>ServicesRedirectServlet</servlet-name>
         <servlet-class>controller.ServicesRedirectServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ManageService</servlet-name>
+        <servlet-class>controller.ManageService</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>G2HomeServlet</servlet-name>
         <url-pattern>/home</url-pattern>
@@ -391,6 +395,10 @@
     <servlet-mapping>
         <servlet-name>ServicesRedirectServlet</servlet-name>
         <url-pattern>/service</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManageService</servlet-name>
+        <url-pattern>/ManageService</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>customer_home.jsp</welcome-file>

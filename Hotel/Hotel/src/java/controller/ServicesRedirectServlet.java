@@ -71,11 +71,11 @@ public class ServicesRedirectServlet extends HttpServlet {
                 break;
             case "laundry":
                 serviceId = 2;
-                destination = "service_laundry.jsp";
+                destination = "service_car_rental.jsp";
                 break;
             case "car":
                 serviceId = 3;
-                destination = "service_car_rental.jsp";
+                destination = "service_laundry.jsp";
                 break;
             default:
                 System.out.println("[ERROR] Invalid service type: " + type);

@@ -8,15 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Service;
 
-public class ServiceDAO {
+public class ServiceDAO extends DBContext {
 
     public List<Service> getAllServices() {
         List<Service> services = new ArrayList<>();
         String sql = "SELECT * FROM Service";
 
-        try (Connection conn = DBContext.getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql); 
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 Service service = new Service(
@@ -34,9 +32,9 @@ public class ServiceDAO {
 
     public Service getServiceById(int id) {
         String sql = "SELECT * FROM Service WHERE ServiceID = ?";
-        try (Connection conn = DBContext.getConnection(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-             
+        try (Connection conn = getConnection(); 
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -50,5 +48,41 @@ public class ServiceDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void insertService(Service service) {
+        String sql = "INSERT INTO Service (ServiceName) VALUES (?)";
+        try (Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, service.getServiceName());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateService(Service service) {
+        String sql = "UPDATE Service SET ServiceName = ? WHERE ServiceID = ?";
+        try (Connection conn = getConnection(); 
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, service.getServiceName());
+            ps.setInt(2, service.getServiceID());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Xóa service
+    public void deleteService(int id) {
+        String sql = "DELETE FROM Service WHERE ServiceID = ?";
+        try (
+                Connection conn = getConnection(); 
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

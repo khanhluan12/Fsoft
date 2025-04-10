@@ -1,5 +1,6 @@
 package dao;
 
+import dbcontext.DBContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,14 +14,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
 
-public class ShiftDAO {
+public class ShiftDAO extends DBContext {
     public List<ShiftSchedule> getShiftsByUserID(int userID) {
         List<ShiftSchedule> list = new ArrayList<>();
         String sql = "SELECT s.* FROM ShiftSchedule s " +
                      "JOIN UserShift us ON s.ShiftID = us.ShiftID " +
                      "WHERE us.IDAccount = ?"; 
 
-        try (Connection conn = DBUtil.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userID);
             ResultSet rs = ps.executeQuery();
@@ -46,7 +47,7 @@ public List<ShiftSchedule> getAllShifts() {
                  "LEFT JOIN UserShift us ON s.ShiftID = us.ShiftID " +
                  "LEFT JOIN Account a ON us.IDAccount = a.IDAccount";
 
-    try (Connection conn = DBUtil.getConnection();
+    try (Connection conn = getConnection();
          PreparedStatement ps = conn.prepareStatement(sql);
          ResultSet rs = ps.executeQuery()) {
 
@@ -70,7 +71,7 @@ public List<ShiftSchedule> getAllShifts() {
 
 public int addShift(ShiftSchedule shift, int employeeID) {
     String sql = "INSERT INTO ShiftSchedule (ShiftName, StartTime, EndTime, ShiftDate) VALUES (?, ?, ?, ?)";
-    try (Connection conn = DBUtil.getConnection();
+    try (Connection conn = getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
         stmt.setString(1, shift.getShiftName());
@@ -105,7 +106,7 @@ public int addShift(ShiftSchedule shift, int employeeID) {
 public List<User> getAllEmployees() {
     List<User> employeeList = new ArrayList<>();
     String sql = "SELECT IDAccount, FullName FROM Account WHERE IDRole = 3 AND IsActive = 1"; // Chỉ lấy nhân viên đang hoạt động
-    try (Connection conn = DBUtil.getConnection();
+    try (Connection conn = getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql);
          ResultSet rs = stmt.executeQuery()) {
         while (rs.next()) {
@@ -122,7 +123,7 @@ public List<User> getAllEmployees() {
 private void assignEmployeeToShift(int employeeID, int shiftID) {
     String sql = "INSERT INTO UserShift (IDAccount, ShiftID) VALUES (?, ?)";
     
-    try (Connection conn = DBUtil.getConnection();
+    try (Connection conn = getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
 
         stmt.setInt(1, employeeID);
@@ -139,7 +140,7 @@ private void assignEmployeeToShift(int employeeID, int shiftID) {
 public void updateShift(ShiftSchedule shift, int employeeID) {
     String sql = "UPDATE ShiftSchedule SET ShiftName=?, StartTime=?, EndTime=?, ShiftDate=? WHERE ShiftID=?";
     
-    try (Connection conn = DBUtil.getConnection();
+    try (Connection conn = getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
 
         stmt.setString(1, shift.getShiftName());
@@ -188,7 +189,7 @@ public boolean deleteShift(int shiftID) {
     String deleteUserShiftSQL = "DELETE FROM UserShift WHERE ShiftID = ?";
     String deleteShiftSQL = "DELETE FROM ShiftSchedule WHERE ShiftID = ?";
     
-    try (Connection conn = DBUtil.getConnection()) {
+    try (Connection conn = getConnection()) {
         conn.setAutoCommit(false); 
 
         try (PreparedStatement stmt1 = conn.prepareStatement(deleteUserShiftSQL);
@@ -219,7 +220,7 @@ public boolean deleteShift(int shiftID) {
 
 public ShiftSchedule getShiftByID(int shiftID) {
     String sql = "SELECT * FROM ShiftSchedule WHERE ShiftID = ?";
-    try (Connection conn = DBUtil.getConnection();
+    try (Connection conn = getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
 
         stmt.setInt(1, shiftID);

@@ -1,8 +1,3 @@
-<%-- 
-    Document   : receptionist_header
-    Created on : Jun 21, 2023, 11:22:59 PM
-    Author     : admin
---%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -22,10 +17,10 @@
             <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                 <ul class="nav navbar-nav menu_nav ml-auto">
                     <li class="nav-item"><a class="nav-link" href="manager_home.jsp">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="Shifts">Shifts</a></li>
+<!--                    <li class="nav-item"><a class="nav-link" href="Shifts">Shifts</a></li>-->
                     <li class="nav-item"><a class="nav-link" href="showBooking">Manage bookings</a></li>
-                    <li class="nav-item"><a class="nav-link" href="showRoomCustomer">Room</a></li>
-                    <li class="nav-item"><a class="nav-link" href="showContact">FAQ</a></li>
+<!--                    <li class="nav-item"><a class="nav-link" href="showRoomCustomer">Room</a></li>-->
+<!--                    <li class="nav-item"><a class="nav-link" href="showContact">FAQ</a></li>-->
                     <c:if test="${sessionScope.userA != null}"> 
                         <li class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">${sessionScope.userA.getUserName()}</a>

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="vendors/owl-carousel/owl.carousel.min.css">
     <link rel="stylesheet" href="vendors/lightbox/simpleLightbox.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/styleServicePlus.css">
     <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
@@ -32,10 +33,10 @@
         </div>
     </section>
 
-    <section class="services section_gap">
+    <section class="services py-5">
         <div class="container">
             <div class="section-title text-center mb-5">
-                <h1>🧺 Laundry Services</h1>
+                <h1>Laundry Services</h1>
                 <p class="text-muted">Clean, fast, and convenient laundry care</p>
             </div>
 
@@ -43,12 +44,14 @@
                 <c:when test="${not empty items}">
                     <div class="row">
                         <c:forEach var="item" items="${items}">
-                            <div class="col-md-4 col-sm-6 mb-4">
-                                <div class="card h-100 shadow-sm">
-                                    <img src="${item.imageURL}" class="card-img-top" alt="${item.itemName}" style="height: 200px; object-fit: cover;">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title">${item.itemName}</h5>
-                                        <p class="card-text text-success font-weight-bold">${item.price}</p>
+                            <div class="col-md-4 col-sm-6 d-flex align-items-stretch mb-4">
+                                <div class="food-card position-relative w-100 shadow-sm"
+                                     style="height: 300px; border-radius: 15px; overflow: hidden; cursor: pointer;"
+                                     onclick="location.href='order?itemID=${item.itemID}'">
+                                    <div class="food-card-bg" style="background-image: url('${item.imageURL}');"></div>
+                                    <div class="food-card-overlay">
+                                        <h5 class="mb-1">${item.itemName}</h5>
+                                        <p class="text-success font-weight-bold">$${item.price}</p>
                                     </div>
                                 </div>
                             </div>

@@ -34,6 +34,7 @@ public class CheckRoomValidServlet extends HttpServlet {
         response.setContentType("text/html");
         String checkInDateStr = request.getParameter("check_in");
         String checkOutDateStr = request.getParameter("check_out");
+        
         if(checkInDateStr == null){
             checkInDateStr = (String)request.getSession().getAttribute("check_in");
             checkOutDateStr =  (String)request.getSession().getAttribute("check_out");
@@ -67,6 +68,7 @@ public class CheckRoomValidServlet extends HttpServlet {
         
         request.setAttribute("numOfDays", numOfDays);
         request.setAttribute("listRoom", listSearchRoomType);
+        request.setAttribute("source", "search");
         request.getRequestDispatcher("customer_room.jsp").forward(request, response);
 
     }
