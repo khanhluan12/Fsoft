@@ -108,18 +108,23 @@
                                             <td>${bookingDetail.getCheckIn()}</td>
                                             <td>${bookingDetail.getCheckOut()}</td>
                                             <td>
-                                                <c:if test="${!bookingDetail.isOver()}">
-                                                    <c:if test="${bookingDetail.isCancel()}">
-                                                        <p class="text-danger">Canceled</p>
-                                                    </c:if>
-                                                    <c:if test="${!bookingDetail.isCancel()}">
-                                                       <a href="#" onclick="confirmCancel('${bookingDetail.getIDBooking()}')">Cancel</a>
-                                                    </c:if>
-                                                </c:if>
-                                                <c:if test="${bookingDetail.isOver()}">
-                                                    <p class="text-info">This booking is overdue</p>
-                                                </c:if>
+                                                <c:choose>
+                                                    <c:when test="${bookingDetail.note == 'Success'}">
+                                                        <p class="text-success">Success</p>
+                                                    </c:when>
+                                                    <c:when test="${bookingDetail.note == 'Cancelled'}">
+                                                        <p class="text-danger">Cancelled</p>
+                                                    </c:when>
+                                                    <c:when test="${bookingDetail.isOver()}">
+                                                        <p class="text-info">This booking is overdue</p>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <a href="#" onclick="confirmCancel('${bookingDetail.getIDBooking()}')">Cancel</a>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </td>
+
+
                                         </tr>
                                     </c:forEach>
                                 </tbody>
@@ -147,16 +152,16 @@
         <script src="js/stellar.js"></script>
         <script src="vendors/lightbox/simpleLightbox.min.js"></script>
         <script src="js/custom.js"></script>
-        
+
         <script>
-            function confirmCancel(bookingId) {
-                var contactInfo = prompt("Please enter your contact information for cancellation:");
-                if (contactInfo != null) {
-                    if (confirm("Are you sure you want to cancel this booking?")) {
-                        window.location.href = './CancelBooking?bookingId=' + bookingId + '&contactInfo=' + encodeURIComponent(contactInfo);
+                function confirmCancel(bookingId) {
+                    var contactInfo = prompt("Please enter your contact information for cancellation:");
+                    if (contactInfo != null) {
+                        if (confirm("Are you sure you want to cancel this booking?")) {
+                            window.location.href = './CancelBooking?bookingId=' + bookingId + '&contactInfo=' + encodeURIComponent(contactInfo);
+                        }
                     }
                 }
-            }
         </script>
     </body>
 </html>

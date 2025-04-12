@@ -14,18 +14,18 @@ public class ServiceItem {
     private int itemID;
     private int serviceID;
     private String itemName;
-    private BigDecimal price;
+    private double price;
     private String imageURL;
 
     public ServiceItem() {
     }
 
-    public ServiceItem(int itemID, int serviceID, String itemName, BigDecimal price, String imageURL) {
+    public ServiceItem(int itemID, String itemName, double price, String imageURL, int serviceID) {
         this.itemID = itemID;
-        this.serviceID = serviceID;
         this.itemName = itemName;
         this.price = price;
         this.imageURL = imageURL;
+        this.serviceID = serviceID;
     }
 
     public int getItemID() {
@@ -52,11 +52,11 @@ public class ServiceItem {
         this.itemName = itemName;
     }
 
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

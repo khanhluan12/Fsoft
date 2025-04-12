@@ -9,9 +9,11 @@ import dbcontext.DBContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import model.Booking;
 import model.BookingDetails;
@@ -128,17 +130,17 @@ public class ManagerDao {
         }
         return list;
     }
-    
+
     private static boolean isDateBeforeToday(String dateString) {
         // Định dạng ngày tháng
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        
+
         // Chuyển đổi chuỗi ngày tháng thành đối tượng LocalDate
         LocalDate dateToCheck = LocalDate.parse(dateString, formatter);
-        
+
         // Lấy ngày hiện tại
         LocalDate today = LocalDate.now();
-        
+
         // So sánh ngày cần kiểm tra với ngày hiện tại
         return dateToCheck.isBefore(today);
     }
@@ -173,6 +175,7 @@ public class ManagerDao {
         }
         return list;
     }
+
     public List<BookingDetails> getBookingDetailsByCustomer() {
         List<BookingDetails> list = new ArrayList<>();
         String query = "SELECT bd.*\n"
@@ -310,14 +313,14 @@ public class ManagerDao {
         }
         return null;
     }
-    
+
     public static void main(String[] args) {
         ManagerDao dao = new ManagerDao();
         for (var bookingDetails : dao.getBookingDetails()) {
             System.out.println(bookingDetails.getEmail());
         }
     }
-    
+
     public void addRoomType(String NameRoomType, String MaxPerson, String NumberOfBed, String NumberOfBath, String Price, String TotalRoom, String RoomStatus, String Content, String image) {
         String query = "insert into RoomType(NameRoomType,MaxPerson,NumberOfBed,NumberOfBath,Price, TotalRoom,RoomStatus,Content,Image) values (?,?,?,?,?,?,?,?,?)";
         try {
@@ -393,7 +396,7 @@ public class ManagerDao {
         } catch (Exception e) {
         }
     }
-    
+
     public void updateRoomTypeImage(String IDRoomType, String Image) {
         String query = "update RoomType set Image = ? where IDRoomType = ?";
         try {
@@ -548,5 +551,86 @@ public class ManagerDao {
         } catch (Exception e) {
         }
     }
+
+    public void updateDiscount(int id, String name, String valueStr, String start, String end, String note) {
+        String sql = "UPDATE Discount SET discountName = ?, discountValue = ?, startDay = ?, endDay = ?, note = ? WHERE IDDiscount = ?";
+        try (Connection con = DBContext.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            double value = Double.parseDouble(valueStr);
+
+            // Đổi sang định dạng ngày đúng của input type="date"
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date utilStart = sdf.parse(start);
+            Date utilEnd = sdf.parse(end);
+
+            java.sql.Date sqlStart = new java.sql.Date(utilStart.getTime());
+            java.sql.Date sqlEnd = new java.sql.Date(utilEnd.getTime());
+
+            ps.setString(1, name);
+            ps.setDouble(2, value);
+            ps.setDate(3, sqlStart);
+            ps.setDate(4, sqlEnd);
+            ps.setString(5, note);
+            ps.setInt(6, id);
+
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+public List<RoomType> getAvailableRoomTypes(Date checkin, Date checkout, String roomTypeFilter) {
+    List<RoomType> list = new ArrayList<>();
+    String sql = "SELECT rt.*, " +
+                 "ISNULL(rt.TotalRoom - SUM(bd.NumberOfRoom), rt.TotalRoom) AS roomFree " +
+                 "FROM RoomType rt " +
+                 "LEFT JOIN BookingDetail bd ON rt.IDRoomType = bd.IDRoomType " +
+                 "LEFT JOIN BookingDetails b ON b.IDBooking = bd.IDBookingDetail " +
+                 "AND b.isCancel = 0 " +
+                 "AND NOT (b.Checkout <= ? OR b.Checkin >= ?) " + 
+                 "WHERE rt.RoomStatus = 'Valid' ";
+
+    if (roomTypeFilter != null && !roomTypeFilter.isEmpty()) {
+        sql += "AND LOWER(rt.NameRoomType) LIKE ? ";
+    }
+
+    sql += "GROUP BY rt.IDRoomType, rt.NameRoomType, rt.MaxPerson, rt.NumberOfBed, " +
+           "rt.NumberOfBath, rt.Price, rt.TotalRoom, rt.RoomStatus, rt.Content, rt.Image";
+
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setDate(1, new java.sql.Date(checkin.getTime()));
+        ps.setDate(2, new java.sql.Date(checkout.getTime()));
+
+        if (roomTypeFilter != null && !roomTypeFilter.isEmpty()) {
+            ps.setString(3, "%" + roomTypeFilter.toLowerCase() + "%");
+        }
+
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            RoomType r = new RoomType(
+                rs.getInt("IDRoomType"),
+                rs.getString("NameRoomType"),
+                rs.getInt("MaxPerson"),
+                rs.getInt("NumberOfBed"),
+                rs.getInt("NumberOfBath"),
+                rs.getInt("Price"),
+                rs.getInt("TotalRoom"),
+                rs.getString("RoomStatus"),
+                rs.getString("Content")
+            );
+            r.setImage(rs.getString("Image"));
+            r.setRoomFree(rs.getInt("roomFree"));
+            list.add(r);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
+
+
 
 }

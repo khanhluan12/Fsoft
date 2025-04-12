@@ -23,8 +23,8 @@ public class ConfigVNPAY {
 
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_ReturnUrl = "http://localhost:8080/Hotel/bookingRoom"; // Thay đổi URL này cho phù hợp với servlet của bạn
-    public static String vnp_TmnCode = "HPZJH21U";
-    public static String secretKey = "BYCNQL8U4X1B1I4MDBOL6KVV68SON6LD";
+    public static String vnp_TmnCode = "BUM35ZHA";
+    public static String secretKey = "MTWPJEPBIWUUHC80EHZ8ZVOLJ2LIB1Z2";
     public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String md5(String message) {

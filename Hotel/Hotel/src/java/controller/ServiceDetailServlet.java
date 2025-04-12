@@ -59,13 +59,16 @@ public class ServiceDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String serviceIdParam = request.getParameter("id");
+
+
     if (serviceIdParam == null || !serviceIdParam.matches("\\d+")) {
         response.sendRedirect("errorPage.jsp"); 
         return;
     }
-    int serviceID = Integer.parseInt(serviceIdParam);
-    
-        List<ServiceItem> service = ServiceItemDAO.getItemsByServiceId(serviceID);
+         int serviceID = Integer.parseInt(serviceIdParam);
+
+        ServiceItemDAO serviceItem = new ServiceItemDAO();
+        List<ServiceItem> service = serviceItem.getItemsByServiceId(serviceID);
         System.out.println(service);
     if (service == null) {
         System.out.println("Service không tồn tại cho ID: " + serviceID);
@@ -74,6 +77,7 @@ public class ServiceDetailServlet extends HttpServlet {
     }
     System.out.println("Service tìm thấy: ");
     request.setAttribute("service", service);
+    request.setAttribute("serviceID", serviceID);
     RequestDispatcher dispatcher = request.getRequestDispatcher("/serviceDetail.jsp");
     dispatcher.forward(request, response);
 }

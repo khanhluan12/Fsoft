@@ -13,6 +13,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import model.RoomType;
 
 /**
@@ -61,16 +64,44 @@ public class ShowRoomCustomerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+String checkin = request.getParameter("checkin");
+String checkout = request.getParameter("checkout");
+String roomTypeFilter = request.getParameter("roomTypeFilter");
 
-        // String userType = request.getParameter("userType");
+ManagerDao managerDao = new ManagerDao();
+List<RoomType> roomTypeList;
 
-        ManagerDao managerDao = new ManagerDao();
-        List<RoomType> roomTypeList = managerDao.getRoomType();
+if (checkin != null && checkout != null && !checkin.isEmpty() && !checkout.isEmpty()) {
+    try {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date checkinDate = sdf.parse(checkin);
+        Date checkoutDate = sdf.parse(checkout);
+        roomTypeList = managerDao.getAvailableRoomTypes(checkinDate, checkoutDate, roomTypeFilter);
+        request.setAttribute("source", "check");
+    } catch (ParseException e) {
+        roomTypeList = managerDao.getRoomType();
+        request.setAttribute("source", "default");
+    }
+} else {
+    roomTypeList = managerDao.getRoomType();
+     for (RoomType rt : roomTypeList) {
+        rt.setRoomFree(5); 
+    }
+    request.setAttribute("source", "default");
+    if (roomTypeFilter != null && !roomTypeFilter.isEmpty()) {
+        roomTypeList.removeIf(rt -> {
+            String name = rt.getNameRoomType().toLowerCase();
+            return !name.contains(roomTypeFilter.toLowerCase());
+        });
+    }
+}
 
-//        HttpSession session = request.getSession();
-        request.setAttribute("listRoom", roomTypeList);
-        request.setAttribute("pagegRoom", true);
-        request.getRequestDispatcher("customer_room.jsp").forward(request, response);
+
+request.setAttribute("listRoom", roomTypeList);
+request.setAttribute("pagegRoom", true);
+request.setAttribute("source", "default");
+
+request.getRequestDispatcher("customer_room.jsp").forward(request, response);
 
     }
 

@@ -55,9 +55,13 @@
         <section class="accomodation_area section_gap">
             <div class="container">
 
+                <!-- Add Room Button -->
+                <div class="d-flex justify-content-end mb-4">
+                    <a class="btn btn-success rounded py-2 px-4" href="add_room.jsp">Add Room</a>
+                </div>
+
                 <div class="row g-4">
                     <c:forEach items="${sessionScope.listR}" var="room">
-
                         <div class="col-lg-4 col-md-12 wow fadeInUp" data-wow-delay="0.1s">
                             <div class="room-item shadow rounded overflow-hidden">
                                 <div class="position-relative">
@@ -97,60 +101,7 @@
 
         <!--================FORM ADD NEW ROOM TYPE =================-->
 
-        <h1 style="text-align: center;">Add New Room Type</h1>
 
-        <form action="addNewRoomType" class="col-md-9 m-auto" method="POST" role="form" enctype="multipart/form-data">
-            <div class="row">
-                <div class="form-group col-md-6 mb-3">
-                    <label for="inputname">Image</label><br>
-                    <input type="file" accept="image/*" name="image" required/>
-                </div>
-                <div class="form-group col-md-6 mb-3">
-                    <label for="inputname">Max Person</label>
-                    <input type="text" class="form-control mt-1" id="MaxPerson" name="MaxPerson" placeholder="Max Person" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-md-6 mb-3">
-                    <label for="inputname">ID</label><br>
-                    <label for="inputname">Auto Generate</label>
-                </div>
-                <div class="form-group col-md-6 mb-3">
-                    <label for="inputname">Room Type Name</label>
-                    <input type="text" class="form-control mt-1" id="NameRoomType" name="NameRoomType" placeholder="Name" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-md-6 mb-3">
-                    <label for="inputname">Bed</label>
-                    <input type="text" class="form-control mt-1" id="NumberOfBed" name="NumberOfBed" placeholder="NumberOfBed" required>
-                </div>
-                <div class="form-group col-md-6 mb-3">
-                    <label for="inputname">Bath</label>
-                    <input type="text" class="form-control mt-1" id="NumberOfBath" name="NumberOfBath" placeholder="NumberOfBath" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-md-6">
-                    <label for="inputname">Price</label>
-                    <input type="text" class="form-control mt-1" id="Content" name="Price" placeholder="Price" required>
-                </div>                    
-                <div class="form-group col-md-6 mb-3">
-                    <label for="inputname">Total Room</label>
-                    <input type="text" class="form-control mt-1" id="TotalRoom" name="TotalRoom" placeholder="TotalRoom" required>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="inputmessage">Content</label>
-                <textarea class="form-control mt-1" id="Content" name="Content" required placeholder="Message" rows="8"></textarea>
-            </div>
-            <div class="row">
-                <div class="col text-end mt-2">
-                    <button type="submit" class="btn btn-success btn-lg px-3">Add New Room Type</button>
-                </div>
-            </div>
-        </form>
         <!--================FORM ADD NEW ROOM TYPE =================-->
 
         <br>
@@ -173,5 +124,3 @@
         <script src="js/custom.js"></script>
     </body>
 </html>
-
-

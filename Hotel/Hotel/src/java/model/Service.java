@@ -13,6 +13,11 @@ public class Service {
     }
 
     public Service() {}
+    public Service(int ServiceID, String ServiceName) {
+    this.ServiceID = ServiceID;
+    this.ServiceName = ServiceName;
+}
+
 
     public int getServiceID() {
         return ServiceID;

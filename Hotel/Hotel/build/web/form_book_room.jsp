@@ -80,7 +80,7 @@
                 </div>   
                 <div class="form-group col-md-6 mb-3">
                     <label for="inputname">Price:</label>
-                    <label for="inputname"> ${r.getPrice()}$/Night</label>
+                    <label for="inputname"> ${r.getPrice()}VND/Night</label>
 
                     <input type="hidden" id="Price" name="Price" placeholder="Price" required value="${r.getPrice()}">
                 </div>
