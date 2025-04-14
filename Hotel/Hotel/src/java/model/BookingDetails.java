@@ -18,7 +18,7 @@ public class BookingDetails {
     private String Gender;
     private String Email;
     private String Phone;
-
+private String nameRoomType;
     private int Adult;
     private int Child;
     private String CheckIn;
@@ -62,6 +62,24 @@ public class BookingDetails {
         this.BookingTime = BookingTime;
         this.Note = Note;
     }
+public BookingDetails(int IDBooking, int IDAccount, int IDDiscount, String FullName, String Gender, String Email, String Phone, int Adult, int Child, String CheckIn, String CheckOut, double TotalPrice, String BookingTime, String Note, boolean IsCancel, String nameRoomType) {
+    this.IDBooking = IDBooking;
+    this.IDAccount = IDAccount;
+    this.IDDiscount = IDDiscount;
+    this.FullName = FullName;
+    this.Gender = Gender;
+    this.Email = Email;
+    this.Phone = Phone;
+    this.Adult = Adult;
+    this.Child = Child;
+    this.CheckIn = CheckIn;
+    this.CheckOut = CheckOut;
+    this.TotalPrice = TotalPrice;
+    this.BookingTime = BookingTime;
+    this.Note = Note;
+    this.nameRoomType = nameRoomType;
+    this.Cancel = IsCancel; 
+}
 
     public int getIDAccount() {
         return IDAccount;
@@ -190,4 +208,13 @@ public class BookingDetails {
     public void setNote(String Note) {
         this.Note = Note;
     }
+
+    public String getNameRoomType() {
+        return nameRoomType;
+    }
+
+    public void setNameRoomType(String nameRoomType) {
+        this.nameRoomType = nameRoomType;
+    }
+    
 }

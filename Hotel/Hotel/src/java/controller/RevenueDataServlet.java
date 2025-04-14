@@ -1,8 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
+
 import com.google.gson.Gson;
 import dbcontext.DBContext;
 import jakarta.servlet.ServletException;
@@ -10,50 +7,70 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
-import java.sql.ResultSet;
-import model.BookingDetails;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+
 @WebServlet("/revenueData")
 public class RevenueDataServlet extends HttpServlet {
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
-        // Initialize revenue data for all months
+        // Lấy tham số năm từ request
+        String yearParam = request.getParameter("year");
+        int year = (yearParam != null) ? Integer.parseInt(yearParam) : LocalDate.now().getYear();
+
+        // Khởi tạo dữ liệu doanh thu từng tháng (mặc định 0)
         double[] monthlyRevenues = new double[12];
-        
-        try (Connection conn = DBContext.getConnection()) {
-            String query = "SELECT MONTH(BookingTime) AS Month, SUM(TotalPrice) AS Revenue FROM BookingDetails WHERE YEAR(BookingTime) = YEAR(GETDATE()) GROUP BY MONTH(BookingTime) ORDER BY Month";
-            try (PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    int month = rs.getInt("Month") - 1; // JDBC months are 1-based, but array is 0-based
-                    double revenue = rs.getDouble("Revenue");
-                    monthlyRevenues[month] = revenue;
+Map<Integer, Double> revenuePerMonth = new HashMap<>();
+
+try (Connection conn = DBContext.getConnection()) {
+    String sql = "SELECT Checkin, Checkout, TotalPrice FROM BookingDetails WHERE YEAR(Checkin) <= ? AND YEAR(Checkout) >= ?";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, year);
+        ps.setInt(2, year);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                LocalDate checkin = rs.getDate("Checkin").toLocalDate();
+                LocalDate checkout = rs.getDate("Checkout").toLocalDate();
+                double totalPrice = rs.getDouble("TotalPrice");
+
+                long totalNights = ChronoUnit.DAYS.between(checkin, checkout);
+                if (totalNights <= 0) continue; // tránh lỗi
+
+                double pricePerNight = totalPrice / totalNights;
+
+                for (LocalDate date = checkin; date.isBefore(checkout); date = date.plusDays(1)) {
+                    if (date.getYear() != year) continue; // chỉ lấy trong năm cần thống kê
+                    int month = date.getMonthValue();
+                    revenuePerMonth.put(month, revenuePerMonth.getOrDefault(month, 0.0) + pricePerNight);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+    }
+} catch (SQLException e) {
+    e.printStackTrace();
+}
 
-        // Convert the data to JSON format
-        List<Map<String, Object>> revenueData = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-            Map<String, Object> dataPoint = new HashMap<>();
-            dataPoint.put("month", i + 1); // converting back to 1-based month
-            dataPoint.put("revenue", monthlyRevenues[i]);
-            revenueData.add(dataPoint);
-        }
+
+        // Chuyển dữ liệu sang JSON
+       List<Map<String, Object>> revenueData = new ArrayList<>();
+for (int i = 1; i <= 12; i++) {
+    Map<String, Object> dataPoint = new HashMap<>();
+    dataPoint.put("month", i);
+    dataPoint.put("revenue", revenuePerMonth.getOrDefault(i, 0.0));
+    revenueData.add(dataPoint);
+}
 
         String json = new Gson().toJson(revenueData);
+        System.out.println(revenueData);
         out.print(json);
         out.flush();
     }
 }
-

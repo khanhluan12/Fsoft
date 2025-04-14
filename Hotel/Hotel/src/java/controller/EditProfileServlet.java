@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.BookingDetails;
 import model.User;
 
 /**
@@ -79,6 +81,9 @@ public class EditProfileServlet extends HttpServlet {
 //        PrintWriter out = response.getWriter();
 //        out.print("<h1>"+ u + "</h1>");
         session.setAttribute("userA", u);
+        List<BookingDetails> list = ud.getBookingDetailsByUserId(i);
+request.setAttribute("BookingDetails", list);
+
         request.getRequestDispatcher("profile.jsp").forward(request, response);
 
     }

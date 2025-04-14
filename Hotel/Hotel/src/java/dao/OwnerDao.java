@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.BookingByDate;
 
+
 /**
  *
  * @author admin
@@ -145,4 +146,6 @@ public class OwnerDao {
         }
         return listBookingByDate;
     }
+   
+
 }

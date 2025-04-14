@@ -630,6 +630,37 @@ public List<RoomType> getAvailableRoomTypes(Date checkin, Date checkout, String 
 
     return list;
 }
+public List<RoomType> getRoomTypesByName(String nameRoomType) {
+    List<RoomType> list = new ArrayList<>();
+    String query = "SELECT * FROM RoomType WHERE NameRoomType LIKE ?";
+
+    try (Connection conn = DBContext.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(query)) {
+         
+       ps.setString(1, "%" + nameRoomType + "%");
+
+        ResultSet rs = ps.executeQuery();
+        
+        while (rs.next()) {
+            RoomType room = new RoomType(
+                rs.getInt("IDRoomType"),
+                rs.getString("NameRoomType"),
+                rs.getInt("MaxPerson"),
+                rs.getInt("NumberOfBed"),
+                rs.getInt("NumberOfBath"),
+                rs.getInt("Price"),
+                rs.getInt("TotalRoom"),
+                rs.getString("RoomStatus"),
+                rs.getString("Content")
+            );
+            room.setImage(rs.getString("Image"));
+            list.add(room);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
 
 
 

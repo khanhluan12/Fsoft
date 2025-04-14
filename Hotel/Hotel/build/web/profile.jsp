@@ -26,6 +26,22 @@
         <link rel="stylesheet" href="css/room_bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
+        <style>
+            .small-select {
+
+    height: 37px;
+}
+    td.action-column {
+        text-align: center;
+        vertical-align: middle;
+    }
+    td.action-column p {
+        margin: 0; 
+        vertical-align: middle; 
+    }
+
+
+</style>
 
     </head>
     <body>
@@ -56,7 +72,7 @@
         <br>
         <h2 style="color: green; text-align: center;" >${editProfile} </h2>
 
-        <form action="editProfile" method="get">
+        <form action="editProfile" method="get" onsubmit="return validateForm()">
 
             <div class="container rounded bg-white mt-5 mb-5">
                 <div class="row">
@@ -71,11 +87,38 @@
 
                             <div class="row mt-3">
                                 <div class="col-md-12"><input type="hidden" name="IDAccount" class="form-control"  value="${userA.getIDAccount()}"></div>
-                                <div class="col-md-12"><label class="labels">Full Name</label><input type="text" name="FullName" class="form-control"  value="${userA.getFullName()}"></div>
-                                <div class="col-md-12"><label class="labels">Phone Number</label><input type="text" name="Phone" class="form-control"  value="${userA.getPhone()}"></div>
-                                <div class="col-md-12"><label class="labels">Email</label><input type="text" name="Email" class="form-control"value="${userA.getEmail()}"></div>
-                                <div class="col-md-6"><label class="labels">City</label><input type="text" name="City" class="form-control" value="${userA.getCity()}"></div>
-                                <div class="col-md-6"><label class="labels">Gender</label><input type="text" name="Gender" class="form-control" value="${userA.getGender()}" ></div>
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" name="FullName" class="form-control" required
+                                           value="${userA.getFullName()}" pattern="[A-Za-zÀ-ỹ\s]{2,}"
+                                           title="Tên phải có ít nhất 2 ký tự và chỉ chứa chữ cái.">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone Number</label>
+                                    <input type="tel" name="Phone" class="form-control" required
+                                           value="${userA.getPhone()}" pattern="0[0-9]{9}"
+                                           title="Số điện thoại phải có 10 số và bắt đầu bằng số 0.">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" name="Email" class="form-control" required value="${userA.getEmail()}">
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label>City</label>
+                                        <input type="text" name="City" class="form-control" required value="${userA.getCity()}">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Gender</label>
+                                        <select name="Gender" class="form-control small-select"  required>
+                                            <option value="">--Select--</option>
+                                            <option value="Male" ${userA.getGender() == 'Male' ? 'selected' : ''}>Male</option>
+                                            <option value="Female" ${userA.getGender() == 'Female' ? 'selected' : ''}>Female</option>
+                                            <option value="Other" ${userA.getGender() == 'Other' ? 'selected' : ''}>Other</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row mt-3 d-none">
                                 <div class="col-md-12"><label class="labels">UserName</label><input type="text" name="UserName" class="form-control" value="${userA.getUserName()}"></div>                            
@@ -91,23 +134,23 @@
                             <table border="1" width="1" cellspacing="1" cellpadding="1" class="w-100 text-center">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
                                         <th>Adult</th>
                                         <th>Child</th>
                                         <th>Checkin</th>
                                         <th>Checkout</th>
+                                        <th>Room Type</th> <!-- Thêm cột này để hiển thị tên loại phòng -->
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <c:forEach var="bookingDetail" items="${BookingDetails}">
                                         <tr>
-                                            <td>${bookingDetail.getIDBooking()}</td>
                                             <td>${bookingDetail.getAdult()}</td>
                                             <td>${bookingDetail.getChild()}</td>
                                             <td>${bookingDetail.getCheckIn()}</td>
                                             <td>${bookingDetail.getCheckOut()}</td>
-                                            <td>
+                                            <td>${bookingDetail.getNameRoomType()}</td> <!-- Hiển thị tên loại phòng -->
+                                            <td  class="action-column">
                                                 <c:choose>
                                                     <c:when test="${bookingDetail.note == 'Success'}">
                                                         <p class="text-success">Success</p>
@@ -123,12 +166,11 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
-
-
                                         </tr>
                                     </c:forEach>
                                 </tbody>
                             </table>
+
 
                         </div>
                     </div>
@@ -154,14 +196,31 @@
         <script src="js/custom.js"></script>
 
         <script>
-                function confirmCancel(bookingId) {
-                    var contactInfo = prompt("Please enter your contact information for cancellation:");
-                    if (contactInfo != null) {
-                        if (confirm("Are you sure you want to cancel this booking?")) {
-                            window.location.href = './CancelBooking?bookingId=' + bookingId + '&contactInfo=' + encodeURIComponent(contactInfo);
-                        }
-                    }
-                }
+                                function confirmCancel(bookingId) {
+                                    var contactInfo = prompt("Please enter your contact information for cancellation:");
+                                    if (contactInfo != null) {
+                                        if (confirm("Are you sure you want to cancel this booking?")) {
+                                            window.location.href = './CancelBooking?bookingId=' + bookingId + '&contactInfo=' + encodeURIComponent(contactInfo);
+                                        }
+                                    }
+                                }
+                                function validateForm() {
+                                    const phone = document.querySelector('input[name="Phone"]').value;
+                                    const fullName = document.querySelector('input[name="FullName"]').value;
+
+                                    if (fullName.trim().length < 2) {
+                                        alert("Tên phải có ít nhất 2 ký tự.");
+                                        return false;
+                                    }
+
+                                    const phonePattern = /^0\d{9}$/;
+                                    if (!phonePattern.test(phone)) {
+                                        alert("Số điện thoại phải có 10 số và bắt đầu bằng số 0.");
+                                        return false;
+                                    }
+
+                                    return true;
+                                }
         </script>
     </body>
 </html>

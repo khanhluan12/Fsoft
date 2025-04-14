@@ -397,38 +397,52 @@ public class UserDao {
     }
 
     // get list booking by User id
-    public List<BookingDetails> getBookingDetailsByUserId(int accountId) {
-        List<BookingDetails> list = new ArrayList<>();
-        String query = "select * from BookingDetails where IDAccount = ?";
-        try {
-            conn = DBContext.getConnection();//mo ket noi
-            ps = conn.prepareStatement(query);
-            ps.setInt(1, accountId);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                BookingDetails bd = new BookingDetails(rs.getInt(1),
-                        rs.getInt(2),
-                        rs.getInt(3),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getString(6),
-                        rs.getString(7),
-                        rs.getInt(8),
-                        rs.getInt(9),
-                        rs.getString(10),
-                        rs.getString(11),
-                        rs.getDouble(12),
-                        rs.getString(13),
-                        rs.getString(14));
-                bd.setIsCancel(rs.getBoolean(15));
-                bd.setOver(isDateBeforeToday(rs.getString(10)));
-                list.add(bd);
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+public List<BookingDetails> getBookingDetailsByUserId(int accountId) {
+    List<BookingDetails> list = new ArrayList<>();
+    String query = "SELECT bd.*, rt.NameRoomType " +
+                   "FROM BookingDetails bd " +
+                   "JOIN BookingDetail bkd ON bd.IDBooking = bkd.IDBookingDetail " +  // Liên kết BookingDetails và BookingDetail
+                   "JOIN RoomType rt ON bkd.IDRoomType = rt.IDRoomType " +  // Liên kết BookingDetail và RoomType
+                   "WHERE bd.IDAccount = ?";
+
+    try {
+        conn = DBContext.getConnection();  // Mở kết nối
+        ps = conn.prepareStatement(query);
+        ps.setInt(1, accountId);
+        rs = ps.executeQuery();
+        
+        while (rs.next()) {
+            // Khởi tạo đối tượng BookingDetails từ kết quả truy vấn
+            BookingDetails bd = new BookingDetails(
+                rs.getInt("IDBooking"),   // IDBooking
+                rs.getInt("IDAccount"),   // IDAccount
+                rs.getInt("IDDiscount"),  // IDDiscount
+                rs.getString("FullName"), // FullName
+                rs.getString("Gender"),   // Gender
+                rs.getString("Email"),    // Email
+                rs.getString("Phone"),    // Phone
+                rs.getInt("Adult"),       // Adult
+                rs.getInt("Child"),       // Child
+                rs.getString("Checkin"),  // Checkin
+                rs.getString("Checkout"), // Checkout
+                rs.getDouble("TotalPrice"), // TotalPrice
+                rs.getString("BookingTime"), // BookingTime
+                rs.getString("Note"),     // Note
+                rs.getBoolean("isCancel"), // isCancel
+                rs.getString("NameRoomType") // NameRoomType từ bảng RoomType
+            );
+
+            // Kiểm tra nếu booking đã bị hủy hoặc quá hạn
+            bd.setOver(isDateBeforeToday(rs.getString("Checkin")));
+            list.add(bd);
         }
-        return list;
+    } catch (Exception e) {
+        System.out.println(e.getMessage());
     }
+    return list;
+}
+
+
 
     private static boolean isDateBeforeToday(String dateString) {
         // Định dạng ngày tháng

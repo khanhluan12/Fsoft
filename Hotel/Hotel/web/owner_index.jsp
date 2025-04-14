@@ -1,8 +1,4 @@
-<%-- 
-    Document   : owner_dashboard
-    Created on : May 30, 2023, 11:27:29 AM
-    Author     : TuaSan
---%>
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -163,10 +159,24 @@
                 </div>
             </div>-->
             <!-- Sale & Revenue End -->
-            <div class="container">
-                <h2>Monthly Revenue Chart</h2>
-                <canvas id="revenueChart"></canvas>
+         <div class="container mt-5">
+    <div class="row">
+
+        <div class="col-md-6">
+            <h4>Monthly Revenue Chart</h4>
+            <canvas id="revenueChart" height="250"></canvas>
+        </div>
+
+
+        <div class="col-md-6 ">
+            <h4>Room Type Booking Statistics</h4>
+            <div style="max-width: 100%; height: auto;">
+                <canvas id="roomTypePieChart" style="max-width: 100%; height: 250px;"></canvas>
             </div>
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -201,6 +211,7 @@
                     </div>
                 </div>
             </div>
+          
             <!-- Recent Sales End -->
 
             <!-- Sales Chart Start -->
@@ -231,6 +242,8 @@
         <!-- JavaScript Libraries -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
         <script src="lib/chart/chart.min.js"></script>
         <script src="lib/easing/easing.min.js"></script>
         <script src="lib/waypoints/waypoints.min.js"></script>
@@ -238,7 +251,7 @@
         <script src="lib/tempusdominus/js/moment.min.js"></script>
         <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
         <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
+        
         <!-- Template Javascript -->
         <script src="js/owner_main.js"></script>
         <script>
@@ -284,6 +297,64 @@
                 });
         });
     </script>
+  
+<script>
+fetch('${pageContext.request.contextPath}/roomTypeStats')
+    .then(response => response.json())
+    .then(data => {
+        const labels = Object.keys(data);
+        const values = Object.values(data);
+
+        const ctx = document.getElementById('roomTypePieChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#76FF03',
+                        '#8E24AA',
+                        '#00BCD4',
+                        '#FF5722',
+                        '#9C27B0',
+                        '#8BC34A',
+                        '#FFC107'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    datalabels: {
+                        formatter: function(value, ctx) {
+                            let sum = 0;
+                            let dataArr = ctx.chart.data.datasets[0].data;
+                            dataArr.map(function(currentValue) {
+                                sum += currentValue;
+                            });
+                            let percentage = (value * 100 / sum).toFixed(2) + '%';
+                            return percentage;
+                        },
+                        color: '#fff',
+                        font: {
+                            weight: 'bold',
+                            size: 12
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+</script>
+
     </body>
 
 </html>
