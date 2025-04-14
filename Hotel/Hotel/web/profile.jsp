@@ -1,8 +1,3 @@
-<%-- 
-    Document   : form_payment
-    Created on : Jun 8, 2023, 9:20:49 PM
-    Author     : admin
---%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -27,6 +22,54 @@
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
         <style>
+             table.booking-history {
+        border-collapse: collapse;
+        width: 100%;
+        background-color: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    table.booking-history th,
+    table.booking-history td {
+        padding: 12px 15px;
+        text-align: center;
+    }
+
+    table.booking-history thead {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    table.booking-history tbody tr {
+        border-bottom: 1px solid #ddd;
+    }
+
+    table.booking-history tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    table.booking-history tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+  #pagination .page-link {
+        margin: 0 3px;
+        padding: 6px 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    #pagination .page-link.active {
+        background-color: #0056b3;
+    }
+
+    #pagination .page-link:hover {
+        background-color: #0056b3;
+    }
             .small-select {
 
     height: 37px;
@@ -131,25 +174,25 @@
                     <div class="col-md-7">
                         <div class="p-3 py-5">
                             <h4>Booking Detail history</h4>
-                            <table border="1" width="1" cellspacing="1" cellpadding="1" class="w-100 text-center">
+                            <table id="bookingTable" class="booking-history" >
                                 <thead>
                                     <tr>
                                         <th>Adult</th>
                                         <th>Child</th>
                                         <th>Checkin</th>
                                         <th>Checkout</th>
-                                        <th>Room Type</th> <!-- Thêm cột này để hiển thị tên loại phòng -->
+                                        <th>Room Type</th> 
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach var="bookingDetail" items="${BookingDetails}">
-                                        <tr>
+                                    <c:forEach var="bookingDetail" items="${BookingDetails}" varStatus="loop">
+                                        <tr class="book-row">
                                             <td>${bookingDetail.getAdult()}</td>
                                             <td>${bookingDetail.getChild()}</td>
                                             <td>${bookingDetail.getCheckIn()}</td>
                                             <td>${bookingDetail.getCheckOut()}</td>
-                                            <td>${bookingDetail.getNameRoomType()}</td> <!-- Hiển thị tên loại phòng -->
+                                            <td>${bookingDetail.getNameRoomType()}</td> 
                                             <td  class="action-column">
                                                 <c:choose>
                                                     <c:when test="${bookingDetail.note == 'Success'}">
@@ -170,7 +213,7 @@
                                     </c:forEach>
                                 </tbody>
                             </table>
-
+<div id="pagination" class="text-center mt-3"></div>
 
                         </div>
                     </div>
@@ -222,5 +265,57 @@
                                     return true;
                                 }
         </script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const rowsPerPage = 5; 
+    const rows = document.querySelectorAll(".book-row");
+    const totalRows = rows.length;
+    const totalPages = Math.ceil(totalRows / rowsPerPage);
+    let currentPage = 1;
+
+    function showPage(page) {
+        let start = (page - 1) * rowsPerPage;
+        let end = start + rowsPerPage;
+
+        rows.forEach((row, index) => {
+            row.style.display = (index >= start && index < end) ? "table-row" : "none";
+        });
+
+        document.querySelectorAll(".page-number").forEach(button => {
+            button.classList.remove("active");
+            if (parseInt(button.dataset.page) === page) {
+                button.classList.add("active");
+            }
+        });
+
+      
+    }
+
+    function setupPagination() {
+        let pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        if (totalPages > 1) {
+            for (let i = 1; i <= totalPages; i++) {
+                let btn = document.createElement("span"); 
+btn.style.cursor = "pointer";
+                btn.innerText = i;
+                btn.className = "page-number btn btn-outline-primary mx-1";
+                btn.dataset.page = i;
+                btn.addEventListener("click", function() {
+                    currentPage = parseInt(this.dataset.page);
+                    showPage(currentPage);
+                });
+                pagination.appendChild(btn);
+            }
+        }
+
+        showPage(currentPage);
+    }
+    setupPagination();
+});
+
+</script>
+
     </body>
 </html>

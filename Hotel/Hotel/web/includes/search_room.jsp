@@ -19,7 +19,7 @@
                     <span id="checkout" class="error form-text text-danger"></span>
                 </div>
 
-                <div class="col-2 mt-3 px-5 btn">
+                <div class="col-2 mt-3 px-4 pt-3 btn " >
                     <input type="hidden" name="roomType" value="">
                     <input type="submit"  class="btn bg-primary text-white" value="Search Availability" />
                 </div>

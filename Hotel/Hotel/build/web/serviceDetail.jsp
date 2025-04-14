@@ -74,12 +74,12 @@
                 </div>
             </c:if>
 
-           <p class="text-center">     
-    <button class="btn btn-success mb-4"
-            onclick="openAddModal(${serviceID})">
-        + Add New Item
-    </button>
-</p>
+            <p class="text-center">     
+                <button class="btn btn-success mb-4"
+                        onclick="openAddModal(${serviceID})">
+                    + Add New Item
+                </button>
+            </p>
 
             <c:if test="${not empty service}">
                 <h2 class="text-center mb-4">Service Details</h2>
@@ -116,7 +116,7 @@
 
             <c:if test="${empty service}">
                 <div class="alert alert-warning text-center">
-                    <strong>No service found.</strong>
+                    <strong>No Item found.</strong>
                 </div>
             </c:if> 
         </div>
@@ -177,7 +177,7 @@
 
         <script>
                                                    function openAddModal(serviceID) {
-                                                       document.getElementById("modalTitle").innerText = "Add New Service";
+                                                       document.getElementById("modalTitle").innerText = "Add New Item";
                                                        document.getElementById("serviceId").value = "";
                                                        document.getElementById("itemName").value = "";
                                                        document.getElementById("price").value = "";
@@ -185,7 +185,7 @@
                                                        document.getElementById("previewImg").style.display = "none";
                                                        document.getElementById("previewImg").src = "";
                                                        document.getElementById("image").required = true;
-                                                       document.getElementById("serviceID").value = serviceID; // Gán ở đây nè
+                                                       document.getElementById("serviceID").value = serviceID;
                                                        $('#serviceModal').modal('show');
                                                    }
 
@@ -196,20 +196,31 @@
                                                        document.getElementById("itemName").value = name;
                                                        document.getElementById("price").value = price;
                                                        document.getElementById("oldImageURL").value = imageURL;
-                                                       document.getElementById("serviceID").value = serviceID; // ✅ Gán serviceID
+                                                       document.getElementById("serviceID").value = serviceID;
                                                        document.getElementById("previewImg").src = imageURL;
                                                        document.getElementById("previewImg").style.display = "block";
                                                        document.getElementById("image").required = false;
                                                        $('#serviceModal').modal('show');
                                                    }
 
-
                                                    document.getElementById("image").addEventListener("change", function (event) {
                                                        const [file] = event.target.files;
+                                                       const preview = document.getElementById("previewImg");
+
                                                        if (file) {
-                                                           document.getElementById("previewImg").src = URL.createObjectURL(file);
+                                                           const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+                                                           if (!validImageTypes.includes(file.type)) {
+                                                               alert("Only image files (JPG, PNG, GIF) are allowed!");
+                                                               event.target.value = ''; // Clear file input
+                                                               preview.src = '';
+                                                               preview.style.display = 'none';
+                                                           } else {
+                                                               preview.src = URL.createObjectURL(file);
+                                                               preview.style.display = "block";
+                                                           }
                                                        }
                                                    });
+
         </script>
     </body>
 </html>

@@ -25,7 +25,12 @@ public class RevenueDataServlet extends HttpServlet {
         // Lấy tham số năm từ request
         String yearParam = request.getParameter("year");
         int year = (yearParam != null) ? Integer.parseInt(yearParam) : LocalDate.now().getYear();
-
+if (yearParam != null && !yearParam.isEmpty()) {
+    try {
+        year = Integer.parseInt(yearParam);
+    } catch (NumberFormatException e) {
+        // giữ nguyên year mặc định
+    }
         // Khởi tạo dữ liệu doanh thu từng tháng (mặc định 0)
         double[] monthlyRevenues = new double[12];
 Map<Integer, Double> revenuePerMonth = new HashMap<>();
@@ -73,4 +78,5 @@ for (int i = 1; i <= 12; i++) {
         out.print(json);
         out.flush();
     }
+}
 }

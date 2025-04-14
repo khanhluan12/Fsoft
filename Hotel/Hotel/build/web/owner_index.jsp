@@ -72,6 +72,14 @@
                 background-color: #FEA116;
                 color: white;
             }
+            #yearSelect{
+                width: 150px;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                text-align-last: center;
+            }
+            
         </style>
     </head>
 
@@ -161,9 +169,16 @@
             <!-- Sale & Revenue End -->
          <div class="container mt-5">
     <div class="row">
+ <div class="mb-3 text-center">
+   <select id="yearSelect" class="form-select mx-auto">
+    <option value="" disabled selected>Select Year</option>
+</select>
 
-        <div class="col-md-6">
+</div>
+
+        <div class="col-md-6 ">
             <h4>Monthly Revenue Chart</h4>
+               
             <canvas id="revenueChart" height="250"></canvas>
         </div>
 
@@ -181,7 +196,7 @@
 
 
             <!-- Recent Sales Start -->
-            <div class="container-fluid pt-4 px-4">
+<!--            <div class="container-fluid pt-4 px-4">
                 <div class="bg-light text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
                     </div>
@@ -211,7 +226,7 @@
                     </div>
                 </div>
             </div>
-          
+          -->
             <!-- Recent Sales End -->
 
             <!-- Sales Chart Start -->
@@ -255,22 +270,52 @@
         <!-- Template Javascript -->
         <script src="js/owner_main.js"></script>
         <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            fetch('${pageContext.request.contextPath}/revenueData')
-                .then(response => response.json())
-                .then(data => {
-                    // Ensure correct labels for 12 months
-                    const labels = ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6', 'Month 7', 'Month 8', 'Month 9', 'Month 10', 'Month 11', 'Month 12'];
-                    const revenues = new Array(12).fill(0);
+document.addEventListener("DOMContentLoaded", function () {
+    const currentYear = new Date().getFullYear();
+    const yearSelect = document.getElementById('yearSelect');
 
-                    // Fill the revenues array with data
-                    data.forEach(item => {
-                        const monthIndex = item.month - 1;
-                        revenues[monthIndex] = item.revenue;
-                    });
 
+    for (let y = currentYear; y >= 2020; y--) {
+        let option = document.createElement("option");
+        option.value = y;
+        option.text = y;
+        yearSelect.appendChild(option);
+    }
+
+    // Load dữ liệu mặc định theo năm hiện tại
+     loadCharts(currentYear);
+    // Gọi lại dữ liệu khi đổi năm
+     yearSelect.addEventListener("change", function () {
+        const selectedYear = this.value;
+        loadCharts(selectedYear);
+    });
+
+    function loadCharts(year) {
+        loadRevenueData(year);
+        loadRoomTypePieChart(year);
+    }
+   let revenueChartInstance = null;
+    let pieChartInstance = null;
+    
+    function loadRevenueData(year) {
+        fetch('${pageContext.request.contextPath}/revenueData?year=' + year)
+            .then(response => response.json())
+            .then(data => {
+                const labels = ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6',
+                                'Month 7', 'Month 8', 'Month 9', 'Month 10', 'Month 11', 'Month 12'];
+                const revenues = new Array(12).fill(0);
+                data.forEach(item => {
+                    const monthIndex = item.month - 1;
+                    revenues[monthIndex] = item.revenue;
+                });
+
+                // Nếu chart đã tồn tại thì cập nhật lại, không tạo mới
+                if (window.revenueChartInstance) {
+                    window.revenueChartInstance.data.datasets[0].data = revenues;
+                    window.revenueChartInstance.update();
+                } else {
                     const ctx = document.getElementById('revenueChart').getContext('2d');
-                    new Chart(ctx, {
+                    window.revenueChartInstance = new Chart(ctx, {
                         type: 'line',
                         data: {
                             labels: labels,
@@ -294,66 +339,69 @@
                             }
                         }
                     });
-                });
-        });
-    </script>
-  
-<script>
-fetch('${pageContext.request.contextPath}/roomTypeStats')
-    .then(response => response.json())
-    .then(data => {
-        const labels = Object.keys(data);
-        const values = Object.values(data);
+                }
+            });
+    }
+});
+function loadRoomTypePieChart(year) {
+    fetch('${pageContext.request.contextPath}/roomTypeStats?year=' + year)
+        .then(response => response.json())
+        .then(data => {
+            const labels = Object.keys(data);
+            const values = Object.values(data);
 
-        const ctx = document.getElementById('roomTypePieChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: values,
-                    backgroundColor: [
-                        '#FF6384',
-                        '#36A2EB',
-                        '#FFCE56',
-                        '#76FF03',
-                        '#8E24AA',
-                        '#00BCD4',
-                        '#FF5722',
-                        '#9C27B0',
-                        '#8BC34A',
-                        '#FFC107'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'right'
+            if (window.pieChartInstance) {
+                // Nếu chart đã có => cập nhật lại data
+                window.pieChartInstance.data.labels = labels;
+                window.pieChartInstance.data.datasets[0].data = values;
+                window.pieChartInstance.update();
+            } else {
+                // Nếu chưa có => tạo mới
+                const ctx = document.getElementById('roomTypePieChart').getContext('2d');
+                window.pieChartInstance = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: [
+                                '#FF6384', '#36A2EB', '#FFCE56', '#76FF03',
+                                '#8E24AA', '#00BCD4', '#FF5722', '#9C27B0',
+                                '#8BC34A', '#FFC107'
+                            ]
+                        }]
                     },
-                    datalabels: {
-                        formatter: function(value, ctx) {
-                            let sum = 0;
-                            let dataArr = ctx.chart.data.datasets[0].data;
-                            dataArr.map(function(currentValue) {
-                                sum += currentValue;
-                            });
-                            let percentage = (value * 100 / sum).toFixed(2) + '%';
-                            return percentage;
-                        },
-                        color: '#fff',
-                        font: {
-                            weight: 'bold',
-                            size: 12
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            },
+                            datalabels: {
+                                formatter: function (value, ctx) {
+                                    let sum = 0;
+                                    let dataArr = ctx.chart.data.datasets[0].data;
+                                    dataArr.map(function (currentValue) {
+                                        sum += currentValue;
+                                    });
+                                    let percentage = (value * 100 / sum).toFixed(2) + '%';
+                                    return percentage;
+                                },
+                                color: '#fff',
+                                font: {
+                                    weight: 'bold',
+                                    size: 12
+                                }
+                            }
                         }
                     }
-                }
+                });
             }
         });
-    });
+}
 
-</script>
+    </script>
+
 
     </body>
 

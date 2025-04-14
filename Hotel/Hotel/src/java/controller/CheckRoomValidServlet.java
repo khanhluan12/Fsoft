@@ -77,7 +77,12 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
         }
         
     }
-
+else {
+    // Nếu không có ngày, hiển thị toàn bộ loại phòng có sẵn, không cần kiểm tra phòng trống
+    for (RoomType roomType : listSearchRoomType) {
+        roomType.setRoomFree(roomType.getTotalRoom()); // hoặc một giá trị như -1 để ẩn phần "Rooms Free"
+    }
+    }
 
 
 
