@@ -14,7 +14,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.Booking;
 import model.BookingDetails;
 import model.CheckRoomValid;
@@ -43,7 +45,7 @@ public class UserDao {
         }
         return null;
     }
-    
+
     public User BanAndUnbanAccount(int accountId, boolean isban) {
         String query = "update Account set IsBan = ? where IDAccount = ?";
         try {
@@ -56,7 +58,6 @@ public class UserDao {
         }
         return null;
     }
-
 
     public User ResetPass(int userId, String newPass) {
         String query = "update Account set Pass = ? where IDAccount = ?";
@@ -316,13 +317,15 @@ public class UserDao {
             ps.setString(2, checkOut);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    int roomId=rs.getInt(1);
-                    int roomValid=0;
+                    int roomId = rs.getInt(1);
+                    int roomValid = 0;
                     try {
-                        roomValid=rs.getInt(8);
+                        roomValid = rs.getInt(8);
                     } catch (Exception e) {
                     }
-                    if(roomValid==0)roomValid=rs.getInt(7);
+                    if (roomValid == 0) {
+                        roomValid = rs.getInt(7);
+                    }
                     lcr.add(new CheckRoomValid(roomId, roomValid));
                 }
             }
@@ -452,6 +455,29 @@ public class UserDao {
         LocalDate endDateC = LocalDate.parse(endC, formatter);
 
         return !(endDateA.isBefore(startDateC) || endDateC.isBefore(startDateA));
+    }
+
+    public Map<Integer, Double> getAverageRatingsByRoomType() {
+        Map<Integer, Double> ratingsMap = new HashMap<>();
+        String query = "SELECT rt.IDRoomType, AVG(CAST(f.Rating AS FLOAT)) as AverageRating "
+                + "FROM RoomType rt "
+                + "LEFT JOIN BookingDetail bd ON rt.IDRoomType = bd.IDRoomType "
+                + "LEFT JOIN Feedback f ON bd.IDBookingDetail = f.IDBooking "
+                + "GROUP BY rt.IDRoomType";
+
+        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int roomTypeId = rs.getInt("IDRoomType");
+                double avgRating = rs.getDouble("AverageRating");
+                if (!rs.wasNull()) { // Chỉ thêm vào map nếu có rating
+                    ratingsMap.put(roomTypeId, avgRating);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ratingsMap;
     }
 
     public static void main(String[] args) {
