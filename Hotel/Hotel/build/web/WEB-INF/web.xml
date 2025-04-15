@@ -200,6 +200,26 @@
         <servlet-name>ManageService</servlet-name>
         <servlet-class>controller.ManageService</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServicesItemDetail</servlet-name>
+        <servlet-class>controller.ServicesItemDetail</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServicesItemDetailServlet</servlet-name>
+        <servlet-class>controller.ServicesItemDetailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServicesOrderServlet</servlet-name>
+        <servlet-class>controller.ServicesOrderServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServicesCartServlet</servlet-name>
+        <servlet-class>controller.ServicesCartServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServicesOrderHistoryServlet</servlet-name>
+        <servlet-class>controller.ServicesOrderHistoryServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>G2HomeServlet</servlet-name>
         <url-pattern>/home</url-pattern>
@@ -399,6 +419,26 @@
     <servlet-mapping>
         <servlet-name>ManageService</servlet-name>
         <url-pattern>/ManageService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServicesItemDetail</servlet-name>
+        <url-pattern>/ServicesItemDetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServicesItemDetailServlet</servlet-name>
+        <url-pattern>/ServicesItemDetailServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServicesOrderServlet</servlet-name>
+        <url-pattern>/ServicesOrderServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServicesCartServlet</servlet-name>
+        <url-pattern>/ServicesCartServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServicesOrderHistoryServlet</servlet-name>
+        <url-pattern>/service-order-history</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>customer_home.jsp</welcome-file>

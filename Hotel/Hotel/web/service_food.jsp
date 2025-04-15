@@ -42,21 +42,22 @@
                     <h1>Food & Drink Menu</h1>
                     <p class="text-muted">Delicious meals and refreshing drinks served fresh</p>
                 </div>
-
                 <c:choose>
                     <c:when test="${not empty items}">
                         <div class="row">
                             <c:forEach var="item" items="${items}">
-                                <div class="col-md-4 col-sm-6 d-flex align-items-stretch mb-4">
-                                    <div class="food-card position-relative w-100 shadow-sm"
-                                         style="height: 300px; border-radius: 15px; overflow: hidden; cursor: pointer;"
-                                         onclick="location.href = 'order?itemID=${item.itemID}'">
-                                        <div class="food-card-bg" style="background-image: url('${item.imageURL}');"></div>
-                                        <div class="food-card-overlay">
-                                            <h5 class="mb-1">${item.itemName}</h5>
-                                            <p class="text-success font-weight-bold">$${item.price}</p>
+                                <div class="col-md-4 col-sm-6 align-items-stretch mb-4">
+                                    <a href="ServicesItemDetailServlet?itemID=${item.itemID}" class="stretched-link">
+                                        <div class="food-card position-relative w-100 shadow-sm"
+                                             style="height: 300px; border-radius: 15px; overflow: hidden; cursor: pointer;"
+                                             onclick="location.href = 'order?itemID=${item.itemID}'">
+                                            <div class="food-card-bg" style="background-image: url('${item.imageURL}');"></div>
+                                            <div class="food-card-overlay">
+                                                <h5 class="mb-1">${item.itemName}</h5>
+                                                <p class="text-success font-weight-bold">${item.price} đ</p>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </c:forEach>
                         </div>

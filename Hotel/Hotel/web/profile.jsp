@@ -5,6 +5,7 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,8 +26,8 @@
         <!-- main css -->
         <link rel="stylesheet" href="css/room_bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" type="text/css" href="css/styleServicePlus.css">    <%-- Style for Service Order History section --%>
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
-
     </head>
     <body>
         <c:if test="${sessionScope.userA.IDRole == 1}">
@@ -88,7 +89,7 @@
                     <div class="col-md-7">
                         <div class="p-3 py-5">
                             <h4>Booking Detail history</h4>
-                            <table border="1" width="1" cellspacing="1" cellpadding="1" class="w-100 text-center">
+                            <table id="bookingTable" border="1" width="1" cellspacing="1" cellpadding="1" class="w-100 text-center">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -129,11 +130,55 @@
                                     </c:forEach>
                                 </tbody>
                             </table>
+                            <div id="bookingPagination" class="pagination-controls text-center my-3"></div>
+                        </div>
 
+                        <div class="p-3 py-5">
+                            <h4>Service Order History</h4>
+                            <table id="serviceTable" border="1" width="1" cellspacing="1" cellpadding="1" class="w-100 text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Service Name</th>
+                                        <th>Quantity</th>
+                                        <th>Total Price</th>
+                                        <th>Order Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach items="${serviceOrders}" var="order">
+                                        <tr>
+                                            <td>${order.orderId}</td>
+                                            <td>${order.serviceName}</td>
+                                            <td>${order.quantity}</td>
+                                            <td><fmt:formatNumber value="${order.totalPrice}" pattern="#,### đ" /></td>
+                                            <td>${order.orderDate}</td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${order.status == 'Completed'}">
+                                                        <p class="text-success">Completed</p>
+                                                    </c:when>
+                                                    <c:when test="${order.status == 'Cancelled'}">
+                                                        <p class="text-danger">Cancelled</p>
+                                                    </c:when>
+                                                </c:choose>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                    <c:if test="${empty serviceOrders}">
+                                        <tr>
+                                            <td colspan="6" class="text-center">No service orders found</td>
+                                        </tr>
+                                    </c:if>
+                                </tbody>
+                            </table>
+                            <div id="servicePagination" class="pagination-controls text-center my-3"></div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </form>
         <br>
 
@@ -154,14 +199,53 @@
         <script src="js/custom.js"></script>
 
         <script>
-                function confirmCancel(bookingId) {
-                    var contactInfo = prompt("Please enter your contact information for cancellation:");
-                    if (contactInfo != null) {
-                        if (confirm("Are you sure you want to cancel this booking?")) {
-                            window.location.href = './CancelBooking?bookingId=' + bookingId + '&contactInfo=' + encodeURIComponent(contactInfo);
-                        }
+                                                            function confirmCancel(bookingId) {
+                                                                var contactInfo = prompt("Please enter your contact information for cancellation:");
+                                                                if (contactInfo != null) {
+                                                                    if (confirm("Are you sure you want to cancel this booking?")) {
+                                                                        window.location.href = './CancelBooking?bookingId=' + bookingId + '&contactInfo=' + encodeURIComponent(contactInfo);
+                                                                    }
+                                                                }
+                                                            }
+        </script>
+        <script>
+            function paginateTable(tableId, paginationId, rowsPerPage = 4) {
+                const table = document.getElementById(tableId);
+                const tbody = table.querySelector("tbody");
+                const rows = Array.from(tbody.querySelectorAll("tr"));
+                const totalPages = Math.ceil(rows.length / rowsPerPage);
+                const pagination = document.getElementById(paginationId);
+
+                let currentPage = 1;
+
+                function showPage(page) {
+                    currentPage = page;
+                    const start = (page - 1) * rowsPerPage;
+                    const end = start + rowsPerPage;
+                    rows.forEach((row, i) => {
+                        row.style.display = i >= start && i < end ? "" : "none";
+                    });
+
+                    // Render pagination
+                    pagination.innerHTML = '';
+                    for (let i = 1; i <= totalPages; i++) {
+                        const btn = document.createElement('button');
+                        btn.textContent = i;
+                        btn.className = 'btn btn-sm mx-1 ' + (i === page ? 'btn-primary' : 'btn-outline-primary');
+                        btn.onclick = () => showPage(i);
+                        pagination.appendChild(btn);
                     }
                 }
+
+                showPage(1);
+            }
+
+// On load
+            window.onload = function () {
+                paginateTable("bookingTable", "bookingPagination", 4);
+                paginateTable("serviceTable", "servicePagination", 4);
+            }
         </script>
+
     </body>
 </html>

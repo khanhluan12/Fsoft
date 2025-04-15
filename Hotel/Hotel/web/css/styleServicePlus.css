@@ -46,3 +46,336 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
     z-index: -1;
 }
+
+/* ____________________ services_itemDetail.jsp ____________________ */
+
+.item-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 30px;
+    text-align: center;
+}
+
+.item-detail-container img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.item-detail-container h2 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.item-detail-container .price {
+    color: #28a745;
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.item-detail-container .category {
+    /*    font-style: italic;*/
+    color: #6c757d;
+}
+
+.item-detail-container .description {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.6;
+}
+
+.order-form-wrapper {
+    margin-top: 20px;
+}
+
+.order-form-wrapper .input-group {
+    max-width: 180px;
+    margin: 0 auto 15px;
+}
+
+.order-form-wrapper .btn-primary {
+    background-color: #45a7b5;
+    border-color: #286169;
+    padding: 10px 20px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.order-form-wrapper .btn-primary:hover {
+    background-color: #183a3e;
+    border-color: #183a3e;
+}
+
+/* Hide arrows in input[type=number] for Chrome, Safari, Edge */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* ____________________ services_cart.jsp ____________________ */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.cart-table th,
+.cart-table td {
+    padding: 16px 20px;
+    text-align: center;
+}
+
+.cart-table thead {
+    background-color: #343a40;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.cart-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.cart-total {
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: right;
+    margin-top: 15px;
+    color: #28a745;
+}
+
+.cart-empty-message {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.cart-back-link {
+    font-weight: 500;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.cart-back-link:hover {
+    text-decoration: underline;
+}
+
+.checkout-btn {
+    background-color: #45a7b5;
+    border-color: #286169;
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    font-size: 1rem;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.checkout-btn:hover {
+    background-color: #183a3e;
+}
+
+.cart-buttons {
+    gap: 20px;
+}
+
+.cart-btn {
+    min-width: 220px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 30px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.continue-btn {
+    background-color: #6c757d;
+    color: #fff;
+    text-decoration: none;
+}
+
+.continue-btn:hover {
+    background-color: #5a6268;
+    color: #fff;
+}
+
+.checkout-btn {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+}
+
+.checkout-btn:hover {
+    background-color: #218838;
+}
+
+/* ____________________ profile.jsp () ____________________*/
+
+/* Form Fields */
+.page-cover h2 {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.page-cover ol.breadcrumb {
+    background: none;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.page-cover ol.breadcrumb li {
+    display: inline;
+    color: #fff;
+    font-size: 16px;
+}
+
+/* Profile Container */
+.container.bg-white {
+    background: #fff;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 15px;
+    padding: 30px;
+}
+
+/* Headings */
+h4 {
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 20px;
+}
+
+/* Form Labels */
+.labels {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: inline-block;
+    color: #2d3436;
+}
+
+/* Inputs */
+input.form-control {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 10px 15px;
+    transition: 0.3s ease;
+}
+
+input.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Buttons */
+.btn.profile-button {
+    background: #17a2b8;
+    color: #252525;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    padding: 10px 25px;
+    transition: background 0.3s ease;
+}
+
+.btn.profile-button:hover {
+    background: #138496;
+}
+
+/* Tables */
+table {
+    margin-top: 20px;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table th {
+    background-color: #1590a4;
+    color: #252525;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+table td, table th {
+    padding: 14px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+/* Table Status Badges */
+.text-success {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.text-danger {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+    margin-top: 15px;
+}
+
+.pagination-controls button {
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+    .container.bg-white {
+        padding: 20px 15px;
+    }
+
+    .breadcrumb_area {
+        padding: 40px 0;
+    }
+
+    h4 {
+        font-size: 20px;
+    }
+
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    table thead {
+        display: none;
+    }
+
+    table td {
+        padding: 10px;
+        text-align: right;
+        position: relative;
+    }
+
+    table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+    }
+}

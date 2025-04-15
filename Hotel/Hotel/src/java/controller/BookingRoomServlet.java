@@ -45,7 +45,7 @@ public class BookingRoomServlet extends HttpServlet {
         String orderType = "other";
 
         // 👉 Dùng VND trực tiếp, chỉ cần nhân 100 theo yêu cầu của VNPAY
-        long amount = (long) (price *100); // Thanh toán 30% tổng tiền
+        long amount = (long) (price * 100000); // Thanh toán 30% tổng tiền
 
         String bankCode = request.getParameter("bankCode");
         String vnp_TxnRef = ConfigVNPAY.getRandomNumber(8);

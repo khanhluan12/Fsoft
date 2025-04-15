@@ -2,15 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/customer_room.jsp</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/service_laundry.jsp</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/ServiceDetailServlet.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/dao/ManagerDao.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/ShowRoomCustomerServlet.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/customer_services.jsp</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/CheckRoomValidServlet.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/includes/search_room.jsp</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
