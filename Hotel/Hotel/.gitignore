@@ -1,0 +1,5 @@
+# Ignore build directory (compiled files)
+Hotel/Hotel/build/
+
+# Ignore dist directory (compiled files)
+Hotel/Hotel/dist/
