@@ -4,9 +4,11 @@ import dbcontext.DBContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.ServiceItem;
+import model.ServiceOrder;
 
 public class ServiceItemDAO extends DBContext {
 
@@ -14,9 +16,7 @@ public class ServiceItemDAO extends DBContext {
         List<ServiceItem> items = new ArrayList<>();
         String sql = "SELECT * FROM ServiceItem WHERE ServiceID = ?";
 
-        try (Connection conn = getConnection(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+        try (Connection conn = DBContext.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, serviceId);
             ResultSet rs = stmt.executeQuery();
 
@@ -26,7 +26,8 @@ public class ServiceItemDAO extends DBContext {
                         rs.getString("ItemName"),
                         rs.getDouble("Price"),
                         rs.getString("ImageURL"),
-                        rs.getInt("ServiceID")
+                        rs.getInt("ServiceID"),
+                        rs.getString("description")
                 );
                 items.add(item);
             }
@@ -38,6 +39,67 @@ public class ServiceItemDAO extends DBContext {
         }
         return items;
     }
+
+    public static ServiceItem getItemByID(int id) {
+        ServiceItem item = null;
+        Connection con = null;
+        try {
+            con = DBContext.getConnection();
+            String sql = "SELECT * FROM ServiceItem WHERE itemID = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                item = new ServiceItem(
+                        rs.getInt("itemID"),
+                        rs.getString("itemName"),
+                        rs.getDouble("price"),
+                        rs.getString("imageURL"),
+                        rs.getInt("serviceID"),
+                        rs.getString("description")
+                );
+            }
+
+        } catch (SQLException e) {
+        } finally {
+            try {
+                if (con != null) {
+                    DBContext.disconnect(con);
+                }
+            } catch (SQLException e) {
+            }
+        }
+        return item;
+    }
+
+    public static List<ServiceOrder> getServiceOrdersByUserId(int userId) {
+        List<ServiceOrder> list = new ArrayList<>();
+        String sql = "SELECT o.OrderID, si.ItemName, o.Quantity, o.TotalPrice, o.OrderDate, o.Status "
+                + "FROM ServiceOrder o "
+                + "JOIN ServiceItem si ON o.ItemID = si.ItemID "
+                + "WHERE o.UserID = ?";
+
+        try (Connection con = DBContext.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ServiceOrder so = new ServiceOrder();
+                so.setOrderId(rs.getInt("OrderID"));
+                so.setServiceName(rs.getString("ItemName"));
+                so.setQuantity(rs.getInt("Quantity"));
+                so.setTotalPrice(rs.getDouble("TotalPrice"));
+                so.setOrderDate(rs.getString("OrderDate"));
+                so.setStatus(rs.getString("Status"));
+                list.add(so);
+            }
+        } catch (Exception e) {
+        }
+        return list;
+    }
+    
       public List<ServiceItem> getAll() {
         List<ServiceItem> list = new ArrayList<>();
         String sql = "SELECT * FROM ServiceItem";
@@ -143,6 +205,4 @@ public class ServiceItemDAO extends DBContext {
     }
     return item;
 }
-
-
 }

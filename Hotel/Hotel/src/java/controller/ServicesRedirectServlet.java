@@ -65,23 +65,22 @@ public class ServicesRedirectServlet extends HttpServlet {
         String destination = "";
 
         switch (type) {
-            case "food" -> {
+            case "food":
                 serviceId = 1; // ID này phải đúng với DB
                 destination = "service_food.jsp";
-            }
-            case "laundry" -> {
+                break;
+            case "laundry":
                 serviceId = 2;
-                destination = "service_laundry.jsp";
-            }
-            case "car" -> {
-                serviceId = 3;
                 destination = "service_car_rental.jsp";
-            }
-            default -> {
+                break;
+            case "car":
+                serviceId = 3;
+                destination = "service_laundry.jsp";
+                break;
+            default:
                 System.out.println("[ERROR] Invalid service type: " + type);
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid service type");
                 return;
-            }
         }
 
         System.out.println("[DEBUG] Redirecting to: " + destination + " with serviceId = " + serviceId);

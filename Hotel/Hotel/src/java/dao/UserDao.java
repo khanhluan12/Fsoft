@@ -14,7 +14,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.Booking;
 import model.BookingDetails;
 import model.CheckRoomValid;
@@ -467,7 +469,28 @@ public List<BookingDetails> getBookingDetailsByUserId(int accountId) {
 
         return !(endDateA.isBefore(startDateC) || endDateC.isBefore(startDateA));
     }
+ public Map<Integer, Double> getAverageRatingsByRoomType() {
+        Map<Integer, Double> ratingsMap = new HashMap<>();
+        String query = "SELECT rt.IDRoomType, AVG(CAST(f.Rating AS FLOAT)) as AverageRating "
+                + "FROM RoomType rt "
+                + "LEFT JOIN BookingDetail bd ON rt.IDRoomType = bd.IDRoomType "
+                + "LEFT JOIN Feedback f ON bd.IDBookingDetail = f.IDBooking "
+                + "GROUP BY rt.IDRoomType";
 
+        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int roomTypeId = rs.getInt("IDRoomType");
+                double avgRating = rs.getDouble("AverageRating");
+                if (!rs.wasNull()) { // Chỉ thêm vào map nếu có rating
+                    ratingsMap.put(roomTypeId, avgRating);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ratingsMap;
+    }
     public static void main(String[] args) {
         UserDao dao = new UserDao();
         dao.checkRoomValid("20240802", "20240806");

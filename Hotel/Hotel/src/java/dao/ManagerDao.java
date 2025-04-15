@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import model.Booking;
+import model.BookingDetail;
 import model.BookingDetails;
 import model.Contact;
 import model.Discount;
@@ -578,90 +579,104 @@ public class ManagerDao {
             e.printStackTrace();
         }
     }
-public List<RoomType> getAvailableRoomTypes(Date checkin, Date checkout, String roomTypeFilter) {
-    List<RoomType> list = new ArrayList<>();
-    String sql = "SELECT rt.*, " +
-                 "ISNULL(rt.TotalRoom - SUM(bd.NumberOfRoom), rt.TotalRoom) AS roomFree " +
-                 "FROM RoomType rt " +
-                 "LEFT JOIN BookingDetail bd ON rt.IDRoomType = bd.IDRoomType " +
-                 "LEFT JOIN BookingDetails b ON b.IDBooking = bd.IDBookingDetail " +
-                 "AND b.isCancel = 0 " +
-                 "AND NOT (b.Checkout <= ? OR b.Checkin >= ?) " + 
-                 "WHERE rt.RoomStatus = 'Valid' ";
 
-    if (roomTypeFilter != null && !roomTypeFilter.isEmpty()) {
-        sql += "AND LOWER(rt.NameRoomType) LIKE ? ";
-    }
-
-    sql += "GROUP BY rt.IDRoomType, rt.NameRoomType, rt.MaxPerson, rt.NumberOfBed, " +
-           "rt.NumberOfBath, rt.Price, rt.TotalRoom, rt.RoomStatus, rt.Content, rt.Image";
-
-    try (Connection conn = new DBContext().getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-
-        ps.setDate(1, new java.sql.Date(checkin.getTime()));
-        ps.setDate(2, new java.sql.Date(checkout.getTime()));
-
+    public List<RoomType> getAvailableRoomTypes(Date checkin, Date checkout, String roomTypeFilter) {
+        List<RoomType> list = new ArrayList<>();
+        String sql = "SELECT rt.*, "
+                + "ISNULL(rt.TotalRoom - SUM(bd.NumberOfRoom), rt.TotalRoom) AS roomFree "
+                + "FROM RoomType rt "
+                + "LEFT JOIN BookingDetail bd ON rt.IDRoomType = bd.IDRoomType "
+                + "LEFT JOIN BookingDetails b ON b.IDBooking = bd.IDBookingDetail "
+                + "AND b.isCancel = 0 "
+                + "AND NOT (b.Checkout <= ? OR b.Checkin >= ?) "
+                + "WHERE rt.RoomStatus = 'Valid' ";
         if (roomTypeFilter != null && !roomTypeFilter.isEmpty()) {
-            ps.setString(3, "%" + roomTypeFilter.toLowerCase() + "%");
+            sql += "AND LOWER(rt.NameRoomType) LIKE ? ";
         }
-
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            RoomType r = new RoomType(
-                rs.getInt("IDRoomType"),
-                rs.getString("NameRoomType"),
-                rs.getInt("MaxPerson"),
-                rs.getInt("NumberOfBed"),
-                rs.getInt("NumberOfBath"),
-                rs.getInt("Price"),
-                rs.getInt("TotalRoom"),
-                rs.getString("RoomStatus"),
-                rs.getString("Content")
-            );
-            r.setImage(rs.getString("Image"));
-            r.setRoomFree(rs.getInt("roomFree"));
-            list.add(r);
+        sql += "GROUP BY rt.IDRoomType, rt.NameRoomType, rt.MaxPerson, rt.NumberOfBed, "
+                + "rt.NumberOfBath, rt.Price, rt.TotalRoom, rt.RoomStatus, rt.Content, rt.Image";
+        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDate(1, new java.sql.Date(checkin.getTime()));
+            ps.setDate(2, new java.sql.Date(checkout.getTime()));
+            if (roomTypeFilter != null && !roomTypeFilter.isEmpty()) {
+                ps.setString(3, "%" + roomTypeFilter.toLowerCase() + "%");
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                RoomType r = new RoomType(
+                        rs.getInt("IDRoomType"),
+                        rs.getString("NameRoomType"),
+                        rs.getInt("MaxPerson"),
+                        rs.getInt("NumberOfBed"),
+                        rs.getInt("NumberOfBath"),
+                        rs.getInt("Price"),
+                        rs.getInt("TotalRoom"),
+                        rs.getString("RoomStatus"),
+                        rs.getString("Content")
+                );
+               r.setImage(rs.getString("Image"));
+                r.setRoomFree(rs.getInt("roomFree"));
+                list.add(r);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-    } catch (Exception e) {
-        e.printStackTrace();
+        return list;
     }
 
-    return list;
-}
-public List<RoomType> getRoomTypesByName(String nameRoomType) {
-    List<RoomType> list = new ArrayList<>();
-    String query = "SELECT * FROM RoomType WHERE NameRoomType LIKE ?";
+    public List<RoomType> getRoomTypesByName(String nameRoomType) {
+        List<RoomType> list = new ArrayList<>();
+        String query = "SELECT * FROM RoomType WHERE NameRoomType LIKE ?";
 
-    try (Connection conn = DBContext.getConnection(); 
-         PreparedStatement ps = conn.prepareStatement(query)) {
-         
-       ps.setString(1, "%" + nameRoomType + "%");
+        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
 
-        ResultSet rs = ps.executeQuery();
-        
-        while (rs.next()) {
-            RoomType room = new RoomType(
-                rs.getInt("IDRoomType"),
-                rs.getString("NameRoomType"),
-                rs.getInt("MaxPerson"),
-                rs.getInt("NumberOfBed"),
-                rs.getInt("NumberOfBath"),
-                rs.getInt("Price"),
-                rs.getInt("TotalRoom"),
-                rs.getString("RoomStatus"),
-                rs.getString("Content")
-            );
-            room.setImage(rs.getString("Image"));
-            list.add(room);
+            ps.setString(1, "%" + nameRoomType + "%");
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                RoomType room = new RoomType(
+                        rs.getInt("IDRoomType"),
+                        rs.getString("NameRoomType"),
+                        rs.getInt("MaxPerson"),
+                        rs.getInt("NumberOfBed"),
+                        rs.getInt("NumberOfBath"),
+                        rs.getInt("Price"),
+                        rs.getInt("TotalRoom"),
+                        rs.getString("RoomStatus"),
+                        rs.getString("Content")
+                );
+                room.setImage(rs.getString("Image"));
+                list.add(room);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return list;
     }
-    return list;
-}
-
-
-
+public List<BookingDetail> getBookingDetailsByBookingId(int bookingId) {
+        List<BookingDetail> list = new ArrayList<>();
+        String query = "SELECT bd.IDBookingDetail, bd.IDRoomType, bd.NumberOfRoom, rt.NameRoomType "
+                + "FROM BookingDetail bd "
+                + "JOIN RoomType rt ON bd.IDRoomType = rt.IDRoomType "
+                + "WHERE bd.IDBookingDetail = ?";
+        try {
+            conn = DBContext.getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, bookingId);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                BookingDetail detail = new BookingDetail(
+                        rs.getInt(1),
+                        rs.getInt(2),
+                        rs.getInt(3),
+                        rs.getString(4)
+                );
+                list.add(detail);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

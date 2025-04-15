@@ -20,6 +20,8 @@
         <link rel="stylesheet" href="css/room_bootstrap.min.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
         <style>
             .error {
                 display: block;
@@ -87,13 +89,13 @@
                                 <option value="Double" ${roomTypeFilter == 'Double' ? 'selected' : ''}>Double</option>
                             </select>
                         </div>
-                        <div class="col-md-3 mb-3 d-flex align-items-center">
+                        <div class="col-md-3 mb-3 ">
                             <button type="submit" class="btn btn-dark w-100 mt-3 mt-md-0">Search Rooms</button>
                         </div>
                     </div>
                 </form>
 
-
+                            <!-- comment -->
 
                 <c:set var="hasRoom" value="false" scope="page"/>
                 <c:forEach items="${requestScope.listRoom}" var="r">
@@ -150,6 +152,120 @@
                                                 <c:if test="${requestScope.pagegRoom == null}">
                                                     <p class="text-body mb-3">Rooms Free: <strong class="text-danger">${r.getRoomFree()}</strong></p>
                                                     </c:if>
+                                            </div>
+                                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                                <span style="font-size: 13px; color: #333;">Child surcharge may apply</span>
+
+                                                <span class="tooltip-container-custom">
+                                                    <i class="fas fa-info-circle" style="color: #555;"></i>
+                                                    <div class="tooltip-text-custom">
+                                                        Children under 1m4 will be charged.
+                                                    </div>
+                                                </span>
+                                            </div>                                           
+                                            <div>
+                                                <style>
+                                                .tooltip-container-custom {
+                                                  position: relative;
+                                                  display: inline-block;
+                                                  cursor: pointer;
+                                                  padding-right: 5px;
+                                                }
+
+                                                .tooltip-container-custom .tooltip-text-custom {
+                                                  visibility: hidden;
+                                                  background-color: #002c66;
+                                                  color: #fff;
+                                                  text-align: center;
+                                                  border-radius: 6px;
+                                                  padding: 8px 12px;
+                                                  position: absolute;
+                                                  z-index: 999;
+                                                  top: 130%; /* Dưới icon */
+                                                  left: 50%;
+                                                  transform: translateX(-50%);
+                                                  opacity: 0;
+                                                  transition: opacity 0.3s ease;
+                                                  white-space: nowrap;
+                                                  font-size: 13px;
+                                                  font-family: 'Poppins', sans-serif;
+                                                  min-width: max-content;
+                                                }
+
+                                                .tooltip-container-custom .tooltip-text-custom::after {
+                                                  content: "";
+                                                  position: absolute;
+                                                  top: -8px;
+                                                  left: 50%;
+                                                  transform: translateX(-50%);
+                                                  border-width: 6px;
+                                                  border-style: solid;
+                                                  border-color: transparent transparent #002c66 transparent;
+                                                }
+
+                                                .tooltip-container-custom:hover .tooltip-text-custom {
+                                                  visibility: visible;
+                                                  opacity: 1;
+                                                }
+                                                </style>                                                                                                                                   
+                                            </div>
+                                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                                <span style="font-size: 13px; color: #333;">Cancellation policy applies</span>
+
+                                                <span class="tooltip-container-custom">
+                                                    <i class="fas fa-info-circle" style="color: #555;"></i>
+                                                    <div class="tooltip-text-custom">
+                                                        This booking is non-refundable
+                                                    </div>
+                                                </span>
+                                            </div>
+
+                                            
+                                            <div>
+                                                <style>
+                                                .tooltip-container-custom {
+                                                  position: relative;
+                                                  display: inline-block;
+                                                  cursor: pointer;
+                                                  padding-right: 5px;
+                                                }
+
+                                                .tooltip-container-custom .tooltip-text-custom {
+                                                  visibility: hidden;
+                                                  background-color: #002c66;
+                                                  color: #fff;
+                                                  text-align: center;
+                                                  border-radius: 6px;
+                                                  padding: 8px 12px;
+                                                  position: absolute;
+                                                  z-index: 999;
+                                                  top: 130%; /* Dưới icon */
+                                                  left: 50%;
+                                                  transform: translateX(-50%);
+                                                  opacity: 0;
+                                                  transition: opacity 0.3s ease;
+                                                  white-space: nowrap;
+                                                  font-size: 13px;
+                                                  font-family: 'Poppins', sans-serif;
+                                                  min-width: max-content;
+                                                }
+
+                                                .tooltip-container-custom .tooltip-text-custom::after {
+                                                  content: "";
+                                                  position: absolute;
+                                                  top: -8px;
+                                                  left: 50%;
+                                                  transform: translateX(-50%);
+                                                  border-width: 6px;
+                                                  border-style: solid;
+                                                  border-color: transparent transparent #002c66 transparent;
+                                                }
+
+                                                .tooltip-container-custom:hover .tooltip-text-custom {
+                                                  visibility: visible;
+                                                  opacity: 1;
+                                                }
+                                                </style>                                                                                                                                   
                                             </div>
                                             <div class="d-flex justify-content-between">
                                                 <a class="btn btn-sm btn-primary rounded py-2 px-4" href="roomDetail?id=${r.getIDRoomType()}">View Details</a>

@@ -16,7 +16,7 @@ public class ServiceItem {
     private String itemName;
     private double price;
     private String imageURL;
-
+private String description;
     public ServiceItem() {
     }
 
@@ -27,7 +27,14 @@ public class ServiceItem {
         this.imageURL = imageURL;
         this.serviceID = serviceID;
     }
-
+    public ServiceItem(int itemID, String itemName, double price, String imageURL, int serviceID, String description) {
+        this.itemID = itemID;
+        this.itemName = itemName;
+        this.price = price;
+        this.imageURL = imageURL;
+        this.serviceID = serviceID;
+        this.description = description;
+    }
     public int getItemID() {
         return itemID;
     }
@@ -66,6 +73,14 @@ public class ServiceItem {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

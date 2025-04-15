@@ -197,8 +197,36 @@
         <servlet-class>controller.ManageService</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ServicesItemDetailServlet</servlet-name>
+        <servlet-class>controller.ServicesItemDetailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServicesCartServlet</servlet-name>
+        <servlet-class>controller.ServicesCartServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServicesOrderServlet</servlet-name>
+        <servlet-class>controller.ServicesOrderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ServicesItemDetailServlet</servlet-name>
+        <url-pattern>/ServicesItemDetailServlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>ServicesRedirectServlet</servlet-name>
         <servlet-class>controller.ServicesRedirectServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ServicesCartServlet</servlet-name>
+        <url-pattern>/ServicesCartServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServicesOrderServlet</servlet-name>
+        <url-pattern>/ServicesOrderServlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>EditReplyFeedbackServlet</servlet-name>
+        <servlet-class>controller.EditReplyFeedbackServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>G2HomeServlet</servlet-name>
@@ -399,6 +427,10 @@
     <servlet-mapping>
         <servlet-name>ServicesRedirectServlet</servlet-name>
         <url-pattern>/service</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditReplyFeedbackServlet</servlet-name>
+        <url-pattern>/EditReplyFeedback</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>customer_home.jsp</welcome-file>

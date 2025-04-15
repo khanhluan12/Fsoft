@@ -33,27 +33,30 @@
         <div class="row">
             <div class="form-group col-md-6 mb-3">
                 <label for="inputname">Image</label><br>
-                <input type="file" accept="image/*" name="image" required/>
+                <input type="file" id="roomImage" name="image" accept="image/*" onchange="validateImage(this)" required>
             </div>
             <div class="form-group col-md-6 mb-3">
                 <label for="inputname">Max Person</label>
-                <input type="text" class="form-control mt-1" id="MaxPerson" name="MaxPerson" placeholder="Max Person" required>
+                <input type="number" class="form-control mt-1" id="MaxPerson" name="MaxPerson" placeholder="Max Person" required min="1" max="6">
             </div>
         </div>
         <div class="row">
-            <div class="form-group col-md-6 mb-3">
-                <label for="inputname">ID</label><br>
-                <label for="inputname">Auto Generate</label>
-            </div>
+          
             <div class="form-group col-md-6 mb-3">
                 <label for="inputname">Room Type Name</label>
-                <input type="text" class="form-control mt-1" id="NameRoomType" name="NameRoomType" placeholder="Name" required>
+               <select class="form-control mt-1" id="NameRoomType" name="NameRoomType" required onchange="suggestBed()">
+        <option value="">-- Select Room Type --</option>
+        <option value="VIP Single">VIP Single</option>
+        <option value="VIP Double">VIP Double</option>
+        <option value="Normal Single">Normal Single</option>
+        <option value="Normal Double">Normal Double</option>
+    </select>
             </div>
         </div>
         <div class="row">
             <div class="form-group col-md-6 mb-3">
                 <label for="inputname">Bed</label>
-                <input type="text" class="form-control mt-1" id="NumberOfBed" name="NumberOfBed" placeholder="NumberOfBed" required>
+               <input type="number" class="form-control mt-1" id="NumberOfBed" name="NumberOfBed" placeholder="NumberOfBed" required min="1" max="3">
             </div>
             <div class="form-group col-md-6 mb-3">
                 <label for="inputname">Bath</label>
@@ -81,4 +84,73 @@
             </div>
         </div>
     </form>
+    <script>
+    function validateImage(input) {
+        const file = input.files[0];
+        const preview = document.getElementById('previewImage');
+
+        if (file) {
+            if (!file.type.startsWith('image/')) {
+                alert("Chỉ được chọn file hình ảnh thôi nha!");
+                input.value = '';
+                preview.style.display = 'none';
+                preview.src = '#';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+            preview.src = '#';
+        }
+    }
+</script>
+<script>
+    function suggestBed() {
+        const roomType = document.getElementById('NameRoomType').value;
+        const bedInput = document.getElementById('NumberOfBed');
+        const personInput = document.getElementById('MaxPerson');
+
+        switch(roomType) {
+            case 'VIP Single':
+                bedInput.value = 1;
+                personInput.value = 2;
+                break;
+            case 'VIP Double':
+                bedInput.value = 2;
+                personInput.value = 4;
+                break;
+            case 'Normal Single':
+                bedInput.value = 1;
+                personInput.value = 1;
+                break;
+            case 'Normal Double':
+                bedInput.value = 2;
+                personInput.value = 3;
+                break;
+            default:
+                bedInput.value = '';
+                personInput.value = '';
+        }
+    }
+</script>
+<script>
+    function suggestBed() {
+        const roomType = document.getElementById('NameRoomType').value;
+        const bedInput = document.getElementById('NumberOfBed');
+
+        if (roomType.includes('Single')) {
+            bedInput.value = 1;
+        } else if (roomType.includes('Double')) {
+            bedInput.value = 2;
+        } else {
+            bedInput.value = '';
+        }
+    }
+</script>
 </html>
