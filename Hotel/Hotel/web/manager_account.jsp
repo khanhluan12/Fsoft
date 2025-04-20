@@ -27,8 +27,12 @@
                 padding: 8px;
             }
 
-            #booking tr:nth-child(even) {background-color: #f2f2f2;}
-            #booking tr:hover {background-color: #ddd;}
+            #booking tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+            #booking tr:hover {
+                background-color: #ddd;
+            }
             #booking th {
                 padding: 12px;
                 text-align: left;
@@ -90,6 +94,54 @@
             .pagination-container button.active {
                 background-color: #e98e00;
             }
+
+            .alert {
+                padding: 15px;
+                margin-bottom: 20px;
+                border: 1px solid transparent;
+                border-radius: 4px;
+            }
+
+            .alert-success {
+                color: #155724;
+                background-color: #d4edda;
+                border-color: #c3e6cb;
+            }
+
+            .alert-danger {
+                color: #721c24;
+                background-color: #f8d7da;
+                border-color: #f5c6cb;
+            }
+
+            .alert-dismissible {
+                padding-right: 35px;
+            }
+
+            .alert-dismissible .close {
+                position: relative;
+                top: -2px;
+                right: -21px;
+                color: inherit;
+            }
+
+            .ban-btn {
+                padding: 5px 10px;
+                border-radius: 4px;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+            }
+
+            .ban-btn.ban {
+                background-color: #dc3545;
+                color: white;
+            }
+
+            .ban-btn.unban {
+                background-color: #17a2b8;
+                color: white;
+            }
         </style>
     </head>
     <body>
@@ -113,6 +165,16 @@
         </section>
 
         <div class="container mt-4 mb-4">
+            <!-- Display notification message if available -->
+            <c:if test="${not empty notification}">
+                <div class="alert ${notificationType} alert-dismissible fade show" role="alert">
+                    ${notification}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </c:if>
+
             <button id="openModalBtn" class="btn btn-warning mb-3">+ Add New Receptionist</button>
 
             <table id="booking">
@@ -127,7 +189,7 @@
                         <th>UserName</th>
                         <th>Password</th>
                         <th>Role</th>
-                        <th>Manager</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -143,12 +205,11 @@
                             <td>${l.getPass()}</td>
                             <td>${l.getIDRole()}</td>
                             <td>
-                                <a href="delete?IDAccount=${l.getIDAccount()}">Delete</a> |
                                 <c:if test="${l.isIsBan()}">
-                                    <a class="text-info" href="BanAccount?id=${l.getIDAccount()}&status=unban">Unban</a>
+                                    <a class="ban-btn unban" href="BanAccount?id=${l.getIDAccount()}&status=unban">Unban</a>
                                 </c:if>
                                 <c:if test="${!l.isIsBan()}">
-                                    <a class="text-danger" href="BanAccount?id=${l.getIDAccount()}&status=ban">Ban</a>
+                                    <a class="ban-btn ban" href="BanAccount?id=${l.getIDAccount()}&status=ban">Ban</a>
                                 </c:if>
                             </td>
                         </tr>
@@ -164,9 +225,11 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2 style="text-align: center;">Add New Receptionist Account</h2>
-                <div class="alert alert-danger" role="alert">
-                    <p style="color: red; text-align: center;" class="text-danger">${mess}</p>
-                </div>
+                <c:if test="${not empty mess}">
+                    <div class="alert alert-danger" role="alert">
+                        <p style="color: red; text-align: center;" class="text-danger">${mess}</p>
+                    </div>
+                </c:if>
                 <form action="register" method="get">
                     <div class="row">
                         <div class="form-group col-md-6 mb-3">
@@ -226,6 +289,8 @@
 
         <!-- Scripts -->
         <script src="js/jquery-3.2.1.min.js"></script>
+        <script src="js/popper.js"></script>
+        <script src="js/bootstrap.min.js"></script>
         <script>
             // Modal logic
             var modal = document.getElementById("accountModal");
@@ -233,8 +298,9 @@
             var span = document.getElementsByClassName("close")[0];
             btn.onclick = () => modal.style.display = "block";
             span.onclick = () => modal.style.display = "none";
-            window.onclick = function(event) {
-                if (event.target == modal) modal.style.display = "none";
+            window.onclick = function (event) {
+                if (event.target == modal)
+                    modal.style.display = "none";
             }
 
             // Pagination logic
@@ -265,6 +331,13 @@
             }
 
             setupPagination();
+
+            // Auto-hide alerts after 5 seconds
+            $(document).ready(function () {
+                setTimeout(function () {
+                    $(".alert").alert('close');
+                }, 5000);
+            });
         </script>
     </body>
 </html>

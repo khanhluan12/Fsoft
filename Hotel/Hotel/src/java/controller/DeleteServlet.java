@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import dao.ManagerDao;
@@ -11,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -30,7 +27,7 @@ public class DeleteServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -56,22 +53,44 @@ public class DeleteServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         String IDAccount = request.getParameter("IDAccount");
         String IDDiscount = request.getParameter("IDDiscount");
         String IDRoomType = request.getParameter("IDRoomType");
-                
+
+        // Get the session to store success messages
+        HttpSession session = request.getSession();
 
         ManagerDao manadao = new ManagerDao();
-        if (IDAccount != null) {
-            manadao.deleteAccount(IDAccount);
-            response.sendRedirect("showAccount");
-        } else if (IDDiscount != null) {
-            manadao.deleteDiscount(IDDiscount);
-            response.sendRedirect("showDiscount");
-        } else if(IDRoomType != null){
-            manadao.deleteRoomType(IDRoomType);
-            response.sendRedirect("showRoomType");
+
+        try {
+            if (IDAccount != null) {
+                manadao.deleteAccount(IDAccount);
+                // Set success message for account deletion
+                session.setAttribute("successMessage", "Tài khoản với ID " + IDAccount + " đã được xóa thành công!");
+                response.sendRedirect("showAccount");
+            } else if (IDDiscount != null) {
+                manadao.deleteDiscount(IDDiscount);
+                // Set success message for discount deletion
+                session.setAttribute("successMessage", "Mã giảm giá với ID " + IDDiscount + " đã được xóa thành công!");
+                response.sendRedirect("showDiscount");
+            } else if (IDRoomType != null) {
+                manadao.deleteRoomType(IDRoomType);
+                // Set success message for room type deletion
+                session.setAttribute("successMessage", "Loại phòng với ID " + IDRoomType + " đã được xóa thành công!");
+                response.sendRedirect("showRoomType");
+            }
+        } catch (Exception e) {
+            // If any exception occurs during deletion
+            if (IDAccount != null) {
+                session.setAttribute("errorMessage", "Không thể xóa tài khoản với ID " + IDAccount);
+                response.sendRedirect("showAccount");
+            } else if (IDDiscount != null) {
+                session.setAttribute("errorMessage", "Không thể xóa mã giảm giá với ID " + IDDiscount);
+                response.sendRedirect("showDiscount");
+            } else if (IDRoomType != null) {
+                session.setAttribute("errorMessage", "Không thể xóa loại phòng với ID " + IDRoomType);
+                response.sendRedirect("showRoomType");
+            }
         }
     }
 
@@ -98,5 +117,4 @@ public class DeleteServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

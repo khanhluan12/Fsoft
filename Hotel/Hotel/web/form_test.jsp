@@ -1,6 +1,7 @@
-<%-- Document : form_book_room Created on : Jun 8, 2023, 1:13:09 AM Author : admin --%>
+<%-- Document : form_test Created on : Jun 8, 2023, 1:13:09 AM Author : admin --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,11 +21,10 @@
               href="vendors/bootstrap-datepicker/bootstrap-datetimepicker.min.css">
         <link rel="stylesheet" type="text/css" href="vendors/nice-select/css/nice-select.css">
         <link rel="stylesheet" type="text/css" href="vendors/owl-carousel/owl.carousel.min.css">
-
-        <!-- main css -->
         <link rel="stylesheet" href="css/room_bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
+
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -49,7 +49,6 @@
                 text-align: center;
             }
         </style>
-
     </head>
 
     <body>
@@ -72,8 +71,6 @@
         <!--================Breadcrumb Area =================-->
         <br>
         <h2 style="color: red; text-align: center;">${messFail} </h2>
-
-        <!--onsubmit="return validateForm()"-->
 
         <form action="confirmInformation" id="bookingForm" class="col-md-9 m-auto" name="myForm" method="get"
               role="form">
@@ -110,29 +107,30 @@
             <c:forEach var="r" items="${rooms}">
                 <div class="row justify-content-center">
                     <div class="col-md-4">
-                        <P for="inputname">Room Type: <span>${r.getNameRoomType()}</span></P>
+                        <p for="inputname">Room Type: <span>${r.getNameRoomType()}</span></p>
                     </div>
                     <div class="col-md-4">
-                        <P for="inputname">Price: <span>${r.getPrice()}$/Night</span></P>
+                        <p for="inputname">Price: <span class="price-vnd"><fmt:formatNumber value="${r.getPrice()}" pattern="#,##0" /> VND/Night</span></p>
                     </div>
                     <div class="col-md-4">
-                        <P for="inputname">Number of room: <span class="text-danger">${r.getNumberRoomBook()}</span></P>
+                        <p for="inputname">Number of room: <span class="text-danger">${r.getNumberRoomBook()}</span></p>
                     </div>
                 </div>
             </c:forEach>
 
-            <div class="row">
-                <div class="form-group col-md-6">
-                    <label for="inputname">Adult: (Old 13+)</label>
-                    <input type="number" class="form-control mt-1" id="Adult" name="Adult" min="1" max="${maxPerson}" oninput="validateRange(this,${maxPerson})" placeholder="Adult" required value="1">
-                </div>
-                <div class="form-group col-md-6 mb-3">
-                    <label for="inputname">Child:Old 5-13</label>
-                    <input type="number" class="form-control mt-1" id="Child" name="Child" min="0" placeholder="Child" required value="0">
-                </div>
+            <div class="form-group col-md-6">
+                <label for="inputname">Adult: (Old 13+)</label>
+                <input type="number" class="form-control mt-1" id="Adult" name="Adult" min="1" 
+                       max="${maxPerson}" placeholder="Adult" required value="1" 
+                       onchange="validateRange(this, ${maxPerson})" oninput="validateTotalPeople()">
             </div>
 
-
+            <div class="form-group col-md-6 mb-3">
+                <label for="inputname">Child: Old 5-13</label>
+                <input type="number" class="form-control mt-1" id="Child" name="Child" min="0" 
+                       max="${Math.floor(maxPerson/2)}" placeholder="Child" required value="0" 
+                       onchange="validateRange(this, ${maxPerson}, true)" oninput="validateTotalPeople()">
+            </div>
 
             <div class="row">
                 <div class="form-group col-md-6">
@@ -142,17 +140,18 @@
                 </div>
                 <div class="form-group col-md-6 mb-3">
                     <label for="checkOutDate">Check-Out:</label><br>
-                    <input type="date" class="form-control" name="checkOutDate" id="check_out" value="${check_out}"required readonly="true"/>
+                    <input type="date" class="form-control" name="checkOutDate" id="check_out" value="${check_out}" required readonly="true"/>
                     <span id="checkOutDate" style="color: red;" class="error"></span>
                 </div>
             </div>
 
-
             <div class="row">
                 <div class="form-group col-md-6 mb-3">
                     <label for="inputname">Total Price</label>
-                    <input type="text" class="form-control mt-1" id="TotalPrice" name="Price"
-                           placeholder="TotalPrice" value="${price}" readonly>
+                    <input type="text" class="form-control mt-1 price-vnd" id="TotalPriceDisplay" name="PriceDisplay"
+                           placeholder="TotalPrice" value="<fmt:formatNumber value="${price}" pattern="#,##0" /> VND" readonly>
+                    <input type="hidden" id="TotalPriceRaw" name="Price" value="${price}">
+
                 </div>
 
                 <div class="form-group col-md-6 mb-3">
@@ -169,24 +168,49 @@
         <br>
 
         <script>
-            function validateRange(input, maxValue) {
-                if (input.value === '') {
+            function validateRange(input, maxValue, isChild = false) {
+                // Tính max value cho child (bằng một nửa maxPerson và làm tròn xuống)
+                const maxChildValue = Math.floor(${maxPerson} / 2);
+                const actualMax = isChild ? maxChildValue : maxValue;
+
+                // Prevent negative numbers
+                if (input.value < 0) {
                     input.value = 0;
-                    return;
                 }
 
-                const value = parseInt(input.value, 10);
-                const min = parseInt(input.min, 10);
-                const max = maxValue;
-
-                if (value < min) {
-                    input.value = min;
-                } else if (value > max) {
-                    input.value = max;
-                }
+                // Prevent exceeding max value
+                if (input.value > actualMax) {
+                    input.value = actualMax;
             }
+            }
+
+            function validateTotalPeople() {
+                const adultInput = document.getElementById('Adult');
+                const childInput = document.getElementById('Child');
+                const maxPerson = ${maxPerson};
+                const maxChild = Math.floor(maxPerson / 2); // Giới hạn trẻ em bằng một nửa maxPerson
+
+                // Validate adult input
+                validateRange(adultInput, maxPerson);
+
+                // Validate child input with different max value
+                validateRange(childInput, maxPerson, true);
+
+                // Ensure at least 1 adult
+                if (adultInput.value < 1) {
+                    adultInput.value = 1;
+                }
+
+                // Cập nhật lại max attribute cho input Child
+                childInput.max = maxChild;
+            }
+
+            // Gọi hàm validate khi trang tải xong để đảm bảo giá trị ban đầu hợp lệ
+            document.addEventListener('DOMContentLoaded', function () {
+                validateTotalPeople();
+            });
         </script>
-        <!--=========
+
         <%@include file="/includes/footer.jsp" %>
 
         <script src="js/jquery-3.2.1.min.js"></script>
@@ -197,7 +221,6 @@
         <script src="js/mail-script.js"></script>
         <script src="vendors/bootstrap-datepicker/bootstrap-datetimepicker.min.js"></script>
         <script src="vendors/nice-select/js/jquery.nice-select.js"></script>
-        <script src="js/mail-script.js"></script>
         <script src="js/stellar.js"></script>
         <script src="vendors/lightbox/simpleLightbox.min.js"></script>
         <script src="js/custom.js"></script>

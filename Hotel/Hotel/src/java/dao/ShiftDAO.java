@@ -15,34 +15,34 @@ import java.util.logging.Logger;
 import model.User;
 
 public class ShiftDAO extends DBContext {
-    public List<ShiftSchedule> getShiftsByUserID(int userID) {
-        List<ShiftSchedule> list = new ArrayList<>();
-        String sql = "SELECT s.* FROM ShiftSchedule s " +
-                     "JOIN UserShift us ON s.ShiftID = us.ShiftID " +
-                     "WHERE us.IDAccount = ?"; 
+public List<ShiftSchedule> getShiftsByUserID(int userID) {
+    List<ShiftSchedule> list = new ArrayList<>();
+    String sql = "SELECT s.* FROM ShiftSchedule s " +
+                 "JOIN UserShift us ON s.ShiftID = us.ShiftID " +
+                 "WHERE us.IDAccount = ?"; 
 
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userID);
-            ResultSet rs = ps.executeQuery();
+    try (Connection conn = getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, userID);
+        ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                ShiftSchedule shift = new ShiftSchedule();
-                shift.setShiftID(rs.getInt("ShiftID"));
-                shift.setShiftName(rs.getString("ShiftName"));
-                shift.setStartTime(rs.getTime("StartTime"));
-                shift.setEndTime(rs.getTime("EndTime"));
-                shift.setShiftDate(rs.getDate("ShiftDate"));
-                list.add(shift);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        while (rs.next()) {
+            ShiftSchedule shift = new ShiftSchedule();
+            shift.setShiftID(rs.getInt("ShiftID"));
+            shift.setShiftName(rs.getString("ShiftName"));
+            shift.setStartDateTime(rs.getTimestamp("StartDateTime"));
+            shift.setEndDateTime(rs.getTimestamp("EndDateTime"));
+            list.add(shift);
         }
-        return list;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return list;
+}
+
 public List<ShiftSchedule> getAllShifts() {
     List<ShiftSchedule> list = new ArrayList<>();
-    String sql = "SELECT s.*, a.IDAccount, a.FullName AS EmployeeName " +  // Lấy cả IDAccount
+    String sql = "SELECT s.*, a.IDAccount, a.FullName AS EmployeeName " +
                  "FROM ShiftSchedule s " +
                  "LEFT JOIN UserShift us ON s.ShiftID = us.ShiftID " +
                  "LEFT JOIN Account a ON us.IDAccount = a.IDAccount";
@@ -55,10 +55,9 @@ public List<ShiftSchedule> getAllShifts() {
             ShiftSchedule shift = new ShiftSchedule();
             shift.setShiftID(rs.getInt("ShiftID"));
             shift.setShiftName(rs.getString("ShiftName"));
-            shift.setStartTime(rs.getTime("StartTime"));
-            shift.setEndTime(rs.getTime("EndTime"));
-            shift.setShiftDate(rs.getDate("ShiftDate"));
-            shift.setIDAccount(rs.getInt("IDAccount")); // Thêm dòng này
+            shift.setStartDateTime(rs.getTimestamp("StartDateTime"));
+            shift.setEndDateTime(rs.getTimestamp("EndDateTime"));
+            shift.setIDAccount(rs.getInt("IDAccount"));
             shift.setEmployeeName(rs.getString("EmployeeName")); 
             list.add(shift);
         }
@@ -69,15 +68,15 @@ public List<ShiftSchedule> getAllShifts() {
 }
 
 
+
 public int addShift(ShiftSchedule shift, int employeeID) {
-    String sql = "INSERT INTO ShiftSchedule (ShiftName, StartTime, EndTime, ShiftDate) VALUES (?, ?, ?, ?)";
+    String sql = "INSERT INTO ShiftSchedule (ShiftName, StartDateTime, EndDateTime) VALUES (?, ?, ?)";
     try (Connection conn = getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
         stmt.setString(1, shift.getShiftName());
-        stmt.setTime(2, shift.getStartTime());
-        stmt.setTime(3, shift.getEndTime());
-        stmt.setDate(4, shift.getShiftDate()); // Thêm ngày làm việc
+        stmt.setTimestamp(2, new java.sql.Timestamp(shift.getStartDateTime().getTime()));
+        stmt.setTimestamp(3, new java.sql.Timestamp(shift.getEndDateTime().getTime()));
 
         int affectedRows = stmt.executeUpdate();
 
@@ -94,11 +93,12 @@ public int addShift(ShiftSchedule shift, int employeeID) {
         }
     } catch (SQLException e) {
         e.printStackTrace();
-    }   catch (Exception ex) {
-            Logger.getLogger(ShiftDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    return -1; // Lỗi
+    } catch (Exception ex) {
+        Logger.getLogger(ShiftDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return -1;
 }
+
 
 
 
@@ -138,20 +138,18 @@ private void assignEmployeeToShift(int employeeID, int shiftID) {
 }
 
 public void updateShift(ShiftSchedule shift, int employeeID) {
-    String sql = "UPDATE ShiftSchedule SET ShiftName=?, StartTime=?, EndTime=?, ShiftDate=? WHERE ShiftID=?";
+    String sql = "UPDATE ShiftSchedule SET ShiftName=?, StartDateTime=?, EndDateTime=? WHERE ShiftID=?";
     
     try (Connection conn = getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
 
         stmt.setString(1, shift.getShiftName());
-        stmt.setTime(2, shift.getStartTime());
-        stmt.setTime(3, shift.getEndTime());
-        stmt.setDate(4, new java.sql.Date(shift.getShiftDate().getTime())); // Thêm ShiftDate
-        stmt.setInt(5, shift.getShiftID());
+        stmt.setTimestamp(2, new java.sql.Timestamp(shift.getStartDateTime().getTime()));
+        stmt.setTimestamp(3, new java.sql.Timestamp(shift.getEndDateTime().getTime()));
+        stmt.setInt(4, shift.getShiftID());
 
         stmt.executeUpdate();
 
-        // Cập nhật nhân viên trong UserShift nếu có sự thay đổi
         updateUserShift(employeeID, shift.getShiftID(), conn);
 
     } catch (SQLException e) {
@@ -160,6 +158,7 @@ public void updateShift(ShiftSchedule shift, int employeeID) {
         Logger.getLogger(ShiftDAO.class.getName()).log(Level.SEVERE, null, ex);
     }
 }
+
 private void updateUserShift(int employeeID, int shiftID, Connection conn) throws SQLException {
     // Kiểm tra xem ca làm này đã có nhân viên chưa
     String checkSql = "SELECT COUNT(*) FROM UserShift WHERE ShiftID = ?";
@@ -230,8 +229,8 @@ public ShiftSchedule getShiftByID(int shiftID) {
             ShiftSchedule shift = new ShiftSchedule();
             shift.setShiftID(rs.getInt("ShiftID"));
             shift.setShiftName(rs.getString("ShiftName"));
-            shift.setStartTime(rs.getTime("StartTime"));
-            shift.setEndTime(rs.getTime("EndTime"));
+            shift.setStartDateTime(rs.getTimestamp("StartDateTime"));
+            shift.setEndDateTime(rs.getTimestamp("EndDateTime"));
             return shift;
         }
     } catch (Exception e) {
@@ -239,5 +238,6 @@ public ShiftSchedule getShiftByID(int shiftID) {
     }
     return null;
 }
+
 
 }

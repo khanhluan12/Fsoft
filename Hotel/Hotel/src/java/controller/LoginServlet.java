@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import dao.FeedbackDAO;
@@ -50,8 +46,9 @@ public class LoginServlet extends HttpServlet {
                         session.setAttribute("userA", user);
                         response.sendRedirect("customer_home.jsp");
                     } else {
-                        request.setAttribute("loginFail", "Your account is not active please check your mail");
-                        request.getRequestDispatcher("login.jsp").forward(request, response);
+                       request.setAttribute("loginFail", "Username or password incorrect");
+                       request.setAttribute("userName", userName); // giữ lại userName
+                       request.getRequestDispatcher("login.jsp").forward(request, response);
                     }
                 } else if (user.getIDRole() == 2 || user.getIDRole() == 3) {
                     session.setAttribute("userA", user);
@@ -61,12 +58,14 @@ public class LoginServlet extends HttpServlet {
                     request.getRequestDispatcher("loadRevenue").forward(request, response);
                 }
             } else {
-                request.setAttribute("loginFail", "Your account is Ban out of system!!");
+                request.setAttribute("loginFail", "Username or password incorrect");
+                request.setAttribute("userName", userName); // giữ lại userName
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         } else {
-            request.setAttribute("loginFail", "Username or password incorrect");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+           request.setAttribute("loginFail", "Username or password incorrect");
+           request.setAttribute("userName", userName); // giữ lại userName
+           request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
 

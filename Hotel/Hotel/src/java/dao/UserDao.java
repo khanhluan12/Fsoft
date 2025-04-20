@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -491,6 +492,81 @@ public List<BookingDetails> getBookingDetailsByUserId(int accountId) {
         }
         return ratingsMap;
     }
+//  public List<String> getUnavailableDates(int bookingId) throws SQLException {
+//        List<String> unavailableDates = new ArrayList<>();
+//
+//        String sql = "SELECT DISTINCT BD.Checkin, BD.Checkout "
+//                   + "FROM BookingDetails BD "
+//                   + "INNER JOIN BookingDetail B ON BD.IDBooking = B.IDBookingDetail "
+//                   + "WHERE BD.Checkout > GETDATE() AND BD.Checkin >= GETDATE() "
+//                   + "AND BD.IDBooking != ?";  // Đảm bảo không lấy booking hiện tại
+//
+//        try (Connection conn = DBContext.getConnection();
+//                PreparedStatement stmt = conn.prepareStatement(sql)) {
+//            stmt.setInt(1, bookingId);  // Tránh lấy phòng của chính booking này
+//            ResultSet rs = stmt.executeQuery();
+//
+//            // Thêm các ngày đã được đặt vào danh sách unavailableDates
+//            while (rs.next()) {
+//                String checkin = rs.getString("Checkin");
+//                String checkout = rs.getString("Checkout");
+//
+//                // Thêm các ngày từ checkin đến checkout vào danh sách không trống
+//                unavailableDates.add(checkin);
+//                unavailableDates.add(checkout);
+//            }
+//        }
+//
+//        return unavailableDates;
+//    }
+ public List<String> getUnavailableDates(int bookingId, int roomTypeId) throws SQLException {
+    List<String> unavailableDates = new ArrayList<>();
+    Map<String, Integer> dateToBookedRoom = new HashMap<>();
+
+    String sql = "SELECT BD.Checkin, BD.Checkout, B.NumberOfRoom, RT.TotalRoom " +
+                 "FROM BookingDetails BD " +
+                 "INNER JOIN BookingDetail B ON BD.IDBooking = B.IDBookingDetail " +
+                 "INNER JOIN RoomType RT ON B.IDRoomType = RT.IDRoomType " +
+                 "WHERE BD.Checkout > GETDATE() AND BD.Checkin >= GETDATE() " +
+                 "AND BD.IDBooking != ? AND B.IDRoomType = ?";
+
+    try (Connection conn = DBContext.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, bookingId);
+        stmt.setInt(2, roomTypeId);
+
+        ResultSet rs = stmt.executeQuery();
+
+        int totalRoom = 0;
+
+        while (rs.next()) {
+            LocalDate checkin = rs.getDate("Checkin").toLocalDate();
+            LocalDate checkout = rs.getDate("Checkout").toLocalDate();
+            int bookedRoom = rs.getInt("NumberOfRoom");
+            totalRoom = rs.getInt("TotalRoom");
+
+            for (LocalDate date = checkin; date.isBefore(checkout); date = date.plusDays(1)) {
+                String dateStr = date.toString();
+                int currentBooked = dateToBookedRoom.getOrDefault(dateStr, 0);
+                dateToBookedRoom.put(dateStr, currentBooked + bookedRoom);
+            }
+        }
+
+        for (Map.Entry<String, Integer> entry : dateToBookedRoom.entrySet()) {
+            if (entry.getValue() >= totalRoom) {
+                unavailableDates.add(entry.getKey());
+            }
+        }
+    }
+
+    return unavailableDates;
+}
+
+
+
+
+
     public static void main(String[] args) {
         UserDao dao = new UserDao();
         dao.checkRoomValid("20240802", "20240806");

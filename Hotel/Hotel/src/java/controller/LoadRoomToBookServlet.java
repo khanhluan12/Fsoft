@@ -39,8 +39,8 @@ public class LoadRoomToBookServlet extends HttpServlet {
                 validNumberRooms.add(numberOfRooms);
             }
         }
-        
-        if(validIdRooms.isEmpty()){
+
+        if (validIdRooms.isEmpty()) {
             request.setAttribute("mess", "Plese change quanlity to booking");
             request.getRequestDispatcher("checkRoomValid").forward(request, response);
             return;
@@ -48,9 +48,12 @@ public class LoadRoomToBookServlet extends HttpServlet {
 
         for (int i = 0; i < validIdRooms.size(); i++) {
             RoomType r = rdao.getRoomTypeById(validIdRooms.get(i));
-            r.setNumberRoomBook(validNumberRooms.get(i));
-            maxPerson += r.getMaxPerson();
-            price += r.getPrice() * r.getNumberRoomBook() * numOfDays;
+            int bookedRooms = validNumberRooms.get(i);
+            r.setNumberRoomBook(bookedRooms);
+
+            maxPerson += r.getMaxPerson() * bookedRooms; // CHỈNH Ở ĐÂY
+            price += r.getPrice() * bookedRooms * numOfDays;
+
             rooms.add(r);
         }
 

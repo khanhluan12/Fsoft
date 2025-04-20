@@ -1,4 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,11 +18,15 @@
                 <h2>Login</h2>
 
                 <form class="Login-form" action="login" method="POST">
-                    <div style="color: red;" class="alert alert-danger" role="alert">
-                        <p class="text-danger">${loginFail} </p>
-                    </div>
+                   <c:if test="${not empty loginFail}">
+    <div class="alert alert-danger" role="alert">
+        <p class="text-danger">${loginFail}</p>
+    </div>
+</c:if>
+
                     <label for="username">UserName</label>
-                    <input type="text" id="userName" name="userName" required>
+                    <input type="text" id="userName" name="userName" value="${userName}" required>
+
 
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" required>
@@ -114,3 +120,4 @@
         </script>
     </body>
 </html>
+ 

@@ -82,9 +82,12 @@ public class ShowRoomCustomerServlet extends HttpServlet {
             }
         }
 
-        request.setAttribute("listRoom", roomTypeList);
-        request.setAttribute("pagegRoom", true);
-        request.getRequestDispatcher("customer_room.jsp").forward(request, response);
+List<RoomType> allRoomTypes = managerDao.getRoomType(); 
+request.setAttribute("allRoomTypes", allRoomTypes);
+request.setAttribute("listRoom", roomTypeList);
+request.setAttribute("pagegRoom", true);
+request.getRequestDispatcher("customer_room.jsp").forward(request, response);
+
     }
 
     @Override

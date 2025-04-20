@@ -32,7 +32,7 @@
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More</a>
                         <ul class="dropdown-menu">
                             <li class="nav-item"><a class="nav-link" href="showDiscount">Discount</a></li>
-<!--                            <li class="nav-item"><a class="nav-link" href="ManageShifts">Shifts</a></li>-->
+                            <li class="nav-item"><a class="nav-link" href="ManageShifts">Shifts</a></li>
                             <li class="nav-item"><a class="nav-link" href="showAccount">Account</a></li>
                         </ul>
                     </li> 

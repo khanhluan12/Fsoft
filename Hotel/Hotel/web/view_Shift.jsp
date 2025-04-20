@@ -1,5 +1,6 @@
 <%@ page import="java.util.List, model.ShiftSchedule" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -43,7 +44,7 @@
                     <th>Tên Ca</th>
                     <th>Bắt Đầu</th>
                     <th>Kết Thúc</th>
-                    <th>Ngày</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -53,9 +54,12 @@
                             <tr>
                                 <td>${shift.shiftID}</td>
                                 <td>${shift.shiftName}</td>
-                                <td>${shift.startTime}</td>
-                                <td>${shift.endTime}</td>
-                                <td>${shift.shiftDate}</td>
+                               <td>
+                                <fmt:formatDate value="${shift.startDateTime}" pattern="yyyy-MM-dd HH:mm" />
+                            </td>
+                                <td>
+                                <fmt:formatDate value="${shift.endDateTime}" pattern="yyyy-MM-dd HH:mm" />
+                            </td>
                             </tr>
                         </c:forEach>
                     </c:when>

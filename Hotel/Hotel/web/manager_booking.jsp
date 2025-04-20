@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -373,7 +374,7 @@
                                     </ul>
                                 </td>
                                 <td>${b.getBookingTime()}</td>
-                                <td>$${b.getTotalPrice()}</td>
+                                <td><fmt:formatNumber value="${b.getTotalPrice()}" pattern="#,##0" /> VND</td>
                                 <td>
                                     <input type="submit" class="status-button not-yet" value="${b.getNote()}">
                                 </td>
@@ -406,7 +407,7 @@
                                     </ul>
                                 </td>
                                 <td>${b.getBookingTime()}</td>
-                                <td>$${b.getTotalPrice()}</td>
+                                <td><fmt:formatNumber value="${b.getTotalPrice()}" pattern="#,##0" /> VND</td>
                                 <td>
                                     <button type="button" class="status-button ${b.getNote() eq 'Success' ? 'success' : 'cancelled'}" disabled>${b.getNote()}</button>
                                 </td>
