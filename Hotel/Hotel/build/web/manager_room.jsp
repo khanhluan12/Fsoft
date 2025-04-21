@@ -254,6 +254,14 @@
                 margin-top: 0.25rem;
                 display: none;
             }
+
+            /* Image validation error */
+            .image-error {
+                color: #dc3545;
+                font-size: 0.875rem;
+                margin-top: 0.25rem;
+                display: none;
+            }
         </style>
     </head>
     <body>
@@ -442,8 +450,9 @@
                             <div class="form-group form-group-enhanced">
                                 <label>Room Image</label>
                                 <div class="custom-file">
-                                    <input type="file" class="form-control form-control-enhanced" name="image" id="roomImage" required>
+                                    <input type="file" class="form-control form-control-enhanced" name="image" id="roomImage" accept="image/*" required>
                                     <small class="form-text text-muted">Recommended size: 800x600px</small>
+                                    <small class="image-error" id="imageError">Please select a valid image file (JPEG, PNG, GIF)</small>
                                 </div>
                                 <div class="mt-2" id="imagePreview" style="display: none;">
                                     <img id="previewImg" src="#" alt="Preview" style="max-width: 100%; max-height: 200px; border-radius: 5px; border: 1px solid #ddd; margin-top: 10px;">
@@ -531,8 +540,9 @@
                                 </div>
                                 <label>Change Image (Optional)</label>
                                 <div class="custom-file">
-                                    <input type="file" class="form-control form-control-enhanced" name="image" id="editRoomImage">
+                                    <input type="file" class="form-control form-control-enhanced" name="image" id="editRoomImage" accept="image/*">
                                     <small class="form-text text-muted">Leave empty to keep current image</small>
+                                    <small class="image-error" id="editImageError">Please select a valid image file (JPEG, PNG, GIF)</small>
                                 </div>
                                 <div class="mt-2" id="editImagePreview" style="display: none;">
                                     <img id="editPreviewImg" src="#" alt="Preview" style="max-width: 100%; max-height: 150px; border-radius: 5px; border: 1px solid #ddd; margin-top: 10px;">
@@ -575,7 +585,8 @@
                                     document.body.style.overflow = "hidden";
                                     // Reset form and error messages
                                     document.getElementById("addRoomForm").reset();
-                                    document.querySelectorAll('#addRoomForm .error-message').forEach(el => el.style.display = 'none');
+                                    document.querySelectorAll('#addRoomForm .error-message, #addRoomForm .image-error').forEach(el => el.style.display = 'none');
+                                    document.getElementById("imagePreview").style.display = "none";
                                 }
 
                                 function closeAddRoomModal() {
@@ -597,7 +608,8 @@
                                     document.getElementById("currentImage").src = "images/" + image;
 
                                     // Reset error messages
-                                    document.querySelectorAll('#editRoomForm .error-message').forEach(el => el.style.display = 'none');
+                                    document.querySelectorAll('#editRoomForm .error-message, #editRoomForm .image-error').forEach(el => el.style.display = 'none');
+                                    document.getElementById("editImagePreview").style.display = "none";
 
                                     // Show the modal
                                     document.getElementById("editRoomModal").style.display = "block";
@@ -623,13 +635,19 @@
                                     roomIdToDelete = null;
                                 }
 
+                                // Handle delete confirmation
+                                document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+                                    if (roomIdToDelete) {
+                                        window.location.href = 'delete?IDRoomType=' + roomIdToDelete;
+                                    }
+                                });
+
                                 // Close modals when clicking outside
                                 window.onclick = function (event) {
                                     const addModal = document.getElementById('addRoomModal');
                                     const editModal = document.getElementById('editRoomModal');
                                     const confirmModal = document.getElementById('confirmationModal');
 
-                                    // Kiểm tra nếu click là trên backdrop (phần nền mờ) chứ không phải trên content modal
                                     if (event.target == addModal) {
                                         closeAddRoomModal();
                                     }
@@ -641,10 +659,10 @@
                                     }
                                 }
 
-                                // Ngăn không cho click bên trong modal content đóng modal
+                                // Prevent modal content clicks from closing modal
                                 document.querySelectorAll('.modal-content-enhanced, .confirmation-content').forEach(content => {
                                     content.addEventListener('click', function (e) {
-                                        e.stopPropagation(); // Ngăn sự kiện click lan ra ngoài
+                                        e.stopPropagation();
                                     });
                                 });
 
@@ -652,8 +670,14 @@
                                 document.getElementById('roomImage').addEventListener('change', function (e) {
                                     const preview = document.getElementById('previewImg');
                                     const previewContainer = document.getElementById('imagePreview');
+                                    const imageError = document.getElementById('imageError');
 
-                                    if (this.files && this.files[0]) {
+                                    // Validate image file type
+                                    const file = this.files[0];
+                                    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+                                    if (file && validImageTypes.includes(file.type)) {
+                                        imageError.style.display = 'none';
                                         const reader = new FileReader();
 
                                         reader.onload = function (e) {
@@ -661,9 +685,14 @@
                                             previewContainer.style.display = 'block';
                                         }
 
-                                        reader.readAsDataURL(this.files[0]);
+                                        reader.readAsDataURL(file);
                                     } else {
                                         previewContainer.style.display = 'none';
+                                        if (file) {
+                                            imageError.style.display = 'block';
+                                        } else {
+                                            imageError.style.display = 'none';
+                                        }
                                     }
                                 });
 
@@ -671,8 +700,14 @@
                                 document.getElementById('editRoomImage').addEventListener('change', function (e) {
                                     const preview = document.getElementById('editPreviewImg');
                                     const previewContainer = document.getElementById('editImagePreview');
+                                    const imageError = document.getElementById('editImageError');
 
-                                    if (this.files && this.files[0]) {
+                                    // Validate image file type
+                                    const file = this.files[0];
+                                    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+                                    if (file && validImageTypes.includes(file.type)) {
+                                        imageError.style.display = 'none';
                                         const reader = new FileReader();
 
                                         reader.onload = function (e) {
@@ -680,9 +715,14 @@
                                             previewContainer.style.display = 'block';
                                         }
 
-                                        reader.readAsDataURL(this.files[0]);
+                                        reader.readAsDataURL(file);
                                     } else {
                                         previewContainer.style.display = 'none';
+                                        if (file) {
+                                            imageError.style.display = 'block';
+                                        } else {
+                                            imageError.style.display = 'none';
+                                        }
                                     }
                                 });
 
@@ -718,6 +758,8 @@
                                     const bed = parseInt(document.getElementById('addBed').value);
                                     const bath = parseInt(document.getElementById('addBath').value);
                                     const price = parseInt(document.getElementById('addPrice').value.replace(/[^0-9]/g, ''));
+                                    const imageInput = document.getElementById('roomImage');
+                                    const imageError = document.getElementById('imageError');
 
                                     let isValid = true;
 
@@ -736,6 +778,18 @@
                                     } else {
                                         document.getElementById('bathError').style.display = 'none';
                                     }
+
+                                    // Validate image
+                                    const file = imageInput.files[0];
+                                    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+                                    if (!file || !validImageTypes.includes(file.type)) {
+                                        imageError.style.display = 'block';
+                                        isValid = false;
+                                    } else {
+                                        imageError.style.display = 'none';
+                                    }
+
                                     if (!isValid) {
                                         e.preventDefault();
                                     } else {
@@ -749,6 +803,8 @@
                                     const bed = parseInt(document.getElementById('editRoomBed').value);
                                     const bath = parseInt(document.getElementById('editRoomBath').value);
                                     const price = parseInt(document.getElementById('editRoomPrice').value.replace(/[^0-9]/g, ''));
+                                    const imageInput = document.getElementById('editRoomImage');
+                                    const imageError = document.getElementById('editImageError');
 
                                     let isValid = true;
 
@@ -767,6 +823,19 @@
                                     } else {
                                         document.getElementById('editBathError').style.display = 'none';
                                     }
+
+                                    // Validate image if new one is selected
+                                    const file = imageInput.files[0];
+                                    if (file) {
+                                        const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                                        if (!validImageTypes.includes(file.type)) {
+                                            imageError.style.display = 'block';
+                                            isValid = false;
+                                        } else {
+                                            imageError.style.display = 'none';
+                                        }
+                                    }
+
                                     if (!isValid) {
                                         e.preventDefault();
                                     } else {

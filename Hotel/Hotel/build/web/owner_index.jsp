@@ -120,7 +120,7 @@
                         <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                             <i class="fa fa-chart-bar fa-3x text-primary"></i>
                             <div class="ms-3">
-                                <p class="mb-2">Total Booking</p>
+                                <p class="mb-2">Total Booking Room</p>
                                 <h6 class="mb-0">${requestScope.numberBooking}</h6>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
                             <i class="fa fa-chart-area fa-3x text-primary"></i>
                             <div class="ms-3">
                                 <p class="mb-2">Today Revenue</p>
-                                <h6 class="mb-0">${requestScope.todayRevenue}$</h6>
+                                <h6 class="mb-0">${requestScope.todayRevenue}VND</h6>
                             </div>
                         </div>
                     </div>
@@ -139,7 +139,7 @@
                             <i class="fa fa-chart-pie fa-3x text-primary"></i>
                             <div class="ms-3">
                                 <p class="mb-2">Total Revenue</p>
-                                <h6 class="mb-0">${requestScope.totalRevenue}$</h6>
+                                <h6 class="mb-0">${requestScope.totalRevenue}VND</h6>
                             </div>
                         </div>
                     </div>
@@ -184,7 +184,7 @@
 
 
         <div class="col-md-6 ">
-            <h4>Room Type Booking Statistics</h4>
+            <h4>All Type Booking Statistics</h4>
             <div style="max-width: 100%; height: auto;">
                 <canvas id="roomTypePieChart" style="max-width: 100%; height: 250px;"></canvas>
             </div>

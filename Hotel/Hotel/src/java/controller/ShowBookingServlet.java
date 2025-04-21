@@ -1,6 +1,7 @@
 package controller;
 
 import dao.ManagerDao;
+import dao.ServiceOrderDAO;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -9,8 +10,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Booking;
 import model.BookingDetail;
 import model.BookingDetails;
+import model.ServiceOrder;
 
 public class ShowBookingServlet extends HttpServlet {
 
@@ -30,6 +33,10 @@ public class ShowBookingServlet extends HttpServlet {
             List<BookingDetail> roomDetails = managerDao.getBookingDetailsByBookingId(bookingId);
             roomMap.put(bookingId, roomDetails);
         }
+
+        ServiceOrderDAO serviceDao = new ServiceOrderDAO();
+List<ServiceOrder> serviceList = serviceDao.getServiceOrderDetails(); // Lấy toàn bộ dịch vụ
+request.setAttribute("serviceList", serviceList);
 
         request.setAttribute("listB", bookingList);
         request.setAttribute("roomMap", roomMap);

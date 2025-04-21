@@ -10,10 +10,12 @@ package model;
  */
 public class CartItem {
 
-    private ServiceItem item = null;
+    private ServiceItem item;
     private int serviceId;
     private int quantity;
     private double price;
+    private String rentalDate;
+    private String rentalTime;
 
     public CartItem() {
     }
@@ -21,13 +23,14 @@ public class CartItem {
     public CartItem(ServiceItem item, int quantity) {
         this.item = item;
         this.quantity = quantity;
+        this.serviceId = item.getServiceID();
+        this.price = item.getPrice();
     }
 
-    public CartItem(ServiceItem item, int serviceId, int quantity, double price) {
-        this.item = item;
-        this.serviceId = serviceId;
-        this.quantity = quantity;
-        this.price = price;
+    public CartItem(ServiceItem item, int quantity, String rentalDate, String rentalTime) {
+        this(item, quantity);
+        this.rentalDate = rentalDate;
+        this.rentalTime = rentalTime;
     }
 
     public ServiceItem getItem() {
@@ -54,9 +57,25 @@ public class CartItem {
         this.price = price;
     }
 
+    public String getRentalDate() {
+        return rentalDate;
+    }
+
+    public void setRentalDate(String rentalDate) {
+        this.rentalDate = rentalDate;
+    }
+
+    public String getRentalTime() {
+        return rentalTime;
+    }
+
+    public void setRentalTime(String rentalTime) {
+        this.rentalTime = rentalTime;
+    }
+
     @Override
     public String toString() {
-        return "CartItem{" + "item=" + item + ", serviceId=" + serviceId + ", quantity=" + quantity + ", price=" + price + '}';
+        return "CartItem{" + "item=" + item + ", serviceId=" + serviceId + ", quantity=" + quantity + ", price=" + price + ", rentalDate=" + rentalDate + ", rentalTime=" + rentalTime + '}';
     }
 
 }

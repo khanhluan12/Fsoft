@@ -45,12 +45,13 @@ public class ProfileControl extends HttpServlet {
 
         // Get booking details
         List<BookingDetails> list = ud.getBookingDetailsByUserId(accid);
+        list.sort((s1, s2) -> s1.getCheckIn().compareTo(s2.getCheckIn()));
         request.setAttribute("BookingDetails", list);
 
         // Get service orders
         List<ServiceOrder> serviceOrders = ServiceItemDAO.getServiceOrdersByUserId(accid);
+        serviceOrders.sort((s1, s2) -> s1.getOrderDate().compareTo(s2.getOrderDate()));
         request.setAttribute("serviceOrders", serviceOrders);
-
         request.getRequestDispatcher("profile.jsp").forward(request, response);
     }
 

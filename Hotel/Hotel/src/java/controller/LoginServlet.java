@@ -1,5 +1,6 @@
 package controller;
 
+import Service.SessionManager;
 import dao.FeedbackDAO;
 import dao.UserDao;
 import java.io.IOException;
@@ -44,11 +45,12 @@ public class LoginServlet extends HttpServlet {
                 if (user.getIDRole() == 1) {
                     if (user.isIsAcive()) {
                         session.setAttribute("userA", user);
+                        SessionManager.addSession(user.getIDAccount(), session);
                         response.sendRedirect("customer_home.jsp");
                     } else {
-                       request.setAttribute("loginFail", "Username or password incorrect");
-                       request.setAttribute("userName", userName); // giữ lại userName
-                       request.getRequestDispatcher("login.jsp").forward(request, response);
+                        request.setAttribute("loginFail", "Username or password incorrect");
+                        request.setAttribute("userName", userName); // giữ lại userName
+                        request.getRequestDispatcher("login.jsp").forward(request, response);
                     }
                 } else if (user.getIDRole() == 2 || user.getIDRole() == 3) {
                     session.setAttribute("userA", user);
@@ -63,9 +65,9 @@ public class LoginServlet extends HttpServlet {
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         } else {
-           request.setAttribute("loginFail", "Username or password incorrect");
-           request.setAttribute("userName", userName); // giữ lại userName
-           request.getRequestDispatcher("login.jsp").forward(request, response);
+            request.setAttribute("loginFail", "Username or password incorrect");
+            request.setAttribute("userName", userName); // giữ lại userName
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
 

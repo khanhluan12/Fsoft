@@ -63,8 +63,51 @@ public class ServiceOrderDAO {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return list;
+    }
+     public List<ServiceOrder> getServiceOrderDetails() {
+        List<ServiceOrder> serviceOrders = new ArrayList<>();
+        String sql = """
+            SELECT 
+                so.OrderID, 
+                si.ItemName AS ServiceName, 
+                so.OrderDate, 
+                a.FullName, 
+                a.Email, 
+                a.Phone, 
+                so.TotalPrice
+            FROM 
+                ServiceOrder so
+            JOIN 
+                ServiceItem si ON so.ItemID = si.ItemID
+            JOIN 
+                Account a ON so.UserID = a.IDAccount
+            WHERE 
+                so.Status = 'Completed'
+        """;
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                ServiceOrder order = new ServiceOrder();
+                order.setOrderId(rs.getInt("OrderId"));
+                order.setServiceName(rs.getString("ServiceName"));
+                order.setOrderDate(rs.getString("OrderDate"));
+                order.setFullName(rs.getString("FullName"));
+                order.setEmail(rs.getString("Email"));
+                order.setPhone(rs.getString("Phone"));
+                order.setTotalPrice(rs.getDouble("TotalPrice"));
+
+                serviceOrders.add(order);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return serviceOrders;
     }
 }

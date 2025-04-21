@@ -22,61 +22,66 @@ public class RevenueDataServlet extends HttpServlet {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
-        // Lấy tham số năm từ request
         String yearParam = request.getParameter("year");
-        int year = (yearParam != null) ? Integer.parseInt(yearParam) : LocalDate.now().getYear();
-if (yearParam != null && !yearParam.isEmpty()) {
-    try {
-        year = Integer.parseInt(yearParam);
-    } catch (NumberFormatException e) {
-        // giữ nguyên year mặc định
-    }
-        // Khởi tạo dữ liệu doanh thu từng tháng (mặc định 0)
-        double[] monthlyRevenues = new double[12];
-Map<Integer, Double> revenuePerMonth = new HashMap<>();
+        int year = (yearParam != null && !yearParam.isEmpty()) ? Integer.parseInt(yearParam) : LocalDate.now().getYear();
 
-try (Connection conn = DBContext.getConnection()) {
-    String sql = "SELECT Checkin, Checkout, TotalPrice FROM BookingDetails WHERE YEAR(Checkin) <= ? AND YEAR(Checkout) >= ?";
-    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, year);
-        ps.setInt(2, year);
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                LocalDate checkin = rs.getDate("Checkin").toLocalDate();
-                LocalDate checkout = rs.getDate("Checkout").toLocalDate();
-                double totalPrice = rs.getDouble("TotalPrice");
+        Map<Integer, Double> revenuePerMonth = new HashMap<>();
 
-                long totalNights = ChronoUnit.DAYS.between(checkin, checkout);
-                if (totalNights <= 0) continue; // tránh lỗi
+        try (Connection conn = DBContext.getConnection()) {
 
-                double pricePerNight = totalPrice / totalNights;
+            // === Doanh thu PHÒNG ===
+            String sqlRoom = "SELECT Checkin, Checkout, TotalPrice FROM BookingDetails WHERE YEAR(Checkin) <= ? AND YEAR(Checkout) >= ? AND Note = 'Success'";
+            try (PreparedStatement ps = conn.prepareStatement(sqlRoom)) {
+                ps.setInt(1, year);
+                ps.setInt(2, year);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        LocalDate checkin = rs.getDate("Checkin").toLocalDate();
+                        LocalDate checkout = rs.getDate("Checkout").toLocalDate();
+                        double totalPrice = rs.getDouble("TotalPrice");
 
-                for (LocalDate date = checkin; date.isBefore(checkout); date = date.plusDays(1)) {
-                    if (date.getYear() != year) continue; // chỉ lấy trong năm cần thống kê
-                    int month = date.getMonthValue();
-                    revenuePerMonth.put(month, revenuePerMonth.getOrDefault(month, 0.0) + pricePerNight);
+                        long totalNights = ChronoUnit.DAYS.between(checkin, checkout);
+                        if (totalNights <= 0) continue;
+
+                        double pricePerNight = totalPrice / totalNights;
+                        for (LocalDate date = checkin; date.isBefore(checkout); date = date.plusDays(1)) {
+                            if (date.getYear() != year) continue;
+                            int month = date.getMonthValue();
+                            revenuePerMonth.put(month, revenuePerMonth.getOrDefault(month, 0.0) + pricePerNight);
+                        }
+                    }
                 }
             }
+
+            // === Doanh thu DỊCH VỤ ===
+            String sqlService = "SELECT OrderDate, TotalPrice FROM ServiceOrder WHERE YEAR(OrderDate) = ? AND Status ='Completed'";
+            try (PreparedStatement ps = conn.prepareStatement(sqlService)) {
+                ps.setInt(1, year);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        LocalDate date = rs.getDate("OrderDate").toLocalDate();
+                        int month = date.getMonthValue();
+                        double price = rs.getDouble("TotalPrice");
+                        revenuePerMonth.put(month, revenuePerMonth.getOrDefault(month, 0.0) + price);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    }
-} catch (SQLException e) {
-    e.printStackTrace();
-}
 
-
-        // Chuyển dữ liệu sang JSON
-       List<Map<String, Object>> revenueData = new ArrayList<>();
-for (int i = 1; i <= 12; i++) {
-    Map<String, Object> dataPoint = new HashMap<>();
-    dataPoint.put("month", i);
-    dataPoint.put("revenue", revenuePerMonth.getOrDefault(i, 0.0));
-    revenueData.add(dataPoint);
-}
+        // Convert về JSON
+        List<Map<String, Object>> revenueData = new ArrayList<>();
+        for (int i = 1; i <= 12; i++) {
+            Map<String, Object> dataPoint = new HashMap<>();
+            dataPoint.put("month", i);
+            dataPoint.put("revenue", Math.round(revenuePerMonth.getOrDefault(i, 0.0))); // làm tròn nếu cần
+            revenueData.add(dataPoint);
+        }
 
         String json = new Gson().toJson(revenueData);
-        System.out.println(revenueData);
         out.print(json);
         out.flush();
     }
-}
 }

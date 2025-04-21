@@ -4,6 +4,10 @@
  */
 package model;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
 /**
  *
  * @author plmin
@@ -16,7 +20,9 @@ public class ServiceOrder {
     private double totalPrice;
     private String orderDate;
     private String status;
-
+   private String fullName;
+     private String email;
+    private String phone;
     public ServiceOrder() {
     }
 
@@ -27,6 +33,15 @@ public class ServiceOrder {
         this.totalPrice = totalPrice;
         this.orderDate = orderDate;
         this.status = status;
+    }
+ public ServiceOrder(int orderId, String serviceName, String orderDate, String fullName, String email, String phone, double totalPrice) {
+        this.orderId = orderId;
+        this.serviceName = serviceName;
+        this.orderDate = orderDate;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.totalPrice = totalPrice;
     }
 
     public int getOrderId() {
@@ -75,6 +90,30 @@ public class ServiceOrder {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     @Override

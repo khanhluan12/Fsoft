@@ -96,9 +96,21 @@
                 background-color: #e08c00;
             }
 
-            .status-button.success, .status-button.cancelled {
-                background-color: #e0e0e0;
-                color: #555;
+            .status-button.in-progress {
+                background-color: #17a2b8;
+                color: white;
+                text-align: center;
+            }
+
+            .status-button.success {
+                background-color: #28a745;
+                color: white;
+                text-align: center;
+            }
+
+            .status-button.cancelled {
+                background-color: #dc3545;
+                color: white;
                 text-align: center;
             }
 
@@ -118,6 +130,12 @@
             .priority-booking {
                 background-color: #fff8e1 !important;
                 border-left: 3px solid #FEA116;
+            }
+
+            /* Highlight for In Progress bookings */
+            .in-progress-booking {
+                background-color: #e7f7fa !important;
+                border-left: 3px solid #17a2b8;
             }
 
             /* Pagination styles */
@@ -244,6 +262,36 @@
                 white-space: nowrap;
             }
 
+            /* Status dropdown */
+            .status-dropdown {
+                display: none;
+                position: absolute;
+                background-color: white;
+                min-width: 120px;
+                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                z-index: 1;
+                border-radius: 4px;
+                overflow: hidden;
+            }
+
+            .status-dropdown button {
+                width: 100%;
+                padding: 8px 12px;
+                text-align: left;
+                border: none;
+                background: none;
+                cursor: pointer;
+            }
+
+            .status-dropdown button:hover {
+                background-color: #f1f1f1;
+            }
+
+            .status-container {
+                position: relative;
+                display: inline-block;
+            }
+
             @media (max-width: 1200px) {
                 .booking-container {
                     padding: 15px;
@@ -354,69 +402,107 @@
                         <c:forEach items="${sortedBookings}" var="b">
                             <c:if test="${b.getNote() eq 'Not Yet'}">
                                 <tr class="booking-row priority-booking">
-                            <form action="updateBookingStatus" method="get" onsubmit="return handleStatusUpdate(this)">
-                                <input type="hidden" name="IDBooking" value="${b.getIDBooking()}">
-                                <input type="hidden" name="IDAccount" value="${b.getIDAccount()}">
-                                <input type="hidden" name="Status" value="Success">
-                                <td>${b.getFullName()}</td>
-                                <td>${b.getGender()}</td>
-                                <td><span class="email-cell" title="${b.getEmail()}">${b.getEmail()}</span></td>
-                                <td class="phone-cell">${b.getPhone()}</td>
-                                <td>${b.getAdult()}</td>
-                                <td>${b.getChild()}</td>
-                                <td>${b.getCheckIn()}</td>
-                                <td>${b.getCheckOut()}</td>
-                                <td>
-                                    <ul class="room-list">
-                                        <c:forEach items="${roomMap[b.getIDBooking()]}" var="room">
-                                            <li>${room.roomName} (${room.numberOfRooms})</li>
-                                            </c:forEach>
-                                    </ul>
-                                </td>
-                                <td>${b.getBookingTime()}</td>
-                                <td><fmt:formatNumber value="${b.getTotalPrice()}" pattern="#,##0" /> VND</td>
-                                <td>
-                                    <input type="submit" class="status-button not-yet" value="${b.getNote()}">
-                                </td>
-                            </form>
-                            </tr>
-                        </c:if>
-                    </c:forEach>
+                                    <td>${b.getFullName()}</td>
+                                    <td>${b.getGender()}</td>
+                                    <td><span class="email-cell" title="${b.getEmail()}">${b.getEmail()}</span></td>
+                                    <td class="phone-cell">${b.getPhone()}</td>
+                                    <td>${b.getAdult()}</td>
+                                    <td>${b.getChild()}</td>
+                                    <td>${b.getCheckIn()}</td>
+                                    <td>${b.getCheckOut()}</td>
+                                    <td>
+                                        <ul class="room-list">
+                                            <c:forEach items="${roomMap[b.getIDBooking()]}" var="room">
+                                                <li>${room.roomName} (${room.numberOfRooms})</li>
+                                                </c:forEach>
+                                        </ul>
+                                    </td>
+                                    <td>${b.getBookingTime()}</td>
+                                    <td><fmt:formatNumber value="${b.getTotalPrice()}" pattern="#,##0" /> VND</td>
+                                    <td>
+                                        <div class="status-container">
+                                            <button type="button" class="status-button not-yet" onclick="showStatusDropdown(this)">${b.getNote()}</button>
+                                            <div class="status-dropdown">
+                                                <form action="updateBookingStatus" method="get" onsubmit="return handleStatusUpdate(this)">
+                                                    <input type="hidden" name="IDBooking" value="${b.getIDBooking()}">
+                                                    <input type="hidden" name="IDAccount" value="${b.getIDAccount()}">
+                                                    <button type="submit" name="Status" value="In Progress" class="status-button in-progress">In Progress</button>
+                                                    <button type="submit" name="Status" value="Success" class="status-button success">Success</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:if>
+                        </c:forEach>
 
-                    <!-- Then show all other bookings sorted by Booking Time -->
-                    <c:forEach items="${sortedBookings}" var="b">
-                        <c:if test="${b.getNote() ne 'Not Yet'}">
-                            <tr class="booking-row">
-                            <form action="updateBookingStatus" method="get">
-                                <input type="hidden" name="IDBooking" value="${b.getIDBooking()}">
-                                <input type="hidden" name="IDAccount" value="${b.getIDAccount()}">
-                                <input type="hidden" name="Status" value="Success">
-                                <td>${b.getFullName()}</td>
-                                <td>${b.getGender()}</td>
-                                <td><span class="email-cell" title="${b.getEmail()}">${b.getEmail()}</span></td>
-                                <td class="phone-cell">${b.getPhone()}</td>
-                                <td>${b.getAdult()}</td>
-                                <td>${b.getChild()}</td>
-                                <td>${b.getCheckIn()}</td>
-                                <td>${b.getCheckOut()}</td>
-                                <td>
-                                    <ul class="room-list">
-                                        <c:forEach items="${roomMap[b.getIDBooking()]}" var="room">
-                                            <li>${room.roomName} (${room.numberOfRooms})</li>
-                                            </c:forEach>
-                                    </ul>
-                                </td>
-                                <td>${b.getBookingTime()}</td>
-                                <td><fmt:formatNumber value="${b.getTotalPrice()}" pattern="#,##0" /> VND</td>
-                                <td>
-                                    <button type="button" class="status-button ${b.getNote() eq 'Success' ? 'success' : 'cancelled'}" disabled>${b.getNote()}</button>
-                                </td>
-                            </form>
-                            </tr>
-                        </c:if>
-                    </c:forEach>
+                        <!-- Then show all "In Progress" bookings sorted by Booking Time -->
+                        <c:forEach items="${sortedBookings}" var="b">
+                            <c:if test="${b.getNote() eq 'In Progress'}">
+                                <tr class="booking-row in-progress-booking">
+                                    <td>${b.getFullName()}</td>
+                                    <td>${b.getGender()}</td>
+                                    <td><span class="email-cell" title="${b.getEmail()}">${b.getEmail()}</span></td>
+                                    <td class="phone-cell">${b.getPhone()}</td>
+                                    <td>${b.getAdult()}</td>
+                                    <td>${b.getChild()}</td>
+                                    <td>${b.getCheckIn()}</td>
+                                    <td>${b.getCheckOut()}</td>
+                                    <td>
+                                        <ul class="room-list">
+                                            <c:forEach items="${roomMap[b.getIDBooking()]}" var="room">
+                                                <li>${room.roomName} (${room.numberOfRooms})</li>
+                                                </c:forEach>
+                                        </ul>
+                                    </td>
+                                    <td>${b.getBookingTime()}</td>
+                                    <td><fmt:formatNumber value="${b.getTotalPrice()}" pattern="#,##0" /> VND</td>
+                                    <td>
+                                        <div class="status-container">
+                                            <button type="button" class="status-button in-progress" onclick="showStatusDropdown(this)">${b.getNote()}</button>
+                                            <div class="status-dropdown">
+                                                <form action="updateBookingStatus" method="get" onsubmit="return handleStatusUpdate(this)">
+                                                    <input type="hidden" name="IDBooking" value="${b.getIDBooking()}">
+                                                    <input type="hidden" name="IDAccount" value="${b.getIDAccount()}">
+                                                    <button type="submit" name="Status" value="Success" class="status-button success">Success</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:if>
+                        </c:forEach>
+
+                        <!-- Then show all other bookings sorted by Booking Time -->
+                        <c:forEach items="${sortedBookings}" var="b">
+                            <c:if test="${b.getNote() ne 'Not Yet' && b.getNote() ne 'In Progress'}">
+                                <tr class="booking-row">
+                                    <td>${b.getFullName()}</td>
+                                    <td>${b.getGender()}</td>
+                                    <td><span class="email-cell" title="${b.getEmail()}">${b.getEmail()}</span></td>
+                                    <td class="phone-cell">${b.getPhone()}</td>
+                                    <td>${b.getAdult()}</td>
+                                    <td>${b.getChild()}</td>
+                                    <td>${b.getCheckIn()}</td>
+                                    <td>${b.getCheckOut()}</td>
+                                    <td>
+                                        <ul class="room-list">
+                                            <c:forEach items="${roomMap[b.getIDBooking()]}" var="room">
+                                                <li>${room.roomName} (${room.numberOfRooms})</li>
+                                                </c:forEach>
+                                        </ul>
+                                    </td>
+                                    <td>${b.getBookingTime()}</td>
+                                    <td><fmt:formatNumber value="${b.getTotalPrice()}" pattern="#,##0" /> VND</td>
+                                    <td>
+                                        <button type="button" class="status-button ${b.getNote() eq 'Success' ? 'success' : 'cancelled'}" disabled>${b.getNote()}</button>
+                                    </td>
+                                </tr>
+                            </c:if>
+                        </c:forEach>
                     </tbody>
                 </table>
+
             </div>
 
             <!-- Pagination -->
@@ -434,6 +520,34 @@
                         </a>
                     </li>
                 </ul>
+            </div>
+            <!-- Service Order Table -->
+            <div class="table-responsive mt-5">
+                <h3><i class="fa fa-concierge-bell"></i> Service Orders</h3>
+                <table class="table table-bordered table-striped booking-table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Order Date</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${serviceList}" var="s">
+                            <tr>
+                                <td>${s.serviceName}</td> 
+                                <td>${s.orderDate}</td> 
+                                <td>${s.fullName}</td> 
+                                <td>${s.email}</td> 
+                                <td>${s.phone}</td> 
+                                <td><fmt:formatNumber value="${s.totalPrice}" pattern="#,##0" /> VND</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -455,162 +569,192 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script>
-                                // Function to handle form submission with SweetAlert
-                                function handleStatusUpdate(form) {
-                                    event.preventDefault(); // Prevent default form submission
+                                                    // Function to show status dropdown
+                                                    function showStatusDropdown(button) {
+                                                        const dropdown = button.nextElementSibling;
+                                                        const allDropdowns = document.querySelectorAll('.status-dropdown');
 
-                                    Swal.fire({
-                                        title: 'Confirm Status Update',
-                                        text: 'Are you sure you want to mark this booking as successful?',
-                                        icon: 'question',
-                                        showCancelButton: true,
-                                        confirmButtonColor: '#FEA116',
-                                        cancelButtonColor: '#d33',
-                                        confirmButtonText: 'Yes, update it!'
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            // Show loading indicator
-                                            Swal.fire({
-                                                title: 'Processing...',
-                                                text: 'Updating booking status',
-                                                allowOutsideClick: false,
-                                                allowEscapeKey: false,
-                                                didOpen: () => {
-                                                    Swal.showLoading();
-                                                }
-                                            });
-
-                                            // Submit the form
-                                            const formData = new FormData(form);
-                                            const url = form.action + '?' + new URLSearchParams(formData).toString();
-
-                                            fetch(url)
-                                                    .then(() => {
-                                                        Swal.fire({
-                                                            icon: 'success',
-                                                            title: 'Success!',
-                                                            text: 'Booking status updated successfully',
-                                                            showConfirmButton: false,
-                                                            timer: 1500
-                                                        }).then(() => {
-                                                            // Reload the page to see the updated status
-                                                            window.location.reload();
+                                                        // Hide all other dropdowns
+                                                        allDropdowns.forEach(item => {
+                                                            if (item !== dropdown) {
+                                                                item.style.display = 'none';
+                                                            }
                                                         });
-                                                    })
-                                                    .catch(error => {
-                                                        console.error('Error:', error);
-                                                        Swal.fire({
-                                                            icon: 'error',
-                                                            title: 'Error',
-                                                            text: 'Failed to update booking status. Please try again.'
-                                                        }).then(() => {
-                                                            window.location.reload();
+
+                                                        // Toggle current dropdown
+                                                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+
+                                                        // Close dropdown when clicking outside
+                                                        document.addEventListener('click', function closeDropdown(e) {
+                                                            if (!dropdown.contains(e.target) && e.target !== button) {
+                                                                dropdown.style.display = 'none';
+                                                                document.removeEventListener('click', closeDropdown);
+                                                            }
                                                         });
+                                                    }
+
+                                                    // Function to handle form submission with SweetAlert
+                                                    function handleStatusUpdate(form) {
+                                                        event.preventDefault(); // Prevent default form submission
+
+                                                        // Find which button was clicked
+                                                        const clickedButton = event.submitter;
+                                                        const status = clickedButton.value;
+                                                        const statusText = status === 'In Progress' ? 'in progress' : 'successful';
+
+                                                        Swal.fire({
+                                                            title: 'Confirm Status Update',
+                                                            text: `Are you sure you want to mark this booking as ${statusText}?`,
+                                                            icon: 'question',
+                                                            showCancelButton: true,
+                                                            confirmButtonColor: '#FEA116',
+                                                            cancelButtonColor: '#d33',
+                                                            confirmButtonText: `Yes, mark as ${statusText}`
+                                                        }).then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                // Show loading indicator
+                                                                Swal.fire({
+                                                                    title: 'Processing...',
+                                                                    text: 'Updating booking status',
+                                                                    allowOutsideClick: false,
+                                                                    allowEscapeKey: false,
+                                                                    didOpen: () => {
+                                                                        Swal.showLoading();
+                                                                    }
+                                                                });
+
+                                                                // Submit the form
+                                                                const formData = new FormData(form);
+                                                                formData.set('Status', status); // Ensure correct status is sent
+                                                                const url = form.action + '?' + new URLSearchParams(formData).toString();
+
+                                                                fetch(url)
+                                                                        .then(() => {
+                                                                            Swal.fire({
+                                                                                icon: 'success',
+                                                                                title: 'Success!',
+                                                                                text: `Booking status updated to ${statusText}`,
+                                                                                showConfirmButton: false,
+                                                                                timer: 1500
+                                                                            }).then(() => {
+                                                                                // Reload the page to see the updated status
+                                                                                window.location.reload();
+                                                                            });
+                                                                        })
+                                                                        .catch(error => {
+                                                                            console.error('Error:', error);
+                                                                            Swal.fire({
+                                                                                icon: 'error',
+                                                                                title: 'Error',
+                                                                                text: 'Failed to update booking status. Please try again.'
+                                                                            }).then(() => {
+                                                                                window.location.reload();
+                                                                            });
+                                                                        });
+                                                            }
+                                                        });
+
+                                                        return false;
+                                                    }
+
+                                                    // Form validation
+                                                    function validateSearch() {
+                                                        const phoneInput = document.getElementById('Phone');
+                                                        if (phoneInput.value.trim() === '') {
+                                                            Swal.fire({
+                                                                icon: 'error',
+                                                                title: 'Oops...',
+                                                                text: 'Please enter a phone number to search!',
+                                                            });
+                                                            return false;
+                                                        }
+                                                        return true;
+                                                    }
+
+                                                    // Pagination functionality
+                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                        const rowsPerPage = 5;
+                                                        const table = document.querySelector('.booking-table');
+                                                        const tbody = document.getElementById('booking-body');
+                                                        const rows = Array.from(tbody.querySelectorAll('.booking-row'));
+                                                        const pageCount = Math.ceil(rows.length / rowsPerPage);
+                                                        const pagination = document.getElementById('pagination');
+                                                        const prevPage = document.getElementById('prevPage');
+                                                        const nextPage = document.getElementById('nextPage');
+
+                                                        let currentPage = 1;
+
+                                                        // Function to show rows for a specific page
+                                                        function showPage(page) {
+                                                            const start = (page - 1) * rowsPerPage;
+                                                            const end = start + rowsPerPage;
+
+                                                            rows.forEach((row, index) => {
+                                                                row.style.display = (index >= start && index < end) ? '' : 'none';
+                                                            });
+
+                                                            // Update active state of page buttons
+                                                            document.querySelectorAll('.page-number').forEach(item => {
+                                                                item.classList.remove('active');
+                                                                if (item.textContent == page) {
+                                                                    item.classList.add('active');
+                                                                }
+                                                            });
+
+                                                            // Update disabled state of prev/next buttons
+                                                            prevPage.classList.toggle('disabled', page === 1);
+                                                            nextPage.classList.toggle('disabled', page === pageCount);
+
+                                                            currentPage = page;
+                                                        }
+
+                                                        // Create page number buttons
+                                                        function setupPagination() {
+                                                            // Clear existing page numbers (except prev/next)
+                                                            while (pagination.children.length > 2) {
+                                                                pagination.removeChild(pagination.children[1]);
+                                                            }
+
+                                                            // Add page numbers
+                                                            for (let i = 1; i <= pageCount; i++) {
+                                                                const pageItem = document.createElement('li');
+                                                                pageItem.className = 'page-item page-number' + (i === 1 ? ' active' : '');
+
+                                                                const pageLink = document.createElement('a');
+                                                                pageLink.className = 'page-link';
+                                                                pageLink.href = '#';
+                                                                pageLink.textContent = i;
+
+                                                                pageLink.addEventListener('click', function (e) {
+                                                                    e.preventDefault();
+                                                                    showPage(i);
+                                                                });
+
+                                                                pageItem.appendChild(pageLink);
+                                                                pagination.insertBefore(pageItem, nextPage);
+                                                            }
+                                                        }
+
+                                                        // Previous page button event
+                                                        prevPage.querySelector('.page-link').addEventListener('click', function (e) {
+                                                            e.preventDefault();
+                                                            if (currentPage > 1) {
+                                                                showPage(currentPage - 1);
+                                                            }
+                                                        });
+
+                                                        // Next page button event
+                                                        nextPage.querySelector('.page-link').addEventListener('click', function (e) {
+                                                            e.preventDefault();
+                                                            if (currentPage < pageCount) {
+                                                                showPage(currentPage + 1);
+                                                            }
+                                                        });
+
+                                                        // Initialize pagination
+                                                        setupPagination();
+                                                        showPage(1);
                                                     });
-                                        }
-                                    });
-
-                                    return false;
-                                }
-
-                                // Form validation
-                                function validateSearch() {
-                                    const phoneInput = document.getElementById('Phone');
-                                    if (phoneInput.value.trim() === '') {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Oops...',
-                                            text: 'Please enter a phone number to search!',
-                                        });
-                                        return false;
-                                    }
-                                    return true;
-                                }
-
-                                // Pagination functionality
-                                document.addEventListener('DOMContentLoaded', function () {
-                                    const rowsPerPage = 5;
-                                    const table = document.querySelector('.booking-table');
-                                    const tbody = document.getElementById('booking-body');
-                                    const rows = Array.from(tbody.querySelectorAll('.booking-row'));
-                                    const pageCount = Math.ceil(rows.length / rowsPerPage);
-                                    const pagination = document.getElementById('pagination');
-                                    const prevPage = document.getElementById('prevPage');
-                                    const nextPage = document.getElementById('nextPage');
-
-                                    let currentPage = 1;
-
-                                    // Function to show rows for a specific page
-                                    function showPage(page) {
-                                        const start = (page - 1) * rowsPerPage;
-                                        const end = start + rowsPerPage;
-
-                                        rows.forEach((row, index) => {
-                                            row.style.display = (index >= start && index < end) ? '' : 'none';
-                                        });
-
-                                        // Update active state of page buttons
-                                        document.querySelectorAll('.page-number').forEach(item => {
-                                            item.classList.remove('active');
-                                            if (item.textContent == page) {
-                                                item.classList.add('active');
-                                            }
-                                        });
-
-                                        // Update disabled state of prev/next buttons
-                                        prevPage.classList.toggle('disabled', page === 1);
-                                        nextPage.classList.toggle('disabled', page === pageCount);
-
-                                        currentPage = page;
-                                    }
-
-                                    // Create page number buttons
-                                    function setupPagination() {
-                                        // Clear existing page numbers (except prev/next)
-                                        while (pagination.children.length > 2) {
-                                            pagination.removeChild(pagination.children[1]);
-                                        }
-
-                                        // Add page numbers
-                                        for (let i = 1; i <= pageCount; i++) {
-                                            const pageItem = document.createElement('li');
-                                            pageItem.className = 'page-item page-number' + (i === 1 ? ' active' : '');
-
-                                            const pageLink = document.createElement('a');
-                                            pageLink.className = 'page-link';
-                                            pageLink.href = '#';
-                                            pageLink.textContent = i;
-
-                                            pageLink.addEventListener('click', function (e) {
-                                                e.preventDefault();
-                                                showPage(i);
-                                            });
-
-                                            pageItem.appendChild(pageLink);
-                                            pagination.insertBefore(pageItem, nextPage);
-                                        }
-                                    }
-
-                                    // Previous page button event
-                                    prevPage.querySelector('.page-link').addEventListener('click', function (e) {
-                                        e.preventDefault();
-                                        if (currentPage > 1) {
-                                            showPage(currentPage - 1);
-                                        }
-                                    });
-
-                                    // Next page button event
-                                    nextPage.querySelector('.page-link').addEventListener('click', function (e) {
-                                        e.preventDefault();
-                                        if (currentPage < pageCount) {
-                                            showPage(currentPage + 1);
-                                        }
-                                    });
-
-                                    // Initialize pagination
-                                    setupPagination();
-                                    showPage(1);
-                                });
         </script>
     </body>
 </html>

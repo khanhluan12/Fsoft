@@ -4,11 +4,9 @@
     Author     : plmin
 --%>
 
-<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="model.ServiceItem, model.CartItem" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html>
@@ -61,6 +59,10 @@
                                         <th>Quantity</th>
                                         <th>Price</th>
                                         <th>Subtotal</th>
+                                            <c:if test="${not empty cartItems.stream().filter(ci -> ci.getRentalDate() != null).findFirst().orElse(null)}">
+                                            <th>Rental Date</th>
+                                            <th>Rental Time</th>
+                                            </c:if>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -72,8 +74,12 @@
                                         <tr>
                                             <td>${item.itemName}</td>
                                             <td>${qty}</td>
-                                            <td>${item.price} đ</td>
-                                            <td>${subtotal} đ</td>
+                                            <td><fmt:formatNumber value="${item.price}" pattern="#,###" /> đ</td>
+                                            <td><fmt:formatNumber value="${subtotal}" pattern="#,###" /> đ</td>
+                                            <c:if test="${not empty cartItems.stream().filter(ci -> ci.getRentalDate() != null).findFirst().orElse(null)}">
+                                                <td>${cartItem.rentalDate}</td>
+                                                <td>${cartItem.rentalTime}</td>
+                                            </c:if>
                                         </tr>
                                         <c:set var="total" value="${total + subtotal}" />
                                     </c:forEach>
@@ -81,19 +87,10 @@
                             </table>
 
                             <!-- Total and Checkout -->
-                            <p class="cart-total"><strong>Total:</strong> ${total} đ</p>
+                            <p class="cart-total"><strong>Total:</strong> <fmt:formatNumber value="${total}" pattern="#,###" /> đ</p>
 
-                            <!--[DEBUG]-->
-                            <%
-                                double serviceTotal = 0.0;
-                                List<CartItem> cartItems = (List<CartItem>) session.getAttribute("cartItems");
-                                if (cartItems != null) {
-                                    for (CartItem cartItem : cartItems) {
-                                        serviceTotal += cartItem.getItem().getPrice() * cartItem.getQuantity();
-                                    }
-                                }
-                                session.setAttribute("serviceTotal", serviceTotal);
-                            %>
+                            <%-- Store total in session for checkout --%>
+                            <c:set var="serviceTotal" value="${total}" scope="session" />
 
                             <div class="d-flex justify-content-center mt-4 gap-3 flex-wrap cart-buttons">
                                 <form action="ServicesOrderServlet" method="post" class="text-center mt-4">

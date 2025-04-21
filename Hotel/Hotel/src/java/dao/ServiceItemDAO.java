@@ -122,36 +122,39 @@ public class ServiceItemDAO extends DBContext {
         return list;
     }
 
-    public ServiceItem getById(int id) {
-        String sql = "SELECT * FROM ServiceItem WHERE ItemID = ?";
-        try (Connection conn = getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new ServiceItem(
-                        rs.getInt("ItemID"),
-                        rs.getString("ItemName"),
-                        rs.getDouble("Price"),
-                        rs.getString("ImageURL"),
-                        rs.getInt("ServiceID")
-                    );
-                }
+   public ServiceItem getById(int id) {
+    String sql = "SELECT * FROM ServiceItem WHERE itemID = ?";
+    try (Connection conn = getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, id);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return new ServiceItem(
+                    rs.getInt("itemID"),
+                    rs.getString("itemName"),
+                    rs.getDouble("price"),
+                    rs.getString("imageURL"),
+                    rs.getInt("serviceID"),
+                    rs.getString("description") 
+                );
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return null;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return null;
+}
+
 
     public void insert(ServiceItem item) {
-        String sql = "INSERT INTO ServiceItem (ItemName, Price, ImageURL, ServiceID) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO ServiceItem (ItemName, Price, ImageURL, ServiceID,Description) VALUES (?, ?, ?, ?,?)";
         try (Connection conn = getConnection(); 
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, item.getItemName());
             ps.setDouble(2, item.getPrice());
             ps.setString(3, item.getImageURL());
             ps.setInt(4, item.getServiceID());
+            ps.setString(5, item.getDescription());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -159,7 +162,7 @@ public class ServiceItemDAO extends DBContext {
     }
 
     public void update(ServiceItem item) {
-        String sql = "UPDATE ServiceItem SET ItemName=?, Price=?, ImageURL=?, ServiceID=? WHERE ItemID=?";
+        String sql = "UPDATE ServiceItem SET ItemName=?, Price=?, ImageURL=?, ServiceID=?,Description = ? WHERE ItemID=?";
         try (Connection conn = getConnection(); 
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, item.getItemName());
@@ -167,6 +170,7 @@ public class ServiceItemDAO extends DBContext {
             ps.setString(3, item.getImageURL());
             ps.setInt(4, item.getServiceID());
             ps.setInt(5, item.getItemID());
+            ps.setString(6, item.getDescription());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -183,7 +187,7 @@ public class ServiceItemDAO extends DBContext {
             e.printStackTrace();
         }
     }
-    public ServiceItem getItemById(int id) {
+public ServiceItem getItemById(int id) {
     ServiceItem item = null;
     try {
         String sql = "SELECT * FROM ServiceItem WHERE itemID = ?";
@@ -197,7 +201,8 @@ public class ServiceItemDAO extends DBContext {
                 rs.getString("itemName"),
                 rs.getDouble("price"),
                 rs.getString("imageURL"),
-                rs.getInt("serviceID")
+                rs.getInt("serviceID"),
+                rs.getString("description") // Bổ sung description
             );
         }
     } catch (Exception e) {
@@ -205,4 +210,5 @@ public class ServiceItemDAO extends DBContext {
     }
     return item;
 }
+
 }

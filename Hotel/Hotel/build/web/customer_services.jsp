@@ -55,33 +55,33 @@
 
                     <!-- Food Service -->
                     <div class="col-md-4 mb-4">
-                        <div class="service-card-custom" onclick="location.href = 'service?type=food'">
+                        <div class="service-card-custom" onclick="location.href = 'service?type=foods'">
                             <div class="service-card-bg" style="background-image: url('image/gallery/services_cooking.jpg');"></div>
                             <div class="service-card-overlay">
-                                <h5 class="service-card-title">Food Service</h5>
-                                <p class="service-card-text">Delicious dining options delivered to your room.</p>
+                                <h5 class="service-card-title">Foods Service</h5>
+                                <p class="service-card-text">Delicious dining options delivered to your room</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Laundry Service -->
+                    <!-- Drink Service -->
                     <div class="col-md-4 mb-4">
-                        <div class="service-card-custom" onclick="location.href = 'service?type=laundry'">
-                            <div class="service-card-bg" style="background-image: url('image/gallery/services_laundry.jpg');"></div>
+                        <div class="service-card-custom" onclick="location.href = 'service?type=drinks'">
+                            <div class="service-card-bg" style="background-image: url('image/gallery/services_drinks.jpg');"></div>
                             <div class="service-card-overlay">
-                                <h5 class="service-card-title">Laundry Service</h5>
-                                <p class="service-card-text">Professional laundry and dry cleaning available.</p>
+                                <h5 class="service-card-title">Drinks Service</h5>
+                                <p class="service-card-text">Refreshing drinks delivered straight to your room, anytime you need</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Car Rental -->
+                    <!-- Bike Rental -->
                     <div class="col-md-4 mb-4">
-                        <div class="service-card-custom" onclick="location.href = 'service?type=car'">
-                            <div class="service-card-bg" style="background-image: url('image/gallery/services_car_rental.jpg');"></div>
+                        <div class="service-card-custom" onclick="location.href = 'service?type=bikes'">
+                            <div class="service-card-bg" style="background-image: url('image/gallery/services_bikes.jpg');"></div>
                             <div class="service-card-overlay">
-                                <h5 class="service-card-title">Car Rental</h5>
-                                <p class="service-card-text">Rent a car for city exploration and convenience.</p>
+                                <h5 class="service-card-title">Bikes Rental</h5>
+                                <p class="service-card-text">Rent a bike for city exploration and convenience</p>
                             </div>
                         </div>
                     </div>

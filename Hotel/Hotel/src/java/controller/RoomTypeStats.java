@@ -19,44 +19,65 @@ public class RoomTypeStats extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
-        Map<String, Integer> roomTypeCount = new HashMap<>();
+
+        Map<String, Integer> typeCount = new HashMap<>();
         String yearParam = request.getParameter("year");
         int year = 0;
         try {
-            year = Integer.parseInt(yearParam);  
+            year = Integer.parseInt(yearParam);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);  
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         try (Connection conn = DBContext.getConnection()) {
+            // ===== ROOM TYPE =====
+            String queryRoom = """
+                SELECT rt.NameRoomType, SUM(bd.NumberOfRoom) AS TotalRooms
+                FROM BookingDetail bd
+                JOIN RoomType rt ON bd.IDRoomType = rt.IDRoomType
+                JOIN BookingDetails b ON bd.IDBookingDetail = b.IDBooking
+                WHERE YEAR(b.Checkin) = ? AND b.Note = 'Success'
+                GROUP BY rt.NameRoomType
+                """;
 
-            String query = "SELECT rt.NameRoomType, SUM(bd.NumberOfRoom) AS TotalRooms, YEAR(b.Checkin) AS Year " +
-                           "FROM BookingDetail bd " +
-                           "JOIN RoomType rt ON bd.IDRoomType = rt.IDRoomType " +
-                           "JOIN BookingDetails b ON bd.IDBookingDetail = b.IDBooking " +
-                           "WHERE YEAR(b.Checkin) = ? " +  
-                           "GROUP BY rt.NameRoomType, YEAR(b.Checkin)";
-
-            try (PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setInt(1, year);  
-
+            try (PreparedStatement ps = conn.prepareStatement(queryRoom)) {
+                ps.setInt(1, year);
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
                         String roomType = rs.getString("NameRoomType");
                         int totalRooms = rs.getInt("TotalRooms");
-                        roomTypeCount.put(roomType, totalRooms);
+                        typeCount.put(roomType, totalRooms);
                     }
                 }
             }
+
+            // ===== SERVICE ORDER =====
+           String queryService = """
+    SELECT si.ItemName, SUM(so.Quantity) AS ServiceCount
+    FROM ServiceOrder so
+    JOIN ServiceItem si ON so.ItemID = si.ItemID
+    WHERE YEAR(so.OrderDate) = ? AND so.Status = 'Completed'
+    GROUP BY si.ItemName
+""";
+
+            try (PreparedStatement ps = conn.prepareStatement(queryService)) {
+                ps.setInt(1, year);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        String serviceName = rs.getString("ItemName");
+                        int count = rs.getInt("ServiceCount");
+                        typeCount.put(serviceName + " (Service)", count); // Để dễ phân biệt
+                    }
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // Gửi lỗi server nếu có lỗi xảy ra
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
-        // Chuyển đổi map thành JSON và gửi trả về client
-        out.print(new Gson().toJson(roomTypeCount));
+        out.print(new Gson().toJson(typeCount));
         out.flush();
     }
 }

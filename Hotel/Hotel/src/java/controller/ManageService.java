@@ -104,6 +104,7 @@ public class ManageService extends HttpServlet {
         }
 
         double price = Double.parseDouble(request.getParameter("price"));
+        String description = request.getParameter("description");
         String oldImageURL = request.getParameter("oldImageURL");
 
         String applicationPath = request.getServletContext().getRealPath("");
@@ -126,7 +127,7 @@ public class ManageService extends HttpServlet {
             imageURL = oldImageURL;
         }
 
-        ServiceItem item = new ServiceItem(id, name, price, imageURL, serviceID);
+        ServiceItem item = new ServiceItem(id, name, price, imageURL, serviceID,description);
 
         if (id == 0) {
             serviceItemDAO.insert(item);

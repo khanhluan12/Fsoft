@@ -1,5 +1,6 @@
 package controller;
 
+import Service.SessionManager;
 import dao.UserDao;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -23,6 +24,11 @@ public class BanAccountController extends HttpServlet {
 
         UserDao udao = new UserDao();
         udao.BanAndUnbanAccount(id, isBan);
+        
+        //  Invalidate session when banning user
+        if (isBan) {
+            SessionManager.invalidateSession(id);
+        }
 
         // Set notification message
         if (isBan) {

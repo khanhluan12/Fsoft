@@ -59,36 +59,41 @@ public class DeleteServlet extends HttpServlet {
 
         // Get the session to store success messages
         HttpSession session = request.getSession();
-
         ManagerDao manadao = new ManagerDao();
 
         try {
             if (IDAccount != null) {
                 manadao.deleteAccount(IDAccount);
                 // Set success message for account deletion
-                session.setAttribute("successMessage", "Tài khoản với ID " + IDAccount + " đã được xóa thành công!");
+                session.setAttribute("successMessage", "Account ID " + IDAccount + " has been deleted successfully!");
                 response.sendRedirect("showAccount");
             } else if (IDDiscount != null) {
                 manadao.deleteDiscount(IDDiscount);
                 // Set success message for discount deletion
-                session.setAttribute("successMessage", "Mã giảm giá với ID " + IDDiscount + " đã được xóa thành công!");
+                session.setAttribute("successMessage", "Discount ID " + IDDiscount + " has been deleted successfully!");
                 response.sendRedirect("showDiscount");
             } else if (IDRoomType != null) {
-                manadao.deleteRoomType(IDRoomType);
-                // Set success message for room type deletion
-                session.setAttribute("successMessage", "Loại phòng với ID " + IDRoomType + " đã được xóa thành công!");
-                response.sendRedirect("showRoomType");
+                // Kiểm tra xem phòng đã được đặt chưa
+                if (manadao.isRoomTypeBooked(IDRoomType)) {
+                    session.setAttribute("errorMessage", "Cannot delete room type ID " + IDRoomType + " because it has been booked!");
+                    response.sendRedirect("showRoomType");
+                } else {
+                    manadao.deleteRoomType(IDRoomType);
+                    // Set success message for room type deletion
+                    session.setAttribute("successMessage", "Room ID " + IDRoomType + " has been deleted successfully!");
+                    response.sendRedirect("showRoomType");
+                }
             }
         } catch (Exception e) {
             // If any exception occurs during deletion
             if (IDAccount != null) {
-                session.setAttribute("errorMessage", "Không thể xóa tài khoản với ID " + IDAccount);
+                session.setAttribute("errorMessage", "Cannot delete account with ID " + IDAccount);
                 response.sendRedirect("showAccount");
             } else if (IDDiscount != null) {
-                session.setAttribute("errorMessage", "Không thể xóa mã giảm giá với ID " + IDDiscount);
+                session.setAttribute("errorMessage", "Cannot delete discount with ID " + IDDiscount);
                 response.sendRedirect("showDiscount");
             } else if (IDRoomType != null) {
-                session.setAttribute("errorMessage", "Không thể xóa loại phòng với ID " + IDRoomType);
+                session.setAttribute("errorMessage", "Cannot delete room type with ID " + IDRoomType);
                 response.sendRedirect("showRoomType");
             }
         }

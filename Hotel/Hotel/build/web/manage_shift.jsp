@@ -123,6 +123,12 @@
             background-color: #e3f2fd;
             color: #1976d2;
         }
+        .nice-select{
+            margin-top: 30px;
+            height:38px;
+            text-align: center;
+            align-items: center;
+        }
     </style>
     </head>
     <body>
@@ -147,21 +153,21 @@
          <div class="container mt-4 mb-5">
         <div class="shift-management-container">
             <div class="shift-header">
-                <h2 class="shift-title"><i class="fa fa-calendar-alt mr-2"></i>Danh sách ca trực</h2>
+                <h2 class="shift-title"><i class="fa fa-calendar-alt mr-2"></i>Shift list</h2>
                 <button type="button" class="btn btn-success btn-add-shift" data-toggle="modal" data-target="#addShiftModal">
-                    <i class="fa fa-plus mr-2"></i>Thêm ca trực
+                    <i class="fa fa-plus mr-2"></i>Add shift
                 </button>
             </div>
             
             <div class="filter-container">
                 <div class="form-group row align-items-center">
-                    <label for="filterDate" class="col-sm-2 col-form-label font-weight-bold">Lọc theo ngày:</label>
+                    <label for="filterDate" class="col-sm-2 col-form-label font-weight-bold">Search:</label>
                     <div class="col-sm-4">
                         <input type="date" class="form-control" id="filterDate">
                     </div>
                     <div class="col-sm-2">
                         <button class="btn btn-outline-secondary" id="clearFilter">
-                            <i class="fa fa-times mr-1"></i>Bỏ lọc
+                            <i class="fa fa-times mr-1"></i>Clear
                         </button>
                     </div>
                 </div>
@@ -171,11 +177,11 @@
                 <table class="table table-hover shift-table">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Tên ca</th>
-                            <th>Thời gian bắt đầu</th>
-                            <th>Thời gian kết thúc</th>
-                            <th>Nhân viên</th>
-                            <th>Thao tác</th>
+                            <th>Shift</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Employee</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -200,14 +206,14 @@
                                                     data-endtime="${shift.endDateTime}"
                                                     data-idaccount="${shift.IDAccount}"
                                                     data-employeename="${shift.employeeName}">
-                                                <i class="fa fa-edit mr-1"></i>Sửa
+                                                <i class="fa fa-edit mr-1"></i>Edit
                                             </button>
                                             <form id="deleteShiftForm-${shift.shiftID}" action="ShiftServlet" method="POST" style="display:inline;" 
                                                   onsubmit="deleteShift(event, ${shift.shiftID});">
                                                 <input type="hidden" name="action" value="delete">
                                                 <input type="hidden" name="shiftID" value="${shift.shiftID}">
                                                 <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="fa fa-trash mr-1"></i>Xóa
+                                                    <i class="fa fa-trash mr-1"></i>Delete
                                                 </button>
                                             </form>
                                         </td>
@@ -218,7 +224,7 @@
                                 <tr>
                                     <td colspan="5" class="no-shifts">
                                         <i class="fa fa-calendar-times fa-3x mb-3 text-muted"></i>
-                                        <p>Hiện không có ca trực nào được lên lịch</p>
+                                        <p>No shift found</p>
                                     </td>
                                 </tr>
                             </c:otherwise>
@@ -244,7 +250,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addShiftModalLabel"><i class="fa fa-plus-circle mr-2"></i>Thêm ca trực mới</h5>
+                    <h5 class="modal-title" id="addShiftModalLabel"><i class="fa fa-plus-circle mr-2"></i>Add shift</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -254,13 +260,13 @@
                         <input type="hidden" name="action" value="add">
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="shiftName">Tên ca trực</label>
-                                <input type="text" class="form-control" id="shiftName" name="shiftName" required>
+                                <label for="shiftName">Shift</label>
+                                <input type="text" class="form-control" id="shiftName" name="shiftName" required readonly>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label for="IDAccount">Nhân viên</label>
-                                <select class="form-control" id="IDAccount" name="IDAccount" required>
-                                    <option value="">-- Chọn nhân viên --</option>
+                            <div class="form-group col-md-6" >
+                                <label for="IDAccount"></label>
+                                <select class="form-control" id="IDAccount" name="IDAccount" >
+                                    <option value="">-- Select Employee --</option>
                                     <c:forEach var="employee" items="${employees}">
                                         <option value="${employee.IDAccount}">${employee.fullName}</option>
                                     </c:forEach>
@@ -269,17 +275,17 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="startTime">Thời gian bắt đầu</label>
+                                <label for="startTime">Start</label>
                                 <input type="datetime-local" class="form-control" id="startTime" name="startTime" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="endTime">Thời gian kết thúc</label>
+                                <label for="endTime">End</label>
                                 <input type="datetime-local" class="form-control" id="endTime" name="endTime" required>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                            <button type="submit" class="btn btn-primary">Lưu ca trực</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
                         </div>
                     </form>
                 </div>
@@ -292,46 +298,50 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editShiftModalLabel"><i class="fa fa-edit mr-2"></i>Chỉnh sửa ca trực</h5>
+                    <h5 class="modal-title" id="editShiftModalLabel"><i class="fa fa-edit mr-2"></i>Edit shift</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <form id="editShiftForm">
-                        <input type="hidden" id="shiftID" name="shiftID">
-                        <input type="hidden" name="action" value="update">
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="editShiftName">Tên ca trực</label>
-                                <input type="text" class="form-control" id="editShiftName" name="shiftName" required>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="editEmployeeID">Nhân viên</label>
-                                <select class="form-control" id="editEmployeeID" name="employeeID">
-                                    <option id="currentEmployee" value="">Chọn nhân viên</option>
-                                    <c:forEach var="employee" items="${employees}">
-                                        <option value="${employee.IDAccount}">${employee.fullName}</option>
-                                    </c:forEach>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="editStartTime">Thời gian bắt đầu</label>
-                                <input type="datetime-local" class="form-control" id="editStartTime" name="startTime" required>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="editEndTime">Thời gian kết thúc</label>
-                                <input type="datetime-local" class="form-control" id="editEndTime" name="endTime" required>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                            <button type="submit" class="btn btn-primary">Cập nhật</button>
-                        </div>
-                    </form>
-                </div>
+ <div class="modal-body">
+    <form id="editShiftForm">
+        <input type="hidden" id="shiftID" name="shiftID">
+        <input type="hidden" name="action" value="update">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="editShiftName">Shift</label>
+                <input type="text" class="form-control" id="editShiftName" name="shiftName" required readonly>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="editEmployeeID"></label>
+               <select class="form-control" id="editEmployeeID" name="employeeID">
+    <option value="">Chọn nhân viên</option>
+    <c:forEach var="employee" items="${employees}">
+        <option value="${employee.IDAccount}" ${employee.IDAccount == currentEmployeeID ? 'selected' : ''}>
+            ${employee.fullName}
+        </option>
+    </c:forEach>
+</select>
+
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="editStartTime">Start</label>
+                <input type="datetime-local" class="form-control" id="editStartTime" name="startTime" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="editEndTime">End</label>
+                <input type="datetime-local" class="form-control" id="editEndTime" name="endTime" required>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+    </form>
+</div>
+
             </div>
         </div>
     </div>
@@ -349,82 +359,152 @@
         <script src="js/stellar.js"></script>
         <script src="vendors/lightbox/simpleLightbox.min.js"></script>
         <script src="js/custom.js"></script>
-        <script>
-                                $(document).ready(function () {
-                                    $("#addShiftForm").submit(function (event) {
-                                        event.preventDefault(); // Ngăn chặn load lại trang
+<script>
+    $(document).ready(function () {
+        const startInput = document.getElementById("startTime");
+        const endInput = document.getElementById("endTime");
+         const employeeSelect = document.getElementById("IDAccount");
+        // Set min datetime = thời gian hiện tại
+        const now = new Date();
+        const formattedNow = now.toISOString().slice(0, 16);
+        startInput.min = formattedNow;
+        endInput.min = formattedNow;
 
-                                        $.ajax({
-                                            type: "POST",
-                                            url: "ShiftServlet", // Servlet xử lý thêm ca trực
-                                            data: $(this).serialize(),
-                                            success: function (response) {
-                                                alert("Thêm ca trực thành công!");
-                                                location.reload(); // Load lại trang để hiển thị dữ liệu mới
-                                            },
-                                            error: function () {
-                                                alert("Có lỗi xảy ra, vui lòng thử lại!");
-                                            }
-                                        });
-                                    });
-                                });
+        $("#addShiftForm").submit(function (event) {
+            event.preventDefault(); // Ngăn form submit mặc định
 
+            const startValue = startInput.value;
+            const endValue = endInput.value;
+            const employeeValue = employeeSelect.value;
+             if (!employeeValue) {
+                alert("⚠️ Vui lòng chọn nhân viên trước khi thêm ca trực!");
+                employeeSelect.focus();
+                return;
+            }
 
-        </script>
-        <script>
-            $(document).ready(function () {
-                $(".btn-edit").click(function () {
-                    const shiftID = $(this).data("shiftid");
-                    const shiftName = $(this).data("shiftname");
-                    const startTime = $(this).data("starttime");
-                    const endTime = $(this).data("endtime");
-                    const shiftDate = $(this).data("shiftdate");
-                    const IDAccount = $(this).data("idaccount");
-                    let employeeName = $(this).data("employeename");
-                    console.log(employeeName);
-                    // Kiểm tra nếu tên nhân viên không có thì đặt giá trị mặc định
-                    employeeName = (employeeName === undefined || employeeName === "")
-                            ? "Không có nhân viên"
-                            : employeeName;
+            if (!startValue || !endValue) {
+                alert("⛔ Vui lòng điền đầy đủ thời gian.");
+                return;
+            }
 
-                    // Cập nhật tên nhân viên vào phần hiển thị trong modal
-                    $("#currentEmployeeName").text(employeeName);
+            const start = new Date(startValue);
+            const end = new Date(endValue);
+            const now = new Date();
 
-                    // Cập nhật các giá trị vào các trường khác trong modal
-                    $("#editShiftModal #shiftID").val(shiftID);
-                    $("#editShiftModal #shiftName").val(shiftName);
-                    $("#editShiftModal #startTime").val(startTime);
-                    $("#editShiftModal #endTime").val(endTime);
-                    $("#editShiftModal #shiftDate").val(shiftDate);
-                    $("#editShiftModal #employeeID").val(IDAccount);  // Cập nhật giá trị vào select
-                });
+            if (start < now) {
+                alert("❌ Thời gian bắt đầu không được ở quá khứ!");
+                return;
+            }
+
+            if (end < now) {
+                alert("❌ Thời gian kết thúc không được ở quá khứ!");
+                return;
+            }
+
+            if (end <= start) {
+                alert("❌ Thời gian kết thúc phải sau thời gian bắt đầu!");
+                return;
+            }
+
+            // ✅ Nếu hợp lệ thì gọi AJAX
+            $.ajax({
+                type: "POST",
+                url: "ShiftServlet",
+                data: $(this).serialize(),
+                success: function (response) {
+                    alert("✅ Thêm ca trực thành công!");
+                    location.reload();
+                },
+                error: function () {
+                    alert("❌ Có lỗi xảy ra, vui lòng thử lại!");
+                }
             });
+        });
+    });
+</script>
+<script>
+$(document).ready(function () {
+    $(".btn-edit").click(function () {
+        const shiftID = $(this).data("shiftid");
+        const shiftName = $(this).data("shiftname");
+        const startTime = $(this).data("starttime");
+        const endTime = $(this).data("endtime");
+        const IDAccount = $(this).data("idaccount");
+        const employeeName = $(this).data("employeename");
+console.log("IDAccount:", IDAccount);
+console.log("Name:", employeeName);
+
+        // Đưa dữ liệu vào form
+        $("#shiftID").val(shiftID);
+        $("#editShiftName").val(shiftName);
+        $("#editStartTime").val(startTime);
+        $("#editEndTime").val(endTime);
+           $("#editEmployeeID").val(IDAccount);
+        $("#editShiftModal").modal("show");
+    });
+});
 
 
+</script>
 
-        </script>
+<script>
+    $(document).ready(function () {
+        $("#editShiftForm").submit(function (event) {
+            event.preventDefault(); // Ngăn không cho form load lại trang
 
-        <script>
-            $(document).ready(function () {
-                $("#editShiftForm").submit(function (event) {
-                    event.preventDefault(); // Ngăn không cho form load lại trang
+            const startInput = $("#editStartTime");
+            const endInput = $("#editEndTime");
 
-                    $.ajax({
-                        type: "POST",
-                        url: "ShiftServlet", // Gửi request đến ShiftServlet
-                        data: $(this).serialize(), // Chuyển dữ liệu form thành chuỗi query
-                        success: function (response) {
-                            alert("Cập nhật ca trực thành công!");
-                            location.reload(); // Reload trang để hiển thị dữ liệu mới
-                        },
-                        error: function () {
-                            alert("Có lỗi xảy ra, vui lòng thử lại!");
-                        }
-                    });
-                });
+            // Cập nhật min cho input theo thời gian hiện tại
+            const now = new Date();
+            const formattedNow = now.toISOString().slice(0, 16); // yyyy-MM-ddTHH:mm
+            startInput.attr("min", formattedNow);
+            endInput.attr("min", formattedNow);
+
+            const startValue = startInput.val();
+            const endValue = endInput.val();
+
+            // Kiểm tra validate
+            if (!startValue || !endValue) {
+                alert("⛔ Vui lòng điền đầy đủ thời gian.");
+                return;
+            }
+
+            const start = new Date(startValue);
+            const end = new Date(endValue);
+
+            if (start < now) {
+                alert("❌ Thời gian bắt đầu không được ở quá khứ!");
+                return;
+            }
+
+            if (end < now) {
+                alert("❌ Thời gian kết thúc không được ở quá khứ!");
+                return;
+            }
+
+            if (end <= start) {
+                alert("❌ Thời gian kết thúc phải sau thời gian bắt đầu!");
+                return;
+            }
+
+            // Nếu tất cả các điều kiện hợp lệ, gửi dữ liệu bằng AJAX
+            $.ajax({
+                type: "POST",
+                url: "ShiftServlet", // Gửi request đến ShiftServlet
+                data: $(this).serialize(), // Chuyển dữ liệu form thành chuỗi query
+                success: function (response) {
+                    alert("✅ Cập nhật ca trực thành công!");
+                    location.reload(); // Reload trang để hiển thị dữ liệu mới
+                },
+                error: function () {
+                    alert("❌ Có lỗi xảy ra, vui lòng thử lại!");
+                }
             });
+        });
+    });
+</script>
 
-        </script>
         <<script>
             function deleteShift(event, shiftID) {
                 event.preventDefault();
@@ -449,7 +529,7 @@
         </script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                const rowsPerPage = 8;
+                const rowsPerPage = 5;
                 const rows = document.querySelectorAll(".shift-row");
                 const totalRows = rows.length;
                 const totalPages = Math.ceil(totalRows / rowsPerPage);
@@ -546,6 +626,47 @@
         applyFilter("");
     });
 </script>
+<script>
+document.getElementById("startTime").addEventListener("change", function() {
+    const shiftNameInput = document.getElementById("shiftName");
+    const selectedTime = new Date(this.value);
+    const hour = selectedTime.getHours();
+
+    let shiftName = "";
+    if (hour >= 6 && hour < 12) {
+        shiftName = "Ca sáng";
+    } else if (hour >= 12 && hour < 18) {
+        shiftName = "Ca trưa";
+    } else if (hour >= 18 && hour <= 23) {
+        shiftName = "Ca tối";
+    } else {
+        shiftName = "Ca đêm";
+    }
+
+    shiftNameInput.value = shiftName;
+});
+</script>
+<script>
+document.getElementById("editStartTime").addEventListener("change", function() {
+    const shiftNameInput = document.getElementById("editShiftName");
+    const selectedTime = new Date(this.value);
+    const hour = selectedTime.getHours();
+
+    let shiftName = "";
+    if (hour >= 6 && hour < 12) {
+        shiftName = "Ca sáng";
+    } else if (hour >= 12 && hour < 18) {
+        shiftName = "Ca trưa";
+    } else if (hour >= 18 && hour <= 23) {
+        shiftName = "Ca tối";
+    } else {
+        shiftName = "Ca đêm";
+    }
+
+    shiftNameInput.value = shiftName;
+});
+</script>
+
 
     </body>
 </html>

@@ -1,5 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, model.ServiceItem" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -90,18 +92,28 @@
                             <div class="card shadow rounded-4 border-0 mb-4 h-100 d-flex flex-column">
                                 <div class="card-body d-flex flex-column">
                                     <h4 class="card-title text-primary mb-3">${item.itemName}</h4>
-                                    <p class="fw-bold text-dark fs-5 mb-3"><span class="text-secondary">Price:</span> $${item.price}</p>
+                                  <p class="fw-bold text-dark fs-5 mb-3">
+    <span class="text-secondary">Price:</span> <fmt:formatNumber value="${item.price}" pattern="#,##0.##"/>VND
+</p>
+
                                     <div class="mt-auto">
                                         <div class="image-container">
                                             <img src="${item.imageURL}" alt="Service Image" class="img-fluid"
                                                  style="max-height: 100%; max-width: 100%; object-fit: scale-down;">
                                         </div>
+                                        <div>
+                                            <c:if test="${not empty item.description}">
+                                                <p class="mt-3 text-muted text-center">${item.description}</p>
+                                            </c:if>
+                                        </div>
                                         <p class="mt-3">
 
                                             <button class="btn btn-sm btn-warning"
-                                                    onclick="openEditModal(${item.itemID}, '${item.itemName}', ${item.price}, '${item.imageURL}', ${item.serviceID})">
+                                                    onclick="openEditModal(${item.itemID}, '${item.itemName}', ${item.price}, '${item.imageURL}', ${item.serviceID}, '${fn:escapeXml(item.description)}'
+)">
                                                 Edit
                                             </button>
+
 
                                             <a href="ManageService?action=delete&id=${item.itemID}" class="btn btn-sm btn-danger"
                                                onclick="return confirm('Are you sure you want to delete this item?')">Delete</a>
@@ -141,8 +153,12 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Price ($)</label>
+                            <label>Price (VND)</label>
                             <input type="number" step="0.01" class="form-control" name="price" id="price" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="form-control" name="description" id="description" rows="3"></textarea>
                         </div>
 
                         <div class="form-group">
@@ -185,23 +201,26 @@
                                                        document.getElementById("previewImg").style.display = "none";
                                                        document.getElementById("previewImg").src = "";
                                                        document.getElementById("image").required = true;
+                                                       document.getElementById("description").value = '';
                                                        document.getElementById("serviceID").value = serviceID;
                                                        $('#serviceModal').modal('show');
                                                    }
 
 
-                                                   function openEditModal(itemID, name, price, imageURL, serviceID) {
-                                                       document.getElementById("modalTitle").innerText = "Edit Service";
-                                                       document.getElementById("serviceId").value = itemID;
-                                                       document.getElementById("itemName").value = name;
-                                                       document.getElementById("price").value = price;
-                                                       document.getElementById("oldImageURL").value = imageURL;
-                                                       document.getElementById("serviceID").value = serviceID;
-                                                       document.getElementById("previewImg").src = imageURL;
-                                                       document.getElementById("previewImg").style.display = "block";
-                                                       document.getElementById("image").required = false;
-                                                       $('#serviceModal').modal('show');
-                                                   }
+                                                   function openEditModal(itemID, name, price, imageURL, serviceID, description) {
+    document.getElementById("modalTitle").innerText = "Edit Service";
+    document.getElementById("serviceId").value = itemID;
+    document.getElementById("itemName").value = name;
+    document.getElementById("price").value = price;
+    document.getElementById("oldImageURL").value = imageURL;
+    document.getElementById("serviceID").value = serviceID;
+    document.getElementById("description").value = description || "";
+    document.getElementById("previewImg").src = imageURL;
+    document.getElementById("previewImg").style.display = "block";
+    document.getElementById("image").required = false;
+    $('#serviceModal').modal('show');
+}
+
 
                                                    document.getElementById("image").addEventListener("change", function (event) {
                                                        const [file] = event.target.files;

@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.BookingDAO;
 import dao.ServiceItemDAO;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
@@ -12,8 +13,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.ServiceItem;
+import model.User;
 
 /**
  *
@@ -59,23 +62,23 @@ public class ServicesRedirectServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String type = request.getParameter("type"); // "food", "laundry", or "car"
-        int serviceId;
+        String type = request.getParameter("type"); // "food", "drinks", or "bikes"
+        int serviceId = -1;
 
-        String destination = "";
+        String destination;
 
         switch (type) {
-            case "food":
+            case "foods":
                 serviceId = 1; // ID này phải đúng với DB
-                destination = "service_food.jsp";
+                destination = "service_foods.jsp";
                 break;
-            case "laundry":
+            case "drinks":
                 serviceId = 2;
-                destination = "service_car_rental.jsp";
+                destination = "service_drinks.jsp";
                 break;
-            case "car":
+            case "bikes":
                 serviceId = 3;
-                destination = "service_laundry.jsp";
+                destination = "service_bikes_rental.jsp";
                 break;
             default:
                 System.out.println("[ERROR] Invalid service type: " + type);
@@ -83,20 +86,20 @@ public class ServicesRedirectServlet extends HttpServlet {
                 return;
         }
 
-        System.out.println("[DEBUG] Redirecting to: " + destination + " with serviceId = " + serviceId);
-
-        ServiceItemDAO itemDAO = new ServiceItemDAO();
-        List<ServiceItem> items = itemDAO.getItemsByServiceId(serviceId);
-
-        if (items == null || items.isEmpty()) {
-            System.out.println("[DEBUG] No items returned from DAO.");
-        } else {
-            System.out.println("[DEBUG] Passing " + items.size() + " items to JSP.");
+        // Only proceed if we have valid serviceId and destination
+        if (serviceId != -1 && destination != null) {
+            System.out.println("[DEBUG] Redirecting to: " + destination + " with serviceId = " + serviceId);
+            ServiceItemDAO itemDAO = new ServiceItemDAO();
+            List<ServiceItem> items = itemDAO.getItemsByServiceId(serviceId);
+            if (items == null || items.isEmpty()) {
+                System.out.println("[DEBUG] No items returned from DAO.");
+            } else {
+                System.out.println("[DEBUG] Passing " + items.size() + " items to JSP.");
+            }
+            request.setAttribute("items", items);
+            RequestDispatcher rd = request.getRequestDispatcher(destination);
+            rd.forward(request, response);
         }
-
-        request.setAttribute("items", items);
-        RequestDispatcher rd = request.getRequestDispatcher(destination);
-        rd.forward(request, response);
     }
 
     /**

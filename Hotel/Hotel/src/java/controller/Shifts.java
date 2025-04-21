@@ -24,6 +24,7 @@ public class Shifts extends HttpServlet {
             ShiftDAO shiftDAO = new ShiftDAO();
             List<ShiftSchedule> shiftList = shiftDAO.getShiftsByUserID(userID);
             request.setAttribute("shiftList", shiftList);
+            shiftList.sort((s1, s2) -> s1.getStartDateTime().compareTo(s2.getStartDateTime()));
             request.getRequestDispatcher("view_Shift.jsp").forward(request, response);
         } else {
             response.sendRedirect("login.jsp"); 
