@@ -1,7 +1,10 @@
-
+<%-- 
+    Document   : form_payment
+    Created on : Jun 8, 2023, 9:20:49 PM
+    Author     : admin
+--%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,6 +26,7 @@
         <link rel="stylesheet" href="css/room_bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css/responsive.css">
+
     </head>
     <body>
         <%@include file="/includes/header.jsp" %>
@@ -43,7 +47,7 @@
         <br>
 
         <h1 style="text-align: center;">Payment Room</h1>
-
+        
         <form action="bookingRoom" id="bookingForm" class="col-md-9 m-auto" name="myForm" method="post"
               role="form">
             <div class="row">
@@ -74,7 +78,7 @@
                         <P for="inputname">Room Type: <span>${r.getNameRoomType()}</span></P>
                     </div>
                     <div class="col-md-4">
-                        <P for="inputname">Price: <span class="price-vnd"><fmt:formatNumber value="${r.getPrice()}" pattern="#,##0" /> VND/Night</span></P>
+                        <P for="inputname">Price: <span>${r.getPrice()}$/Night</span></P>
                     </div>
                     <div class="col-md-4">
                         <P for="inputname">Number of room: <span class="text-danger">${r.getNumberRoomBook()}</span></P>
@@ -105,12 +109,14 @@
                 </div>
             </div>
 
+
             <div class="row">
                 <div class="form-group col-md-6 mb-3">
                     <label for="inputname">Total Price</label>
-                    <input type="text" class="form-control mt-1 price-vnd" id="TotalPrice" name="TotalPrice" value="<fmt:formatNumber value="${booking.getTotalPrice()}" pattern="#,##0" /> VND" readonly>
+                    <input type="text" class="form-control mt-1" id="TotalPrice" name="TotalPrice" value="${booking.getTotalPrice()}" readonly>
                 </div>
             </div>
+
 
             <div class="col text-end mt-2">
                 <button type="submit" class="btn btn-success btn-lg px-3">Book Now</button>
@@ -118,6 +124,8 @@
         </form>
 
         <br>
+
+
 
         <%@include file="/includes/footer.jsp" %>
         <!-- Optional JavaScript -->

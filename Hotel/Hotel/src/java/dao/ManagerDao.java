@@ -9,16 +9,13 @@ import dbcontext.DBContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import model.Booking;
-import model.BookingDetail;
 import model.BookingDetails;
 import model.Contact;
 import model.Discount;
@@ -60,22 +57,6 @@ public class ManagerDao {
         } catch (Exception e) {
         }
         return list;
-    }
-
-    public boolean isRoomTypeBooked(String IDRoomType) {
-        String query = "SELECT COUNT(*) FROM BookingDetail WHERE IDRoomType = ?";
-        try {
-            conn = DBContext.getConnection(); // Use the class variable instead of a local one
-            ps = conn.prepareStatement(query);
-            ps.setString(1, IDRoomType);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-        } catch (Exception e) {
-            // Handle exception consistently with other methods
-        }
-        return false;
     }
 
     // xoa account theo ID (Delete)
@@ -597,217 +578,59 @@ public class ManagerDao {
             e.printStackTrace();
         }
     }
+public List<RoomType> getAvailableRoomTypes(Date checkin, Date checkout, String roomTypeFilter) {
+    List<RoomType> list = new ArrayList<>();
+    String sql = "SELECT rt.*, " +
+                 "ISNULL(rt.TotalRoom - SUM(bd.NumberOfRoom), rt.TotalRoom) AS roomFree " +
+                 "FROM RoomType rt " +
+                 "LEFT JOIN BookingDetail bd ON rt.IDRoomType = bd.IDRoomType " +
+                 "LEFT JOIN BookingDetails b ON b.IDBooking = bd.IDBookingDetail " +
+                 "AND b.isCancel = 0 " +
+                 "AND NOT (b.Checkout <= ? OR b.Checkin >= ?) " + 
+                 "WHERE rt.RoomStatus = 'Valid' ";
 
-    public List<RoomType> getAvailableRoomTypes(Date checkin, Date checkout, String roomTypeFilter) {
-        List<RoomType> list = new ArrayList<>();
-        String sql = "SELECT rt.*, "
-                + "ISNULL(rt.TotalRoom - SUM(bd.NumberOfRoom), rt.TotalRoom) AS roomFree "
-                + "FROM RoomType rt "
-                + "LEFT JOIN BookingDetail bd ON rt.IDRoomType = bd.IDRoomType "
-                + "LEFT JOIN BookingDetails b ON b.IDBooking = bd.IDBookingDetail "
-                + "AND b.isCancel = 0 "
-                + "AND NOT (b.Checkout <= ? OR b.Checkin >= ?) "
-                + "WHERE rt.RoomStatus = 'Valid' ";
+    if (roomTypeFilter != null && !roomTypeFilter.isEmpty()) {
+        sql += "AND LOWER(rt.NameRoomType) LIKE ? ";
+    }
+
+    sql += "GROUP BY rt.IDRoomType, rt.NameRoomType, rt.MaxPerson, rt.NumberOfBed, " +
+           "rt.NumberOfBath, rt.Price, rt.TotalRoom, rt.RoomStatus, rt.Content, rt.Image";
+
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setDate(1, new java.sql.Date(checkin.getTime()));
+        ps.setDate(2, new java.sql.Date(checkout.getTime()));
+
         if (roomTypeFilter != null && !roomTypeFilter.isEmpty()) {
-            sql += "AND LOWER(rt.NameRoomType) LIKE ? ";
+            ps.setString(3, "%" + roomTypeFilter.toLowerCase() + "%");
         }
-        sql += "GROUP BY rt.IDRoomType, rt.NameRoomType, rt.MaxPerson, rt.NumberOfBed, "
-                + "rt.NumberOfBath, rt.Price, rt.TotalRoom, rt.RoomStatus, rt.Content, rt.Image";
-        try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setDate(1, new java.sql.Date(checkin.getTime()));
-            ps.setDate(2, new java.sql.Date(checkout.getTime()));
-            if (roomTypeFilter != null && !roomTypeFilter.isEmpty()) {
-                ps.setString(3, "%" + roomTypeFilter.toLowerCase() + "%");
-            }
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                RoomType r = new RoomType(
-                        rs.getInt("IDRoomType"),
-                        rs.getString("NameRoomType"),
-                        rs.getInt("MaxPerson"),
-                        rs.getInt("NumberOfBed"),
-                        rs.getInt("NumberOfBath"),
-                        rs.getInt("Price"),
-                        rs.getInt("TotalRoom"),
-                        rs.getString("RoomStatus"),
-                        rs.getString("Content")
-                );
-                r.setImage(rs.getString("Image"));
-                r.setRoomFree(rs.getInt("roomFree"));
-                list.add(r);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            RoomType r = new RoomType(
+                rs.getInt("IDRoomType"),
+                rs.getString("NameRoomType"),
+                rs.getInt("MaxPerson"),
+                rs.getInt("NumberOfBed"),
+                rs.getInt("NumberOfBath"),
+                rs.getInt("Price"),
+                rs.getInt("TotalRoom"),
+                rs.getString("RoomStatus"),
+                rs.getString("Content")
+            );
+            r.setImage(rs.getString("Image"));
+            r.setRoomFree(rs.getInt("roomFree"));
+            list.add(r);
         }
-        return list;
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
 
-    public List<RoomType> getRoomTypesByName(String nameRoomType) {
-        List<RoomType> list = new ArrayList<>();
-        String query = "SELECT * FROM RoomType WHERE NameRoomType LIKE ?";
+    return list;
+}
 
-        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
 
-            ps.setString(1, "%" + nameRoomType + "%");
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                RoomType room = new RoomType(
-                        rs.getInt("IDRoomType"),
-                        rs.getString("NameRoomType"),
-                        rs.getInt("MaxPerson"),
-                        rs.getInt("NumberOfBed"),
-                        rs.getInt("NumberOfBath"),
-                        rs.getInt("Price"),
-                        rs.getInt("TotalRoom"),
-                        rs.getString("RoomStatus"),
-                        rs.getString("Content")
-                );
-                room.setImage(rs.getString("Image"));
-                list.add(room);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    public List<BookingDetail> getBookingDetailsByBookingId(int bookingId) {
-        List<BookingDetail> list = new ArrayList<>();
-        String query = "SELECT bd.IDBookingDetail, bd.IDRoomType, bd.NumberOfRoom, rt.NameRoomType "
-                + "FROM BookingDetail bd "
-                + "JOIN RoomType rt ON bd.IDRoomType = rt.IDRoomType "
-                + "WHERE bd.IDBookingDetail = ?";
-        try {
-            conn = DBContext.getConnection();
-            ps = conn.prepareStatement(query);
-            ps.setInt(1, bookingId);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                BookingDetail detail = new BookingDetail(
-                        rs.getInt(1),
-                        rs.getInt(2),
-                        rs.getInt(3),
-                        rs.getString(4)
-                );
-                list.add(detail);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    public boolean updateCheckoutAndPrice(int idBooking, LocalDate newCheckout) throws SQLException {
-        // SQL để lấy giá phòng từ RoomType
-        String sqlGetRoomPrice = "SELECT RT.Price FROM RoomType RT "
-                + "INNER JOIN BookingDetail BD ON RT.IDRoomType = BD.IDRoomType "
-                + "WHERE BD.IDBookingDetail = ?";
-
-        // SQL để lấy số phòng từ BookingDetail
-        String sqlGetNumberOfRooms = "SELECT SUM(BD.NumberOfRoom) AS TotalRooms FROM BookingDetail BD WHERE BD.IDBookingDetail = ?";
-
-        // SQL để cập nhật Checkout và TotalPrice trong BookingDetails
-        String sqlUpdateBookingDetails = "UPDATE BookingDetails SET Checkout = ?, TotalPrice = ? WHERE IDBooking = ?";
-
-        try (Connection conn = DBContext.getConnection(); PreparedStatement stmtGetPrice = conn.prepareStatement(sqlGetRoomPrice); PreparedStatement stmtGetNumberOfRooms = conn.prepareStatement(sqlGetNumberOfRooms); PreparedStatement stmtUpdateBooking = conn.prepareStatement(sqlUpdateBookingDetails)) {
-
-            // Set IDBooking vào câu SQL để lấy giá phòng
-            stmtGetPrice.setInt(1, idBooking);
-            ResultSet rsPrice = stmtGetPrice.executeQuery();
-
-            double roomPrice = 0;
-            if (rsPrice.next()) {
-                roomPrice = rsPrice.getDouble("Price");
-            }
-
-            // Nếu không tìm thấy giá phòng, trả về false
-            if (roomPrice == 0) {
-                return false;
-            }
-
-            // Lấy số lượng phòng từ BookingDetail
-            stmtGetNumberOfRooms.setInt(1, idBooking);
-            ResultSet rsRooms = stmtGetNumberOfRooms.executeQuery();
-
-            int numberOfRooms = 0;
-            if (rsRooms.next()) {
-                numberOfRooms = rsRooms.getInt("TotalRooms");
-            }
-
-            // Nếu không có phòng nào, trả về false
-            if (numberOfRooms == 0) {
-                return false;
-            }
-
-            // Lấy chi tiết booking hiện tại
-            BookingDetails bookingDetails = getBookingDetails(idBooking);
-            if (bookingDetails == null) {
-                return false;
-            }
-
-            // Tính số ngày gia hạn
-            String currentCheckout = bookingDetails.getCheckOut();  // Lấy ngày checkout hiện tại dưới dạng String
-            LocalDate currentCheckoutDate = LocalDate.parse(currentCheckout); // Chuyển String sang LocalDate
-            long numberOfDays = ChronoUnit.DAYS.between(currentCheckoutDate, newCheckout);
-
-            // Tính tổng giá cho giai đoạn gia hạn
-            double totalPrice = bookingDetails.getTotalPrice() + (roomPrice * numberOfDays * numberOfRooms);
-
-            // Cập nhật Checkout và TotalPrice trong bảng BookingDetails
-            stmtUpdateBooking.setString(1, newCheckout.toString()); // Cập nhật Checkout dưới dạng String
-            stmtUpdateBooking.setDouble(2, totalPrice);
-            stmtUpdateBooking.setInt(3, idBooking);
-
-            int rowsUpdated = stmtUpdateBooking.executeUpdate();
-            return rowsUpdated > 0;  // Nếu cập nhật thành công, trả về true
-        }
-    }
-
-    public BookingDetails getBookingDetails(int bookingId) {
-        String query = "SELECT b.IDBooking, b.IDAccount, b.IDDiscount, b.FullName, b.Gender, b.Email, b.Phone, "
-                + "b.Adult, b.Child, b.CheckIn, b.CheckOut, b.TotalPrice, b.BookingTime, b.Note, b.isCancel, "
-                + "rt.NameRoomType "
-                + "FROM BookingDetails b "
-                + "JOIN BookingDetail bd ON b.IDBooking = bd.IDBookingDetail "
-                + "JOIN RoomType rt ON bd.IDRoomType = rt.IDRoomType "
-                + "WHERE b.IDBooking = ?";
-
-        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
-
-            ps.setInt(1, bookingId);  // Set IDBooking
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                int IDBooking = rs.getInt("IDBooking");
-                int IDAccount = rs.getInt("IDAccount");
-                int IDDiscount = rs.getInt("IDDiscount");
-                String FullName = rs.getString("FullName");
-                String Gender = rs.getString("Gender");
-                String Email = rs.getString("Email");
-                String Phone = rs.getString("Phone");
-                int Adult = rs.getInt("Adult");
-                int Child = rs.getInt("Child");
-                String CheckIn = rs.getString("CheckIn");
-                String CheckOut = rs.getString("CheckOut");
-                double TotalPrice = rs.getDouble("TotalPrice");
-                String BookingTime = rs.getString("BookingTime");
-                String Note = rs.getString("Note");
-                boolean isCancel = rs.getBoolean("isCancel");
-                String nameRoomType = rs.getString("NameRoomType");
-
-                // Tạo đối tượng BookingDetails với constructor đầy đủ
-                return new BookingDetails(IDBooking, IDAccount, IDDiscount, FullName, Gender, Email, Phone,
-                        Adult, Child, CheckIn, CheckOut, TotalPrice, BookingTime, Note,
-                        isCancel, nameRoomType);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;  // Trả về null nếu không tìm thấy booking
-    }
 
 }

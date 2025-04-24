@@ -1,25 +1,24 @@
 package model;
 
-import java.sql.Timestamp;
+import java.sql.Time;
 import java.sql.Date;
 
 public class ShiftSchedule {
-
     private int shiftID;
     private String shiftName;
-    private Timestamp startDateTime;
-    private Timestamp endDateTime;
-    private String employeeName;
+    private Time startTime;
+    private Time endTime;
+    private Date shiftDate;
+    private String employeeName; 
     private int IDAccount;
+    public ShiftSchedule() {}
 
-    public ShiftSchedule() {
-    }
-
-    public ShiftSchedule(int shiftID, String shiftName, Timestamp startDateTime, Timestamp endDateTime, Date shiftDate, String employeeName) {
+    public ShiftSchedule(int shiftID, String shiftName, Time startTime, Time endTime, Date shiftDate, String employeeName) {
         this.shiftID = shiftID;
         this.shiftName = shiftName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.shiftDate = shiftDate;
         this.employeeName = employeeName;
     }
 
@@ -39,20 +38,28 @@ public class ShiftSchedule {
         this.shiftName = shiftName;
     }
 
-    public Timestamp getStartDateTime() {
-        return startDateTime;
+    public Time getStartTime() {
+        return startTime;
     }
 
-    public void setStartDateTime(Timestamp startDateTime) {
-        this.startDateTime = startDateTime;
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
     }
 
-    public Timestamp getEndDateTime() {
-        return endDateTime;
+    public Time getEndTime() {
+        return endTime;
     }
 
-    public void setEndDateTime(Timestamp endDateTime) {
-        this.endDateTime = endDateTime;
+    public void setEndTime(Time endTime) {
+        this.endTime = endTime;
+    }
+
+    public Date getShiftDate() {
+        return shiftDate;
+    }
+
+    public void setShiftDate(Date shiftDate) {
+        this.shiftDate = shiftDate;
     }
 
     public String getEmployeeName() {
@@ -63,17 +70,20 @@ public class ShiftSchedule {
         this.employeeName = employeeName;
     }
 
-    public int getIDAccount() {
-        return IDAccount;
-    }
-
-    public void setIDAccount(int IDAccount) {
-        this.IDAccount = IDAccount;
-    }
-
+public int getIDAccount() {
+    return IDAccount;
+}
+public void setIDAccount(int IDAccount) {
+    this.IDAccount = IDAccount;
+}
     @Override
     public String toString() {
-        return "ShiftSchedule{" + "shiftID=" + shiftID + ", shiftName=" + shiftName + ", startDateTime=" + startDateTime + ", endDateTime=" + endDateTime + ", employeeName=" + employeeName + ", IDAccount=" + IDAccount + '}';
+        return "ShiftSchedule{" +
+                "shiftID=" + shiftID +
+                ", shiftName='" + shiftName + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", shiftDate=" + shiftDate +
+                '}';
     }
-
 }

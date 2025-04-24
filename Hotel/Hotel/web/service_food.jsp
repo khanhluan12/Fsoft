@@ -1,6 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
@@ -31,7 +30,7 @@
             <div class="overlay bg-parallax" data-stellar-ratio="0.8" data-stellar-vertical-offset="0"></div>
             <div class="container">
                 <div class="page-cover text-center">
-                    <h2 class="page-cover-tittle">Drinks Service</h2>
+                    <h2 class="page-cover-tittle">Food Service</h2>
                 </div>
             </div>
         </section>
@@ -40,25 +39,24 @@
         <section class="services py-5">
             <div class="container">
                 <div class="section-title text-center mb-5">
-                    <h1>Drinks Service</h1>
-                    <p class="text-muted">Refreshing drinks served fresh</p>
+                    <h1>Food & Drink Menu</h1>
+                    <p class="text-muted">Delicious meals and refreshing drinks served fresh</p>
                 </div>
+
                 <c:choose>
                     <c:when test="${not empty items}">
                         <div class="row">
                             <c:forEach var="item" items="${items}">
-                                <div class="col-md-4 col-sm-6 align-items-stretch mb-4">
-                                    <a href="ServicesItemDetailServlet?itemID=${item.itemID}" class="stretched-link">
-                                        <div class="food-card position-relative w-100 shadow-sm"
-                                             style="height: 300px; border-radius: 15px; overflow: hidden; cursor: pointer;"
-                                             onclick="location.href = 'order?itemID=${item.itemID}'">
-                                            <div class="food-card-bg" style="background-image: url('${item.imageURL}');"></div>
-                                            <div class="food-card-overlay">
-                                                <h5 class="mb-1">${item.itemName}</h5>
-                                                <p class="price-highlight"><fmt:formatNumber value="${item.price}" pattern="#,###" /> đ</p>
-                                            </div>
+                                <div class="col-md-4 col-sm-6 d-flex align-items-stretch mb-4">
+                                    <div class="food-card position-relative w-100 shadow-sm"
+                                         style="height: 300px; border-radius: 15px; overflow: hidden; cursor: pointer;"
+                                         onclick="location.href = 'order?itemID=${item.itemID}'">
+                                        <div class="food-card-bg" style="background-image: url('${item.imageURL}');"></div>
+                                        <div class="food-card-overlay">
+                                            <h5 class="mb-1">${item.itemName}</h5>
+                                            <p class="text-success font-weight-bold">$${item.price}</p>
                                         </div>
-                                    </a>
+                                    </div>
                                 </div>
                             </c:forEach>
                         </div>

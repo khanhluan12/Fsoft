@@ -10,10 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import model.BookingDetails;
 import java.sql.Statement;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+
 /**
  *
  * @author admin
@@ -113,95 +110,5 @@ public class BookingDAO {
             e.printStackTrace();
         }
         return false;
-    }
-     public boolean hasActiveBooking(int accountId) {
-        String sql = "SELECT COUNT(*) FROM BookingDetails "
-                + "WHERE IDAccount = ? "
-                + "AND isCancel = 0 "
-                + "AND Checkout >= CAST(GETDATE() AS DATE)";
-
-        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, accountId);
-            ResultSet rs = ps.executeQuery();
-
-            return rs.next() && rs.getInt(1) > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Error checking active booking: " + e.getMessage());
-            return false;
-        }
-    }
-      public boolean isDateWithinBookingPeriod(int accountId, LocalDate rentalDate) {
-        String sql = "SELECT COUNT(*) FROM BookingDetails "
-                + "WHERE IDAccount = ? "
-                + "AND isCancel = 0 "
-                + "AND ? BETWEEN Checkin AND Checkout";
-
-        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, accountId);
-            ps.setDate(2, java.sql.Date.valueOf(rentalDate));
-            ResultSet rs = ps.executeQuery();
-
-            return rs.next() && rs.getInt(1) > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Error checking rental date validity: " + e.getMessage());
-            return false;
-        }
-    }
- public List<BookingDetails> getActiveBookings(int accountId) {
-        List<BookingDetails> bookings = new ArrayList<>();
-        String sql = "SELECT * FROM BookingDetails "
-                + "WHERE IDAccount = ? "
-                + "AND isCancel = 0 "
-                + "AND Checkout >= CAST(GETDATE() AS DATE)";
-
-        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, accountId);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                BookingDetails booking = new BookingDetails(
-                        rs.getInt("IDBooking"),
-                        rs.getInt("IDAccount"),
-                        rs.getInt("IDDiscount"),
-                        rs.getString("FullName"),
-                        rs.getString("Gender"),
-                        rs.getString("Email"),
-                        rs.getString("Phone"),
-                        rs.getInt("Adult"),
-                        rs.getInt("Child"),
-                        rs.getString("CheckIn"),
-                        rs.getString("CheckOut"),
-                        rs.getDouble("TotalPrice"),
-                        rs.getString("BookingTime"),
-                        rs.getString("Note")
-                );
-                booking.setIsCancel(rs.getBoolean("isCancel"));
-                bookings.add(booking);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error getting active bookings: " + e.getMessage());
-        }
-        return bookings;
-    }
-
-    public int getTotalGuestsForActiveBookings(int accountId) {
-        String sql = "SELECT SUM(Adult) as total_guests FROM BookingDetails WHERE IDAccount = ? AND isCancel = 0 AND Checkout >= CAST(GETDATE() AS DATE)";
-
-        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, accountId);
-            ResultSet rs = ps.executeQuery();
-
-            return rs.next() ? rs.getInt("total_guests") : 0;
-
-        } catch (SQLException e) {
-            System.out.println("Error getting total guests: " + e.getMessage());
-            return 0;
-        }
     }
 }

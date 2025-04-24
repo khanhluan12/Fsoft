@@ -158,15 +158,7 @@
             .reply-text {
                 margin: 0;
             }
-.back{
-            color: #000;
-            background-color: #FEA116;
-            border-color: #FEA116;
-            }
-            .back:hover{
-            background-color: #e36b0a;
-            border-color: #d95e08;
-            }
+
         </style>
     </head>
     <body>
@@ -183,7 +175,10 @@
                         </div>
                         <div class="col-md-6">
                             <ul class="list-group list-group-flush">
-                               
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <strong>Room Type ID:</strong>
+                                    <span>${ room.getIDRoomType() }</span>
+                                </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <strong>Max Persons:</strong>
                                     <span>${ room.getMaxPerson() }</span>
@@ -214,7 +209,6 @@
                                 </li>
                             </ul>
                         </div>
-                                <div><button class="back" onclick="window.history.back()">Back</button></div>
                     </div>
 
                 </div>

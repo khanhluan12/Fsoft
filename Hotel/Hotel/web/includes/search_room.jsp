@@ -9,18 +9,17 @@
                         <label><b class="text-white">Check In Date</b></label>
                     </div>
                     <input type="date" class="form-control"  name="check_in" id="check_in"   required/>
-                    <span id="checkin" class="error form-text text-danger "></span>
+                    <span id="checkin" class="error"></span>
                 </div>
                 <div class="col-4">
                     <div>
                         <label><b class="text-white">Check Out Date</b></label>
                     </div>
                     <input type="date" class="form-control " name="check_out" id="check_out"  required />
-                    <span id="checkout" class="error form-text text-danger"></span>
+                    <span id="checkout" class="error"></span>
                 </div>
 
-                <div class="col-2 mt-3 px-4 pt-3 btn " >
-                    <input type="hidden" name="roomType" value="">
+                <div class="col-2 mt-3 px-5 btn">
                     <input type="submit"  class="btn bg-primary text-white" value="Search Availability" />
                 </div>
             </div>

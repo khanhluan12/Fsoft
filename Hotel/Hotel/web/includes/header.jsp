@@ -32,7 +32,7 @@
                     <li class="nav-item"><a class="nav-link" href="customer_about.jsp">About us</a></li>
                     <li class="nav-item"><a class="nav-link" href="showRoomCustomer">Room</a></li>
                     <li class="nav-item"><a class="nav-link" href="customer_services.jsp">Services</a></li>
-                    <li class="nav-item"><a class="nav-link" href="review-room">Review</a></li>
+                    <li class="nav-item"><a class="nav-link" href="loadFeedback">FAQ</a></li>
                     <li class="nav-item"><a class="nav-link" href="customer_contact.jsp">Contact</a></li>
                     <c:if test="${sessionScope.userA != null}"> 
                         <li class="nav-item submenu dropdown">

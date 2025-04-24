@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import model.BookingByDate;
 
-
 /**
  *
  * @author admin
@@ -24,61 +23,50 @@ public class OwnerDao {
     ResultSet rs = null;
 
     public int getTotalRevenue() {
-            int total = 0;
-    String bookingSql = "SELECT SUM(TotalPrice) AS TotalSum FROM BookingDetails WHERE Note = 'Success'";
-     String serviceSql = "SELECT ISNULL(SUM(TotalPrice), 0) FROM ServiceOrder WHERE Status = 'Completed'";
-   try (Connection conn = DBContext.getConnection()) {
-        try (PreparedStatement ps1 = conn.prepareStatement(bookingSql);
-             ResultSet rs1 = ps1.executeQuery()) {
-            if (rs1.next()) total += rs1.getInt(1);
+        String query = "SELECT SUM(TotalPrice) AS TotalSum\n"
+                + "FROM BookingDetails;";
+        try {
+            conn = DBContext.getConnection();//mo ket noi
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
         }
-
-        try (PreparedStatement ps2 = conn.prepareStatement(serviceSql);
-             ResultSet rs2 = ps2.executeQuery()) {
-            if (rs2.next()) total += rs2.getInt(1);
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return 0;
     }
 
-    return total;
-}
-
-
-   public int getTodayRevenue() {
-       int total = 0;
-    String bookingSql = "SELECT SUM(TotalPrice) AS TotalSum FROM BookingDetails WHERE CAST(BookingTime AS DATE) = CAST(GETDATE() AS DATE) AND Note = 'Success'";
-    String serviceSql = "SELECT ISNULL(SUM(TotalPrice), 0) FROM ServiceOrder WHERE Status = 'Completed' AND CAST(OrderDate AS DATE) = CAST(GETDATE() AS DATE)";
-     try (Connection conn = DBContext.getConnection()) {
-        try (PreparedStatement ps1 = conn.prepareStatement(bookingSql);
-             ResultSet rs1 = ps1.executeQuery()) {
-            if (rs1.next()) total += rs1.getInt(1);
+    public int getTodayRevenue() {
+        String query = "SELECT SUM(TotalPrice) AS TotalSum\n"
+                + "FROM BookingDetails\n"
+                + "WHERE CAST(BookingTime AS DATE) = CAST(GETDATE() AS DATE);";
+        try {
+            conn = DBContext.getConnection();//mo ket noi
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
         }
-
-        try (PreparedStatement ps2 = conn.prepareStatement(serviceSql);
-             ResultSet rs2 = ps2.executeQuery()) {
-            if (rs2.next()) total += rs2.getInt(1);
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return 0;
     }
 
-    return total;
-}
-  public int getNumberOfBooking() {
-    String query = "SELECT COUNT(*) AS TotalCount FROM BookingDetails WHERE Note = 'success'";
-    try {
-        conn = DBContext.getConnection();
-        ps = conn.prepareStatement(query);
-        rs = ps.executeQuery();
-        while (rs.next()) {
-            return rs.getInt(1);
+    public int getNumberOfBooking() {
+        String query = "SELECT COUNT(*) AS TotalCount\n"
+                + "FROM BookingDetails;";
+        try {
+            conn = DBContext.getConnection();//mo ket noi
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return 0;
     }
-    return 0;
-}
 
     public int getNumberOfUser() {
         String query = "SELECT COUNT(*) AS TotalCount\n"
@@ -157,6 +145,4 @@ public class OwnerDao {
         }
         return listBookingByDate;
     }
-   
-
 }

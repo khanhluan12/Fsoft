@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package controller;
 
 import dao.FeedbackDAO;
@@ -33,15 +38,19 @@ public class ReplyFeedbackServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String content = request.getParameter("content");
         String feedbackId = request.getParameter("txtId");
+
         ReplyFeedbackDAO dao = new ReplyFeedbackDAO();
         FeedbackDAO feedbackDAO = new FeedbackDAO();
         String url = "error.jsp";
+
         try {
             HttpSession session = request.getSession();
             boolean result = dao.insertReplyFeedback(Integer.parseInt(feedbackId), content);
+
             if (result) {
-                List<Feedback> listFeedback = feedbackDAO.getAllFeedbackWithRoomName();
+                List<Feedback> listFeedback = feedbackDAO.getAllFeedback();
                 request.setAttribute("LIST_ADMIN_FFEDBACK", listFeedback);
+
                 request.setAttribute("REPLY_SUCUESS", "success");
                 url = "feedbackAdmin";
             }
@@ -68,4 +77,5 @@ public class ReplyFeedbackServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
 }

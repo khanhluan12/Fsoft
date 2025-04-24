@@ -4,29 +4,28 @@
  */
 package model;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author ADMIN
  */
 public class ServiceItem {
-
     private int itemID;
     private int serviceID;
     private String itemName;
     private double price;
     private String imageURL;
-    private String description;
 
     public ServiceItem() {
     }
 
-    public ServiceItem(int itemID, String itemName, double price, String imageURL, int serviceID, String description) {
+    public ServiceItem(int itemID, String itemName, double price, String imageURL, int serviceID) {
         this.itemID = itemID;
         this.itemName = itemName;
         this.price = price;
         this.imageURL = imageURL;
         this.serviceID = serviceID;
-        this.description = description;
     }
 
     public int getItemID() {
@@ -69,17 +68,9 @@ public class ServiceItem {
         this.imageURL = imageURL;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public String toString() {
-        return "ServiceItem{" + "itemID=" + itemID + ", serviceID=" + serviceID + ", itemName=" + itemName + ", price=" + price + ", imageURL=" + imageURL + ", description=" + description + '}';
+        return "ServiceItem{" + "itemID=" + itemID + ", serviceID=" + serviceID + ", itemName=" + itemName + ", price=" + price + ", imageURL=" + imageURL + '}';
     }
-
+    
 }

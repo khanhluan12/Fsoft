@@ -4,7 +4,6 @@
  */
 package controller;
 
-import dao.ServiceItemDAO;
 import dao.UserDao;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,9 +12,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import model.BookingDetails;
-import model.ServiceOrder;
 import model.User;
 
 /**
@@ -83,11 +79,6 @@ public class EditProfileServlet extends HttpServlet {
 //        PrintWriter out = response.getWriter();
 //        out.print("<h1>"+ u + "</h1>");
         session.setAttribute("userA", u);
-        List<BookingDetails> list = ud.getBookingDetailsByUserId(i);
-         List<ServiceOrder> serviceOrders = ServiceItemDAO.getServiceOrdersByUserId(i);
-        request.setAttribute("serviceOrders", serviceOrders);
-request.setAttribute("BookingDetails", list);
-
         request.getRequestDispatcher("profile.jsp").forward(request, response);
 
     }
