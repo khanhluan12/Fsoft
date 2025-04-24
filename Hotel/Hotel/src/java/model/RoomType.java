@@ -9,7 +9,6 @@ package model;
  * @author admin
  */
 public class RoomType {
-
     private int IDRoomType;
     private String NameRoomType;
     private int MaxPerson;
@@ -22,8 +21,7 @@ public class RoomType {
     private String image;
     private int roomFree;
     private int numberRoomBook;
-    private double averageRating;
-
+    
     public RoomType(int IDRoomType, String NameRoomType, int MaxPerson, int NumberOfBed, int NumberOfBath, int Price, int totalRoom, String RoomStatus, String Content) {
         this.IDRoomType = IDRoomType;
         this.NameRoomType = NameRoomType;
@@ -43,7 +41,7 @@ public class RoomType {
     public void setNumberRoomBook(int numberRoomBook) {
         this.numberRoomBook = numberRoomBook;
     }
-
+    
     public int getRoomFree() {
         return roomFree;
     }
@@ -130,22 +128,6 @@ public class RoomType {
 
     public void setContent(String Content) {
         this.Content = Content;
-    }
-
-    // Thêm getter và setter
-    public double getAverageRating() {
-        return averageRating;
-    }
-
-    public void setAverageRating(double averageRating) {
-        this.averageRating = averageRating;
-    }
-
-    public String getStarRating() {
-        if (averageRating == 0) {
-            return "Chưa có đánh giá";
-        }
-        return String.format("%.1f sao", averageRating);
     }
 
     @Override

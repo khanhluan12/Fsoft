@@ -3,29 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/ManageService.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/service_bikes_rental.jsp</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/dao/ServiceDAO.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/owner_index.jsp</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/service_drinks.jsp</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/services_itemDetails.jsp</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/owner/LoadRevenueServlet.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/dao/OwnerDao.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/manager_booking.jsp</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/ShowBookingServlet.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/model/BookingDetail.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/model/BookingDetails.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/dao/ServiceOrderDAO.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/profile.jsp</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/model/ServiceOrder.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/includes/manager_header.jsp</file>
+            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/customer_room.jsp</file>
+            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/service_laundry.jsp</file>
+            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/ServiceDetailServlet.java</file>
+            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/dao/ManagerDao.java</file>
+            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/ShowRoomCustomerServlet.java</file>
             <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/customer_services.jsp</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/model/ServiceItem.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/RoomTypeStats.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/RevenueDataServlet.java</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/services_cart.jsp</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/service_foods.jsp</file>
-            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/dao/ServiceItemDAO.java</file>
+            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/src/java/controller/CheckRoomValidServlet.java</file>
+            <file>file:/C:/Users/ADMIN/Documents/GitHub/Fsoft/Hotel/Hotel/web/includes/search_room.jsp</file>
         </group>
     </open-files>
 </project-private>

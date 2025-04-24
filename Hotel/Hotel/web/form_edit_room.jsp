@@ -52,7 +52,7 @@
             <div class="row">
                 <div class="form-group col-md-12 mb-3">
                     <label for="inputname">Image</label><br>
-                   <input type="file" id="roomImage" accept="image/*" name="image" onchange="validateImage(this)">
+                    <input type="file" accept="image/*" name="image" >
                 </div>
             </div>
             <div class="row">
@@ -118,30 +118,4 @@
         <script src="vendors/lightbox/simpleLightbox.min.js"></script>
         <script src="js/custom.js"></script>
     </body>
-    <script>
-    function validateImage(input) {
-        const file = input.files[0];
-        const preview = document.getElementById('previewImage');
-
-        if (file) {
-            if (!file.type.startsWith('image/')) {
-                alert("Chỉ được chọn file hình ảnh thôi nha!");
-                input.value = '';
-                preview.style.display = 'none';
-                preview.src = '#';
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        } else {
-            preview.style.display = 'none';
-            preview.src = '#';
-        }
-    }
-</script>
 </html>

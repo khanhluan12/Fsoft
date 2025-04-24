@@ -1,11 +1,13 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
 package controller;
 
 import dao.ManagerDao;
-import dao.UserDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Map;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +33,7 @@ public class ShowRoomTypeServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        try ( PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -59,25 +61,15 @@ public class ShowRoomTypeServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
+//        String userType = request.getParameter("userType");
+
         ManagerDao managerDao = new ManagerDao();
-        UserDao userDao = new UserDao();
-
-        // Get all room types
         List<RoomType> roomTypeList = managerDao.getRoomType();
-
-        // Get average ratings for all room types
-        Map<Integer, Double> averageRatings = userDao.getAverageRatingsByRoomType();
-
-        // Assign average ratings to each RoomType
-        for (RoomType roomType : roomTypeList) {
-            if (averageRatings.containsKey(roomType.getIDRoomType())) {
-                roomType.setAverageRating(averageRatings.get(roomType.getIDRoomType()));
-            }
-        }
 
         HttpSession session = request.getSession();
         session.setAttribute("listR", roomTypeList);
         request.getRequestDispatcher("manager_room.jsp").forward(request, response);
+
     }
 
     /**
@@ -92,20 +84,7 @@ public class ShowRoomTypeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ManagerDao managerDao = new ManagerDao();
-        UserDao userDao = new UserDao();
-
-        // Get all room types
         List<RoomType> roomTypeList = managerDao.getRoomType();
-
-        // Get average ratings for all room types
-        Map<Integer, Double> averageRatings = userDao.getAverageRatingsByRoomType();
-
-        // Assign average ratings to each RoomType
-        for (RoomType roomType : roomTypeList) {
-            if (averageRatings.containsKey(roomType.getIDRoomType())) {
-                roomType.setAverageRating(averageRatings.get(roomType.getIDRoomType()));
-            }
-        }
 
         HttpSession session = request.getSession();
         session.setAttribute("listR", roomTypeList);
@@ -119,6 +98,7 @@ public class ShowRoomTypeServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Servlet hiển thị danh sách phòng cho quản lý với đánh giá trung bình";
+        return "Short description";
     }// </editor-fold>
+
 }

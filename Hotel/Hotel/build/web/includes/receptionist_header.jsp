@@ -17,7 +17,7 @@
             <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                 <ul class="nav navbar-nav menu_nav ml-auto">
                     <li class="nav-item"><a class="nav-link" href="manager_home.jsp">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="Shifts">Shifts</a></li>
+<!--                    <li class="nav-item"><a class="nav-link" href="Shifts">Shifts</a></li>-->
                     <li class="nav-item"><a class="nav-link" href="showBooking">Manage bookings</a></li>
 <!--                    <li class="nav-item"><a class="nav-link" href="showRoomCustomer">Room</a></li>-->
 <!--                    <li class="nav-item"><a class="nav-link" href="showContact">FAQ</a></li>-->

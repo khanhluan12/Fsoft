@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package model;
 
 import java.io.Serializable;
@@ -6,8 +11,7 @@ import java.io.Serializable;
  *
  * @author ptd
  */
-public class Feedback implements Serializable {
-
+public class Feedback implements Serializable{
     private int feedbackId;
     private int bookingId;
     private int accountId;
@@ -17,7 +21,6 @@ public class Feedback implements Serializable {
     private String rating;
     private String replyComment;
     private String authorReply;
-    private String roomName;
 
     public Feedback() {
     }
@@ -53,19 +56,6 @@ public class Feedback implements Serializable {
         this.authorReply = authorReply;
     }
 
-    public Feedback(int feedbackId, int bookingId, int accountId, String accountName, String feedbackDate, String content, String rating, String replyComment, String authorReply, String roomName) {
-        this.feedbackId = feedbackId;
-        this.bookingId = bookingId;
-        this.accountId = accountId;
-        this.accountName = accountName;
-        this.feedbackDate = feedbackDate;
-        this.content = content;
-        this.rating = rating;
-        this.replyComment = replyComment;
-        this.authorReply = authorReply;
-        this.roomName = roomName;
-    }
-
     public String getAuthorReply() {
         return authorReply;
     }
@@ -74,6 +64,8 @@ public class Feedback implements Serializable {
         this.authorReply = authorReply;
     }
 
+   
+
     public String getReplyComment() {
         return replyComment;
     }
@@ -81,6 +73,8 @@ public class Feedback implements Serializable {
     public void setReplyComment(String replyComment) {
         this.replyComment = replyComment;
     }
+    
+    
 
     public String getAccountName() {
         return accountName;
@@ -89,6 +83,7 @@ public class Feedback implements Serializable {
     public void setAccountName(String accountName) {
         this.accountName = accountName;
     }
+   
 
     public int getFeedbackId() {
         return feedbackId;
@@ -137,12 +132,6 @@ public class Feedback implements Serializable {
     public void setRating(String rating) {
         this.rating = rating;
     }
-
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
-    }
-
-    public String getRoomName() {
-        return roomName;
-    }
+    
+    
 }

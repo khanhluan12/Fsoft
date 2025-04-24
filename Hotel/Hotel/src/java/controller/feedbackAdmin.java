@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
 package controller;
 
 import dao.FeedbackDAO;
@@ -16,7 +20,7 @@ public class feedbackAdmin extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         FeedbackDAO feedbackDAO = new FeedbackDAO();
-        List<Feedback> listFeedback = feedbackDAO.getAllFeedbackWithRoomName();
+        List<Feedback> listFeedback = feedbackDAO.getAllFeedback();
         request.setAttribute("LIST_ADMIN_FFEDBACK", listFeedback);
         request.getRequestDispatcher("showFeedback.jsp").forward(request, response);
     }
@@ -42,4 +46,5 @@ public class feedbackAdmin extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
 }
