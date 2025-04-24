@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
+import Service.SessionManager;
 import dao.FeedbackDAO;
 import dao.UserDao;
 import java.io.IOException;
@@ -48,9 +45,11 @@ public class LoginServlet extends HttpServlet {
                 if (user.getIDRole() == 1) {
                     if (user.isIsAcive()) {
                         session.setAttribute("userA", user);
+                        SessionManager.addSession(user.getIDAccount(), session);
                         response.sendRedirect("customer_home.jsp");
                     } else {
-                        request.setAttribute("loginFail", "Your account is not active please check your mail");
+                        request.setAttribute("loginFail", "Username or password incorrect");
+                        request.setAttribute("userName", userName); // giữ lại userName
                         request.getRequestDispatcher("login.jsp").forward(request, response);
                     }
                 } else if (user.getIDRole() == 2 || user.getIDRole() == 3) {
@@ -61,11 +60,13 @@ public class LoginServlet extends HttpServlet {
                     request.getRequestDispatcher("loadRevenue").forward(request, response);
                 }
             } else {
-                request.setAttribute("loginFail", "Your account is Ban out of system!!");
+                request.setAttribute("loginFail", "Username or password incorrect");
+                request.setAttribute("userName", userName); // giữ lại userName
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         } else {
             request.setAttribute("loginFail", "Username or password incorrect");
+            request.setAttribute("userName", userName); // giữ lại userName
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }

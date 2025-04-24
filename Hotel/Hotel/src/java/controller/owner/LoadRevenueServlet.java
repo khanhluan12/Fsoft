@@ -42,7 +42,13 @@ public class LoadRevenueServlet extends HttpServlet {
         int numberOfEmployee = odao.getNumberOfEmployee();
         
         List<BookingByDate> listBookingByDate = odao.getTopBookingByDay();
-        
+        System.out.println(listBookingByDate);
+        System.out.println(totalRevenue);
+        System.out.println(todayRevenue);
+        System.out.println(numberBooking);
+        System.out.println(numberOfUser);
+                System.out.println(topNameRoomType);
+                        System.out.println(numberOfEmployee);
         request.setAttribute("listBookingByDate", listBookingByDate);
         request.setAttribute("numberOfEmployee", numberOfEmployee);
         request.setAttribute("topNameRoomType", topNameRoomType);

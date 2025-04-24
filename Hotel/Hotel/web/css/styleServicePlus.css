@@ -13,6 +13,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.food-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
 }
 
 .food-card-bg {
@@ -23,26 +32,576 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     width: 100%;
     background-size: cover;
     background-position: center;
-    transition: transform 0.3s ease;
+    transition: transform 0.5s ease;
     z-index: 1;
+}
+
+.food-card:hover .food-card-bg {
+    transform: scale(1.05);
 }
 
 .food-card-overlay {
     position: relative;
     z-index: 2;
-    padding: 20px;
-    color: #dddddd;
+    color: #fff;
     text-align: center;
-    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.6);
+    padding: 0 40px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%);
 }
 
-.food-card-overlay::after {
-    content: "";
+.food-card-overlay h5 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(2px);
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 15px rgba(69,167,181,0.3);
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.food-card-overlay h5:after {
+    content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 50%;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #45a7b5, transparent);
+}
+
+.price-highlight {
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: rgba(255,255,255,0.9);
+    color: #222;
+    display: inline-block;
+    padding: 8px 10px;
+    border-radius: 20px;
+    margin-top: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.food-card:hover .price-highlight {
+    background: #45a7b5;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Add a subtle shine effect on hover */
+.food-card:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0) 100%
+        );
+    transition: all 0.6s ease;
+    z-index: 2;
+}
+
+.food-card:hover:before {
+    left: 100%;
+}
+
+/* ____________________ services_itemDetail.jsp ____________________ */
+
+.item-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 30px;
+    text-align: center;
+}
+
+.item-detail-container img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.item-detail-container h2 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.item-detail-container .price {
+    color: #28a745;
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.item-detail-container .category {
+    /*    font-style: italic;*/
+    color: #6c757d;
+}
+
+.item-detail-container .description {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.6;
+}
+
+.order-form-wrapper {
+    margin-top: 20px;
+}
+
+.order-form-wrapper .input-group {
+    max-width: 180px;
+    margin: 0 auto 15px;
+}
+
+.order-form-wrapper .btn-primary {
+    background-color: #45a7b5;
+    border-color: #286169;
+    padding: 10px 20px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.order-form-wrapper .btn-primary:hover {
+    background-color: #183a3e;
+    border-color: #183a3e;
+}
+
+/* Your Active Bookings section */
+.booking-info {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.booking-info h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.booking-info ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.booking-info li {
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 0.95rem;
+    color: #495057;
+}
+
+.booking-info li:last-child {
+    border-bottom: none;
+}
+
+/* Optional: Add some icons */
+.booking-info li:before {
+    content: "✓";
+    color: #45a7b5;
+    font-weight: bold;
+    display: inline-block;
+    width: 1.5em;
+    margin-left: -1.5em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .booking-info {
+        padding: 15px;
+    }
+
+    .booking-info h5 {
+        font-size: 1rem;
+    }
+
+    .booking-info li {
+        font-size: 0.9rem;
+    }
+}
+
+/* Hide arrows in input[type=number] for Chrome, Safari, Edge */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Modify the quantity box */
+.input-group {
+    display: flex;
+    align-items: stretch;
+}
+
+.input-group .form-control {
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.input-group-prepend,
+.input-group-append {
+    display: flex;
+}
+
+.input-group-prepend .btn,
+.input-group-append .btn {
+    position: relative;
+    z-index: 2;
+    border-radius: 0;
+    border-color: #ced4da;
+    background-color: #f8f9fa;
+    color: #495057;
+    padding: 0.375rem 0.75rem;
+    line-height: 1.5;
+}
+
+.input-group-prepend .btn {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.input-group-append .btn {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.input-group-prepend .btn:hover,
+.input-group-append .btn:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+/* Modify the date and time */
+.order-form-wrapper .form-group.row {
+    margin-bottom: 15px;
+}
+
+.order-form-wrapper .form-group.row label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.order-form-wrapper .form-group.row .col-md-6 {
+    padding-right: 8px;
+    padding-left: 8px;
+}
+
+/* Adjust the spacing for mobile views */
+@media (max-width: 768px) {
+    .order-form-wrapper .form-group.row .col-md-6 {
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-bottom: 15px;
+    }
+}
+
+.item-detail-container input[type="date"],
+.item-detail-container input[type="time"] {
+    max-width: 280px;
+    margin: 0 auto;
+    display: block;
+}
+
+.order-form-wrapper .form-control {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}
+
+.order-form-wrapper .form-group {
+    margin-bottom: 15px;
+}
+
+.order-form-wrapper .form-group label {
+    display: block;
+    text-align: center;
+    margin-bottom: 8px;
+}
+/* ____________________ services_cart.jsp ____________________ */
+.cart-table {
     width: 100%;
-    background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
-    z-index: -1;
+    border-collapse: collapse;
+    margin: 0 auto 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.cart-table th,
+.cart-table td {
+    padding: 16px 20px;
+    text-align: center;
+}
+
+.cart-table thead {
+    background-color: #343a40;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.cart-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.cart-total {
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: right;
+    margin-top: 15px;
+    color: #28a745;
+}
+
+.cart-empty-message {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.cart-back-link {
+    font-weight: 500;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.cart-back-link:hover {
+    text-decoration: underline;
+}
+
+.checkout-btn {
+    background-color: #45a7b5;
+    border-color: #286169;
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    font-size: 1rem;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.checkout-btn:hover {
+    background-color: #183a3e;
+}
+
+.cart-buttons {
+    gap: 20px;
+}
+
+.cart-btn {
+    min-width: 220px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 30px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.continue-btn {
+    background-color: #6c757d;
+    color: #fff;
+    text-decoration: none;
+}
+
+.continue-btn:hover {
+    background-color: #5a6268;
+    color: #fff;
+}
+
+.checkout-btn {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+}
+
+.checkout-btn:hover {
+    background-color: #218838;
+}
+
+/* ____________________ profile.jsp () ____________________*/
+
+/* Form Fields */
+.page-cover h2 {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.page-cover ol.breadcrumb {
+    background: none;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.page-cover ol.breadcrumb li {
+    display: inline;
+    color: #fff;
+    font-size: 16px;
+}
+
+/* Profile Container */
+.container.bg-white {
+    background: #fff;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 15px;
+    padding: 30px;
+}
+
+/* Headings */
+h4 {
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 20px;
+}
+
+/* Form Labels */
+.labels {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: inline-block;
+    color: #2d3436;
+}
+
+/* Inputs */
+input.form-control {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 10px 15px;
+    transition: 0.3s ease;
+}
+
+input.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Buttons */
+.btn.profile-button {
+    background: #17a2b8;
+    color: #252525;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    padding: 10px 25px;
+    transition: background 0.3s ease;
+}
+
+.btn.profile-button:hover {
+    background: #138496;
+}
+
+/* Tables */
+table {
+    margin-top: 20px;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table th {
+    background-color: #1590a4;
+    color: #252525;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+table td, table th {
+    padding: 14px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+/* Table Status Badges */
+.text-success {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.text-danger {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+    margin-top: 15px;
+}
+
+.pagination-controls button {
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+    .container.bg-white {
+        padding: 20px 15px;
+    }
+
+    .breadcrumb_area {
+        padding: 40px 0;
+    }
+
+    h4 {
+        font-size: 20px;
+    }
+
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    table thead {
+        display: none;
+    }
+
+    table td {
+        padding: 10px;
+        text-align: right;
+        position: relative;
+    }
+
+    table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+    }
 }

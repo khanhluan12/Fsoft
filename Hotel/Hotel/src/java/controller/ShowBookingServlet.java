@@ -1,24 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import dao.ManagerDao;
+import dao.ServiceOrderDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import model.Booking;
+import model.BookingDetail;
 import model.BookingDetails;
+import model.ServiceOrder;
 
-/**
- *
- * @author admin
- */
 public class ShowBookingServlet extends HttpServlet {
 
     @Override
@@ -28,19 +24,33 @@ public class ShowBookingServlet extends HttpServlet {
         ManagerDao managerDao = new ManagerDao();
         List<BookingDetails> bookingList = managerDao.getBookingDetails();
 
+        // Create a map to store room details for each booking
+        Map<Integer, List<BookingDetail>> roomMap = new HashMap<>();
+
+        // Get room details for each booking
+        for (BookingDetails booking : bookingList) {
+            int bookingId = booking.getIDBooking();
+            List<BookingDetail> roomDetails = managerDao.getBookingDetailsByBookingId(bookingId);
+            roomMap.put(bookingId, roomDetails);
+        }
+
+        ServiceOrderDAO serviceDao = new ServiceOrderDAO();
+List<ServiceOrder> serviceList = serviceDao.getServiceOrderDetails(); // Lấy toàn bộ dịch vụ
+request.setAttribute("serviceList", serviceList);
+
         request.setAttribute("listB", bookingList);
+        request.setAttribute("roomMap", roomMap);
         request.getRequestDispatcher("manager_booking.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-
+    }
 }

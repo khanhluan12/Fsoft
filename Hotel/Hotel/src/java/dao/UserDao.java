@@ -14,7 +14,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.Booking;
 import model.BookingDetails;
 import model.CheckRoomValid;
@@ -397,38 +400,52 @@ public class UserDao {
     }
 
     // get list booking by User id
-    public List<BookingDetails> getBookingDetailsByUserId(int accountId) {
-        List<BookingDetails> list = new ArrayList<>();
-        String query = "select * from BookingDetails where IDAccount = ?";
-        try {
-            conn = DBContext.getConnection();//mo ket noi
-            ps = conn.prepareStatement(query);
-            ps.setInt(1, accountId);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                BookingDetails bd = new BookingDetails(rs.getInt(1),
-                        rs.getInt(2),
-                        rs.getInt(3),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getString(6),
-                        rs.getString(7),
-                        rs.getInt(8),
-                        rs.getInt(9),
-                        rs.getString(10),
-                        rs.getString(11),
-                        rs.getDouble(12),
-                        rs.getString(13),
-                        rs.getString(14));
-                bd.setIsCancel(rs.getBoolean(15));
-                bd.setOver(isDateBeforeToday(rs.getString(10)));
-                list.add(bd);
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+public List<BookingDetails> getBookingDetailsByUserId(int accountId) {
+    List<BookingDetails> list = new ArrayList<>();
+    String query = "SELECT bd.*, rt.NameRoomType " +
+                   "FROM BookingDetails bd " +
+                   "JOIN BookingDetail bkd ON bd.IDBooking = bkd.IDBookingDetail " +  // Liên kết BookingDetails và BookingDetail
+                   "JOIN RoomType rt ON bkd.IDRoomType = rt.IDRoomType " +  // Liên kết BookingDetail và RoomType
+                   "WHERE bd.IDAccount = ?";
+
+    try {
+        conn = DBContext.getConnection();  // Mở kết nối
+        ps = conn.prepareStatement(query);
+        ps.setInt(1, accountId);
+        rs = ps.executeQuery();
+        
+        while (rs.next()) {
+            // Khởi tạo đối tượng BookingDetails từ kết quả truy vấn
+            BookingDetails bd = new BookingDetails(
+                rs.getInt("IDBooking"),   // IDBooking
+                rs.getInt("IDAccount"),   // IDAccount
+                rs.getInt("IDDiscount"),  // IDDiscount
+                rs.getString("FullName"), // FullName
+                rs.getString("Gender"),   // Gender
+                rs.getString("Email"),    // Email
+                rs.getString("Phone"),    // Phone
+                rs.getInt("Adult"),       // Adult
+                rs.getInt("Child"),       // Child
+                rs.getString("Checkin"),  // Checkin
+                rs.getString("Checkout"), // Checkout
+                rs.getDouble("TotalPrice"), // TotalPrice
+                rs.getString("BookingTime"), // BookingTime
+                rs.getString("Note"),     // Note
+                rs.getBoolean("isCancel"), // isCancel
+                rs.getString("NameRoomType") // NameRoomType từ bảng RoomType
+            );
+
+            // Kiểm tra nếu booking đã bị hủy hoặc quá hạn
+            bd.setOver(isDateBeforeToday(rs.getString("Checkin")));
+            list.add(bd);
         }
-        return list;
+    } catch (Exception e) {
+        System.out.println(e.getMessage());
     }
+    return list;
+}
+
+
 
     private static boolean isDateBeforeToday(String dateString) {
         // Định dạng ngày tháng
@@ -453,6 +470,102 @@ public class UserDao {
 
         return !(endDateA.isBefore(startDateC) || endDateC.isBefore(startDateA));
     }
+ public Map<Integer, Double> getAverageRatingsByRoomType() {
+        Map<Integer, Double> ratingsMap = new HashMap<>();
+        String query = "SELECT rt.IDRoomType, AVG(CAST(f.Rating AS FLOAT)) as AverageRating "
+                + "FROM RoomType rt "
+                + "LEFT JOIN BookingDetail bd ON rt.IDRoomType = bd.IDRoomType "
+                + "LEFT JOIN Feedback f ON bd.IDBookingDetail = f.IDBooking "
+                + "GROUP BY rt.IDRoomType";
+
+        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int roomTypeId = rs.getInt("IDRoomType");
+                double avgRating = rs.getDouble("AverageRating");
+                if (!rs.wasNull()) { // Chỉ thêm vào map nếu có rating
+                    ratingsMap.put(roomTypeId, avgRating);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ratingsMap;
+    }
+//  public List<String> getUnavailableDates(int bookingId) throws SQLException {
+//        List<String> unavailableDates = new ArrayList<>();
+//
+//        String sql = "SELECT DISTINCT BD.Checkin, BD.Checkout "
+//                   + "FROM BookingDetails BD "
+//                   + "INNER JOIN BookingDetail B ON BD.IDBooking = B.IDBookingDetail "
+//                   + "WHERE BD.Checkout > GETDATE() AND BD.Checkin >= GETDATE() "
+//                   + "AND BD.IDBooking != ?";  // Đảm bảo không lấy booking hiện tại
+//
+//        try (Connection conn = DBContext.getConnection();
+//                PreparedStatement stmt = conn.prepareStatement(sql)) {
+//            stmt.setInt(1, bookingId);  // Tránh lấy phòng của chính booking này
+//            ResultSet rs = stmt.executeQuery();
+//
+//            // Thêm các ngày đã được đặt vào danh sách unavailableDates
+//            while (rs.next()) {
+//                String checkin = rs.getString("Checkin");
+//                String checkout = rs.getString("Checkout");
+//
+//                // Thêm các ngày từ checkin đến checkout vào danh sách không trống
+//                unavailableDates.add(checkin);
+//                unavailableDates.add(checkout);
+//            }
+//        }
+//
+//        return unavailableDates;
+//    }
+ public List<String> getUnavailableDates(int bookingId, int roomTypeId) throws SQLException {
+    List<String> unavailableDates = new ArrayList<>();
+    Map<String, Integer> dateToBookedRoom = new HashMap<>();
+
+    String sql = "SELECT BD.Checkin, BD.Checkout, B.NumberOfRoom, RT.TotalRoom " +
+                 "FROM BookingDetails BD " +
+                 "INNER JOIN BookingDetail B ON BD.IDBooking = B.IDBookingDetail " +
+                 "INNER JOIN RoomType RT ON B.IDRoomType = RT.IDRoomType " +
+                 "WHERE BD.Checkout > GETDATE() AND BD.Checkin >= GETDATE() " +
+                 "AND BD.IDBooking != ? AND B.IDRoomType = ?";
+
+    try (Connection conn = DBContext.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, bookingId);
+        stmt.setInt(2, roomTypeId);
+
+        ResultSet rs = stmt.executeQuery();
+
+        int totalRoom = 0;
+
+        while (rs.next()) {
+            LocalDate checkin = rs.getDate("Checkin").toLocalDate();
+            LocalDate checkout = rs.getDate("Checkout").toLocalDate();
+            int bookedRoom = rs.getInt("NumberOfRoom");
+            totalRoom = rs.getInt("TotalRoom");
+
+            for (LocalDate date = checkin; date.isBefore(checkout); date = date.plusDays(1)) {
+                String dateStr = date.toString();
+                int currentBooked = dateToBookedRoom.getOrDefault(dateStr, 0);
+                dateToBookedRoom.put(dateStr, currentBooked + bookedRoom);
+            }
+        }
+
+        for (Map.Entry<String, Integer> entry : dateToBookedRoom.entrySet()) {
+            if (entry.getValue() >= totalRoom) {
+                unavailableDates.add(entry.getKey());
+            }
+        }
+    }
+
+    return unavailableDates;
+}
+
+
+
+
 
     public static void main(String[] args) {
         UserDao dao = new UserDao();

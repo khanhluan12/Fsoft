@@ -3,13 +3,14 @@ package controller;
 import dao.ShiftDAO;
 import model.ShiftSchedule;
 import java.io.IOException;
-import java.sql.Time;
-import java.sql.Date;
+import java.sql.Timestamp;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @WebServlet("/ShiftServlet")
@@ -47,57 +48,61 @@ public class ShiftServlet extends HttpServlet {
         }
     }
 
-    private void addShift(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        try {
-            String shiftName = request.getParameter("shiftName");
-            Time startTime = Time.valueOf(request.getParameter("startTime") + ":00");
-            Time endTime = Time.valueOf(request.getParameter("endTime") + ":00");
-            Date shiftDate = Date.valueOf(request.getParameter("shiftDate"));
-            int employeeID = Integer.parseInt(request.getParameter("IDAccount"));
+private void addShift(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
+    try {
+        String shiftName = request.getParameter("shiftName");
 
-            ShiftSchedule shift = new ShiftSchedule();
-            shift.setShiftName(shiftName);
-            shift.setStartTime(startTime);
-            shift.setEndTime(endTime);
-            shift.setShiftDate(shiftDate);
+        LocalDateTime startDateTime = LocalDateTime.parse(request.getParameter("startTime"));
+        LocalDateTime endDateTime = LocalDateTime.parse(request.getParameter("endTime"));
 
-            shiftDAO.addShift(shift, employeeID);
-            response.sendRedirect("ShiftServlet");
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi thêm ca trực: " + e.getMessage());
-        }
+        Timestamp startTimestamp = Timestamp.valueOf(startDateTime);
+        Timestamp endTimestamp = Timestamp.valueOf(endDateTime);
+
+        int employeeID = Integer.parseInt(request.getParameter("IDAccount"));
+
+        ShiftSchedule shift = new ShiftSchedule();
+        shift.setShiftName(shiftName);
+        shift.setStartDateTime(startTimestamp);
+        shift.setEndDateTime(endTimestamp);
+
+        shiftDAO.addShift(shift, employeeID);
+        response.sendRedirect("ShiftServlet");
+    } catch (Exception e) {
+        e.printStackTrace();
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi thêm ca trực: " + e.getMessage());
     }
+}
 
-    private void updateShift(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        try {
-            int shiftID = Integer.parseInt(request.getParameter("shiftID"));
-            String shiftName = request.getParameter("shiftName");
-            LocalTime startTime = LocalTime.parse(request.getParameter("startTime"));
-LocalTime endTime = LocalTime.parse(request.getParameter("endTime"));
 
-Time sqlStartTime = Time.valueOf(startTime);
-Time sqlEndTime = Time.valueOf(endTime);
+  private void updateShift(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
+    try {
+        int shiftID = Integer.parseInt(request.getParameter("shiftID"));
+        String shiftName = request.getParameter("shiftName");
 
-            Date shiftDate = Date.valueOf(request.getParameter("shiftDate"));
-            int employeeID = Integer.parseInt(request.getParameter("employeeID"));
+        LocalDateTime startDateTime = LocalDateTime.parse(request.getParameter("startTime"));
+        LocalDateTime endDateTime = LocalDateTime.parse(request.getParameter("endTime"));
 
-            ShiftSchedule shift = new ShiftSchedule();
-            shift.setShiftID(shiftID);
-            shift.setShiftName(shiftName);
-            shift.setStartTime(sqlEndTime);
-            shift.setEndTime(sqlStartTime);
-            shift.setShiftDate(shiftDate);
+        Timestamp startTimestamp = Timestamp.valueOf(startDateTime);
+        Timestamp endTimestamp = Timestamp.valueOf(endDateTime);
 
-            shiftDAO.updateShift(shift, employeeID);
-            response.sendRedirect("ShiftServlet");
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi cập nhật ca trực: " + e.getMessage());
-        }
+        int employeeID = Integer.parseInt(request.getParameter("employeeID"));
+
+        ShiftSchedule shift = new ShiftSchedule();
+        shift.setShiftID(shiftID);
+        shift.setShiftName(shiftName);
+        shift.setStartDateTime(startTimestamp);
+        shift.setEndDateTime(endTimestamp);
+
+        shiftDAO.updateShift(shift, employeeID);
+        response.sendRedirect("ShiftServlet");
+    } catch (Exception e) {
+        e.printStackTrace();
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi cập nhật ca trực: " + e.getMessage());
     }
+}
+
 
     private void deleteShift(HttpServletRequest request, HttpServletResponse response)
             throws IOException {

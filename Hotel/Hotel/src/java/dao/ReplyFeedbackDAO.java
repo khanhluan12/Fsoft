@@ -31,16 +31,30 @@ public class ReplyFeedbackDAO {
             ps = conn.prepareStatement(query);
             ps.setString(1, content);
             ps.setInt(2, fbId);
-           return  ps.executeUpdate() >0;
+            return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
-    
+
+    public boolean updateReplyFeedback(int fbId, String content) {
+        try {
+            conn = DBContext.getConnection();
+            String query = "UPDATE Feedback SET AdminReply = ? WHERE IDFeedback = ?";
+            ps = conn.prepareStatement(query);
+            ps.setString(1, content);
+            ps.setInt(2, fbId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void addReplyFeedback(String IDAccount, String IDFeedback, String ReplyContent) {
         String query = "insert ReplyFeedback(IDAccount,IDFeedback,ReplyContent)\n"
-                    + "values (?,?,?)";
+                + "values (?,?,?)";
         try {
             conn = DBContext.getConnection();//mo ket noi
             ps = conn.prepareStatement(query);

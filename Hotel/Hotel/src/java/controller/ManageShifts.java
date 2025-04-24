@@ -71,7 +71,7 @@ public class ManageShifts extends HttpServlet {
         request.setAttribute("shifts", shiftList);
         request.setAttribute("employees", employeeList);
         System.out.println(employeeList);
-        // Điều hướng đến trang quản lý ca trực
+      shiftList.sort((s1, s2) -> s1.getStartDateTime().compareTo(s2.getStartDateTime()));
         RequestDispatcher dispatcher = request.getRequestDispatcher("manage_shift.jsp");
         dispatcher.forward(request, response);
     } catch (Exception e) {
