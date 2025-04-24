@@ -60,7 +60,7 @@ public class LoginServlet extends HttpServlet {
                     request.getRequestDispatcher("loadRevenue").forward(request, response);
                 }
             } else {
-                request.setAttribute("loginFail", "Username or password incorrect");
+                request.setAttribute("loginFail", "Your account has been banned");
                 request.setAttribute("userName", userName); // giữ lại userName
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }

@@ -53,6 +53,25 @@
                 </div>
             </div>
         </section>
+        <div class="container">
+            <c:if test="${not empty cancelMessage}">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> ${cancelMessage}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </c:if>
+
+            <c:if test="${not empty errorMessage}">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> ${errorMessage}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </c:if>
+        </div>
         <!--================Breadcrumb Area =================-->
         <br>
         <h2 style="color: green; text-align: center;" >${editProfile} </h2>
@@ -95,7 +114,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label>Gender</label>
-                            <select name="Gender" class="form-control" required>
+                            <select name="Gender" class="form-control rounded-pill" required>
                                 <option value="">--Select--</option>
                                 <option value="Male" ${userA.getGender() == 'Male' ? 'selected' : ''}>Male</option>
                                 <option value="Female" ${userA.getGender() == 'Female' ? 'selected' : ''}>Female</option>
@@ -184,7 +203,7 @@
                                         <td>
                                             <fmt:formatNumber type="number" value="${order.totalPrice}" pattern="#,###"/> đ <%-- Formatted price number --%>
                                         </td>
-                                        <td>${order.orderDate}</td>
+                                        <td>${order.orderDate.substring(0,16)}</td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${order.status == 'Completed'}">
@@ -266,42 +285,92 @@
                                                             }
         </script>
         <script>
-            function paginateTable(tableId, paginationId, rowsPerPage = 4) {
-                const table = document.getElementById(tableId);
-                const tbody = table.querySelector("tbody");
-                const rows = Array.from(tbody.querySelectorAll("tr"));
-                const totalPages = Math.ceil(rows.length / rowsPerPage);
-                const pagination = document.getElementById(paginationId);
+function paginateTable(tableId, paginationId, rowsPerPage = 4) {
+    const table = document.getElementById(tableId);
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+    const pagination = document.getElementById(paginationId);
 
-                let currentPage = 1;
+    let currentPage = 1;
 
-                function showPage(page) {
-                    currentPage = page;
-                    const start = (page - 1) * rowsPerPage;
-                    const end = start + rowsPerPage;
-                    rows.forEach((row, i) => {
-                        row.style.display = i >= start && i < end ? "" : "none";
-                    });
+    function showPage(page) {
+        currentPage = page;
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        rows.forEach((row, i) => {
+            row.style.display = i >= start && i < end ? "" : "none";
+        });
 
-                    // Render pagination
-                    pagination.innerHTML = '';
-                    for (let i = 1; i <= totalPages; i++) {
-                        const btn = document.createElement('button');
-                        btn.textContent = i;
-                        btn.className = 'btn btn-sm mx-1 ' + (i === page ? 'btn-primary' : 'btn-outline-primary');
-                        btn.onclick = () => showPage(i);
-                        pagination.appendChild(btn);
-                    }
-                }
+        // Render pagination
+        pagination.innerHTML = '';
 
-                showPage(1);
+        // "Previous" button
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = "<";
+        prevBtn.className = 'btn btn-sm mx-1 ' + (page === 1 ? 'btn-secondary' : 'btn-outline-primary');
+        prevBtn.onclick = () => page > 1 && showPage(page - 1);
+        pagination.appendChild(prevBtn);
+
+        // Calculate page range
+        const pagesToShow = [];
+        const maxPagesAround = 2; // Số trang tối đa hiển thị quanh trang hiện tại
+
+        // Hiển thị các trang đầu tiên
+        pagesToShow.push(1);
+
+        // Hiển thị dấu ... nếu cần
+        if (page - maxPagesAround > 2) {
+            pagesToShow.push('...');
+        }
+
+        // Các trang quanh trang hiện tại
+        for (let i = Math.max(2, page - maxPagesAround); i <= Math.min(page + maxPagesAround, totalPages - 1); i++) {
+            pagesToShow.push(i);
+        }
+
+        // Hiển thị dấu ... nếu cần
+        if (page + maxPagesAround < totalPages - 1) {
+            pagesToShow.push('...');
+        }
+
+        // Hiển thị trang cuối cùng
+        if (totalPages > 1) {
+            pagesToShow.push(totalPages);
+        }
+
+        // Thêm các nút trang vào phân trang
+        pagesToShow.forEach(item => {
+            const btn = document.createElement('button');
+            if (item === '...') {
+                btn.textContent = '...';
+                btn.disabled = true;
+            } else {
+                btn.textContent = item;
+                btn.className = 'btn btn-sm mx-1 ' + (item === page ? 'btn-primary' : 'btn-outline-primary');
+                btn.onclick = () => showPage(item);
             }
+            pagination.appendChild(btn);
+        });
 
-            // On load
-            window.onload = function () {
-                paginateTable("bookingTable", "bookingPagination", 4);
-                paginateTable("serviceTable", "servicePagination", 4);
-            }
+        // "Next" button
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = ">";
+        nextBtn.className = 'btn btn-sm mx-1 ' + (page === totalPages ? 'btn-secondary' : 'btn-outline-primary');
+        nextBtn.onclick = () => page < totalPages && showPage(page + 1);
+        pagination.appendChild(nextBtn);
+    }
+
+    showPage(1);
+}
+
+// On load
+window.onload = function () {
+    paginateTable("bookingTable", "bookingPagination", 4);
+    paginateTable("serviceTable", "servicePagination", 4);
+}
+
+
         </script>
 
     </body>

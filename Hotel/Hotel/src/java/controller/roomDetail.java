@@ -1,17 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
+import dao.FeedbackDAO;
 import dao.ManagerDao;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Feedback;
+
 /**
  *
  * @author admin
@@ -23,15 +22,28 @@ public class roomDetail extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ManagerDao managerDao = new ManagerDao();
+        FeedbackDAO feedbackDAO = new FeedbackDAO();
+
         int id = Integer.parseInt(request.getParameter("id"));
+
+        // Get room details
         request.setAttribute("room", managerDao.getRoomTypeById(id));
+
+        // Get feedback for this room type
+        List<Feedback> feedbackList = feedbackDAO.getAllFeedbackByRoomType(String.valueOf(id));
+        request.setAttribute("feedbackList", feedbackList);
+
+        // Get total feedback count for this room type
+        int feedbackCount = feedbackDAO.countFeedbackByRoomType(String.valueOf(id));
+        request.setAttribute("feedbackCount", feedbackCount);
+
         request.getRequestDispatcher("roomDetail.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
     /**
@@ -42,6 +54,5 @@ public class roomDetail extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-
+    }
 }

@@ -54,12 +54,12 @@
                 <p class="description">${item.description}</p>
 
                 <p class="category">Category:
-                <c:choose>
-                    <c:when test="${item.serviceID == 1}">Food</c:when>
-                    <c:when test="${item.serviceID == 2}">Drink</c:when>
-                    <c:when test="${item.serviceID == 3}">Bike Rental</c:when>
-                    <c:otherwise>Unknown</c:otherwise>
-                </c:choose>
+                    <c:choose>
+                        <c:when test="${item.serviceID == 1}">Food</c:when>
+                        <c:when test="${item.serviceID == 2}">Drink</c:when>
+                        <c:when test="${item.serviceID == 3}">Bike Rental</c:when>
+                        <c:otherwise>Unknown</c:otherwise>
+                    </c:choose>
                 </p>
 
                 <c:choose>
@@ -97,36 +97,36 @@
                             </ul>
                         </div>
 
-                            <div class="order-form-wrapper">
-                                <form action="ServicesCartServlet" method="post">
-                                    <input type="hidden" name="itemId" value="${item.itemID}" />
-                                    <div class="form-group">
-                                        <label>Quantity (Max ${totalAdults}):</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <button class="btn btn-outline-secondary" type="button" onclick="changeQty(-1)">−</button>
-                                            </div>
-                                            <input type="number" name="quantity" id="quantity" class="form-control text-center" 
-                                                   value="1" min="1" max="${totalAdults}" oninput="validateQty()" />
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary" type="button" onclick="changeQty(1)">+</button>
-                                            </div>
+                        <div class="order-form-wrapper">
+                            <form action="ServicesCartServlet" method="post">
+                                <input type="hidden" name="itemId" value="${item.itemID}" />
+                                <div class="form-group">
+                                    <label>Quantity (Max ${totalAdults}):</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="changeQty(-1)">−</button>
+                                        </div>
+                                        <input type="number" name="quantity" id="quantity" class="form-control text-center" 
+                                               value="1" min="1" max="${totalAdults}" oninput="validateQty()" />
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="changeQty(1)">+</button>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
-                                        <div class="col-md-6">
-                                            <label>Rental Date:</label>
-                                            <input type="date" name="rentalDate" class="form-control" required 
-                                                   min="${activeBookings[0].checkIn}" max="${activeBookings[0].checkOut}" />
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label>Rental Time:</label>
-                                            <input type="time" name="rentalTime" class="form-control" required />
-                                        </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <label>Rental Date:</label>
+                                        <input type="date" name="rentalDate" class="form-control" required 
+                                               min="${activeBookings[0].checkIn}" max="${activeBookings[0].checkOut}" />
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Order Now</button>
-                                </form>
-                            </div>
+                                    <div class="col-md-6">
+                                        <label>Rental Time:</label>
+                                        <input type="time" name="rentalTime" class="form-control" required />
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Order Now</button>
+                            </form>
+                        </div>
                     </c:when>
 
                     <%-- Case 4: Food/Drink service --%>

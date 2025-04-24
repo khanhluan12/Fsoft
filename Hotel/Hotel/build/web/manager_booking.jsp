@@ -312,6 +312,18 @@
                     max-width: 150px;
                 }
             }
+
+#pagination-order .page-item {
+    display: inline-block !important; /* Đảm bảo hiển thị */
+    visibility: visible !important;
+}
+
+#pagination-order .page-link {
+    color: #007bff !important; /* Màu chữ rõ ràng */
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+    opacity: 1 !important;
+}
         </style>
     </head>
     <body>
@@ -522,11 +534,11 @@
                 </ul>
             </div>
             <!-- Service Order Table -->
-            <div class="table-responsive mt-5">
+            <div class="table-responsive ">
                 <h3><i class="fa fa-concierge-bell"></i> Service Orders</h3>
-                <table class="table table-bordered table-striped booking-table">
-                    <thead class="thead-dark">
-                        <tr>
+                <table class="booking-table">
+                    <thead>
+                        <tr >
                             <th>Service Name</th>
                             <th>Order Date</th>
                             <th>Full Name</th>
@@ -535,20 +547,36 @@
                             <th>Total Price</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="booking-body">
                         <c:forEach items="${serviceList}" var="s">
-                            <tr>
-                                <td>${s.serviceName}</td> 
-                                <td>${s.orderDate}</td> 
-                                <td>${s.fullName}</td> 
-                                <td>${s.email}</td> 
-                                <td>${s.phone}</td> 
-                                <td><fmt:formatNumber value="${s.totalPrice}" pattern="#,##0" /> VND</td>
+                               <tr class="paginate-order">
+                                <td class="text-center">${s.serviceName}</td> 
+                                <td class="text-center">${s.orderDate.substring(0,16)}</td> 
+                                <td class="text-center">${s.fullName}</td> 
+                                <td class="text-center">${s.email}</td> 
+                                <td class="text-center">${s.phone}</td> 
+                                <td class="text-center"><fmt:formatNumber value="${s.totalPrice}" pattern="#,##0" /> VND</td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
             </div>
+          <div class="pagination-container">
+    <ul class="pagination" id="pagination-order">
+        <li class="page-item" id="prevPageOrder">
+            <a class="page-link page-arrow" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <!-- Page numbers will be added by JavaScript -->
+        <li class="page-item" id="nextPageOrder">
+            <a class="page-link page-arrow" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
         </div>
 
         <%@include file="/includes/footer.jsp" %>
@@ -570,191 +598,274 @@
 
         <script>
                                                     // Function to show status dropdown
-                                                    function showStatusDropdown(button) {
-                                                        const dropdown = button.nextElementSibling;
-                                                        const allDropdowns = document.querySelectorAll('.status-dropdown');
+function showStatusDropdown(button) {
+    const dropdown = button.nextElementSibling;
+    const allDropdowns = document.querySelectorAll('.status-dropdown');
 
-                                                        // Hide all other dropdowns
-                                                        allDropdowns.forEach(item => {
-                                                            if (item !== dropdown) {
-                                                                item.style.display = 'none';
-                                                            }
-                                                        });
+    // Hide all other dropdowns
+    allDropdowns.forEach(item => {
+        if (item !== dropdown) {
+            item.style.display = 'none';
+        }
+    });
 
-                                                        // Toggle current dropdown
-                                                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    // Toggle current dropdown
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 
-                                                        // Close dropdown when clicking outside
-                                                        document.addEventListener('click', function closeDropdown(e) {
-                                                            if (!dropdown.contains(e.target) && e.target !== button) {
-                                                                dropdown.style.display = 'none';
-                                                                document.removeEventListener('click', closeDropdown);
-                                                            }
-                                                        });
-                                                    }
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function closeDropdown(e) {
+        if (!dropdown.contains(e.target) && e.target !== button) {
+            dropdown.style.display = 'none';
+            document.removeEventListener('click', closeDropdown);
+        }
+    });
+}
 
-                                                    // Function to handle form submission with SweetAlert
-                                                    function handleStatusUpdate(form) {
-                                                        event.preventDefault(); // Prevent default form submission
+// Function to handle form submission with SweetAlert
+function handleStatusUpdate(form) {
+    event.preventDefault(); // Prevent default form submission
 
-                                                        // Find which button was clicked
-                                                        const clickedButton = event.submitter;
-                                                        const status = clickedButton.value;
-                                                        const statusText = status === 'In Progress' ? 'in progress' : 'successful';
+    // Find which button was clicked
+    const clickedButton = event.submitter;
+    const status = clickedButton.value;
+    const statusText = status === 'In Progress' ? 'in progress' : 'successful';
 
-                                                        Swal.fire({
-                                                            title: 'Confirm Status Update',
-                                                            text: `Are you sure you want to mark this booking as ${statusText}?`,
-                                                            icon: 'question',
-                                                            showCancelButton: true,
-                                                            confirmButtonColor: '#FEA116',
-                                                            cancelButtonColor: '#d33',
-                                                            confirmButtonText: `Yes, mark as ${statusText}`
-                                                        }).then((result) => {
-                                                            if (result.isConfirmed) {
-                                                                // Show loading indicator
-                                                                Swal.fire({
-                                                                    title: 'Processing...',
-                                                                    text: 'Updating booking status',
-                                                                    allowOutsideClick: false,
-                                                                    allowEscapeKey: false,
-                                                                    didOpen: () => {
-                                                                        Swal.showLoading();
-                                                                    }
-                                                                });
+    Swal.fire({
+        title: 'Confirm Status Update',
+        text: `Are you sure you want to mark this booking as ${statusText}?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#FEA116',
+        cancelButtonColor: '#d33',
+        confirmButtonText: `Yes, mark as ${statusText}`
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Show loading indicator
+            Swal.fire({
+                title: 'Processing...',
+                text: 'Updating booking status',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
-                                                                // Submit the form
-                                                                const formData = new FormData(form);
-                                                                formData.set('Status', status); // Ensure correct status is sent
-                                                                const url = form.action + '?' + new URLSearchParams(formData).toString();
+            // Submit the form
+            const formData = new FormData(form);
+            formData.set('Status', status); // Ensure correct status is sent
+            const url = form.action + '?' + new URLSearchParams(formData).toString();
 
-                                                                fetch(url)
-                                                                        .then(() => {
-                                                                            Swal.fire({
-                                                                                icon: 'success',
-                                                                                title: 'Success!',
-                                                                                text: `Booking status updated to ${statusText}`,
-                                                                                showConfirmButton: false,
-                                                                                timer: 1500
-                                                                            }).then(() => {
-                                                                                // Reload the page to see the updated status
-                                                                                window.location.reload();
-                                                                            });
-                                                                        })
-                                                                        .catch(error => {
-                                                                            console.error('Error:', error);
-                                                                            Swal.fire({
-                                                                                icon: 'error',
-                                                                                title: 'Error',
-                                                                                text: 'Failed to update booking status. Please try again.'
-                                                                            }).then(() => {
-                                                                                window.location.reload();
-                                                                            });
-                                                                        });
-                                                            }
-                                                        });
+            fetch(url)
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: `Booking status updated to ${statusText}`,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            // Reload the page to see the updated status
+                            window.location.reload();
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to update booking status. Please try again.'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    });
+        }
+    });
 
-                                                        return false;
-                                                    }
+    return false;
+}
 
-                                                    // Form validation
-                                                    function validateSearch() {
-                                                        const phoneInput = document.getElementById('Phone');
-                                                        if (phoneInput.value.trim() === '') {
-                                                            Swal.fire({
-                                                                icon: 'error',
-                                                                title: 'Oops...',
-                                                                text: 'Please enter a phone number to search!',
-                                                            });
-                                                            return false;
-                                                        }
-                                                        return true;
-                                                    }
+// Form validation
+function validateSearch() {
+    const phoneInput = document.getElementById('Phone');
+    if (phoneInput.value.trim() === '') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please enter a phone number to search!',
+        });
+        return false;
+    }
+    return true;
+}
 
-                                                    // Pagination functionality
-                                                    document.addEventListener('DOMContentLoaded', function () {
-                                                        const rowsPerPage = 5;
-                                                        const table = document.querySelector('.booking-table');
-                                                        const tbody = document.getElementById('booking-body');
-                                                        const rows = Array.from(tbody.querySelectorAll('.booking-row'));
-                                                        const pageCount = Math.ceil(rows.length / rowsPerPage);
-                                                        const pagination = document.getElementById('pagination');
-                                                        const prevPage = document.getElementById('prevPage');
-                                                        const nextPage = document.getElementById('nextPage');
+// Pagination functionality
+document.addEventListener('DOMContentLoaded', function () {
+    const rowsPerPage = 5;
+    const table = document.querySelector('.booking-table');
+    const tbody = document.getElementById('booking-body');
+    const rows = Array.from(tbody.querySelectorAll('.booking-row'));
+    const pageCount = Math.ceil(rows.length / rowsPerPage);
+    const pagination = document.getElementById('pagination');
+    const prevPage = document.getElementById('prevPage');
+    const nextPage = document.getElementById('nextPage');
 
-                                                        let currentPage = 1;
+    let currentPage = 1;
 
-                                                        // Function to show rows for a specific page
-                                                        function showPage(page) {
-                                                            const start = (page - 1) * rowsPerPage;
-                                                            const end = start + rowsPerPage;
+    // Function to show rows for a specific page
+    function showPage(page) {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
 
-                                                            rows.forEach((row, index) => {
-                                                                row.style.display = (index >= start && index < end) ? '' : 'none';
-                                                            });
+        rows.forEach((row, index) => {
+            row.style.display = (index >= start && index < end) ? '' : 'none';
+        });
 
-                                                            // Update active state of page buttons
-                                                            document.querySelectorAll('.page-number').forEach(item => {
-                                                                item.classList.remove('active');
-                                                                if (item.textContent == page) {
-                                                                    item.classList.add('active');
-                                                                }
-                                                            });
+        // Update active state of page buttons
+        document.querySelectorAll('.page-number').forEach(item => {
+            item.classList.remove('active');
+            if (item.textContent == page) {
+                item.classList.add('active');
+            }
+        });
 
-                                                            // Update disabled state of prev/next buttons
-                                                            prevPage.classList.toggle('disabled', page === 1);
-                                                            nextPage.classList.toggle('disabled', page === pageCount);
+        // Update disabled state of prev/next buttons
+        prevPage.classList.toggle('disabled', page === 1);
+        nextPage.classList.toggle('disabled', page === pageCount);
 
-                                                            currentPage = page;
-                                                        }
+        currentPage = page;
+    }
 
-                                                        // Create page number buttons
-                                                        function setupPagination() {
-                                                            // Clear existing page numbers (except prev/next)
-                                                            while (pagination.children.length > 2) {
-                                                                pagination.removeChild(pagination.children[1]);
-                                                            }
+    // Create page number buttons
+    function setupPagination() {
+        // Clear existing page numbers (except prev/next)
+        while (pagination.children.length > 2) {
+            pagination.removeChild(pagination.children[1]);
+        }
 
-                                                            // Add page numbers
-                                                            for (let i = 1; i <= pageCount; i++) {
-                                                                const pageItem = document.createElement('li');
-                                                                pageItem.className = 'page-item page-number' + (i === 1 ? ' active' : '');
+        // Add page numbers
+        for (let i = 1; i <= pageCount; i++) {
+            const pageItem = document.createElement('li');
+            pageItem.className = 'page-item page-number' + (i === 1 ? ' active' : '');
 
-                                                                const pageLink = document.createElement('a');
-                                                                pageLink.className = 'page-link';
-                                                                pageLink.href = '#';
-                                                                pageLink.textContent = i;
+            const pageLink = document.createElement('a');
+            pageLink.className = 'page-link';
+            pageLink.href = '#';
+            pageLink.textContent = i;
 
-                                                                pageLink.addEventListener('click', function (e) {
-                                                                    e.preventDefault();
-                                                                    showPage(i);
-                                                                });
+            pageLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                showPage(i);
+            });
 
-                                                                pageItem.appendChild(pageLink);
-                                                                pagination.insertBefore(pageItem, nextPage);
-                                                            }
-                                                        }
+            pageItem.appendChild(pageLink);
+            pagination.insertBefore(pageItem, nextPage);
+        }
+    }
 
-                                                        // Previous page button event
-                                                        prevPage.querySelector('.page-link').addEventListener('click', function (e) {
-                                                            e.preventDefault();
-                                                            if (currentPage > 1) {
-                                                                showPage(currentPage - 1);
-                                                            }
-                                                        });
+    // Previous page button event
+    prevPage.querySelector('.page-link').addEventListener('click', function (e) {
+        e.preventDefault();
+        if (currentPage > 1) {
+            showPage(currentPage - 1);
+        }
+    });
 
-                                                        // Next page button event
-                                                        nextPage.querySelector('.page-link').addEventListener('click', function (e) {
-                                                            e.preventDefault();
-                                                            if (currentPage < pageCount) {
-                                                                showPage(currentPage + 1);
-                                                            }
-                                                        });
+    // Next page button event
+    nextPage.querySelector('.page-link').addEventListener('click', function (e) {
+        e.preventDefault();
+        if (currentPage < pageCount) {
+            showPage(currentPage + 1);
+        }
+    });
 
-                                                        // Initialize pagination
-                                                        setupPagination();
-                                                        showPage(1);
-                                                    });
+    // Initialize pagination
+    setupPagination();
+    showPage(1);
+});
         </script>
+<script>
+const orderRowsPerPage = 5;
+const orderRows = document.querySelectorAll('.paginate-order');
+const paginationOrder = document.getElementById('pagination-order');
+const prevPageOrder = document.getElementById('prevPageOrder');
+const nextPageOrder = document.getElementById('nextPageOrder');
+let currentOrderPage = 1;
+const orderPageCount = Math.ceil(orderRows.length / orderRowsPerPage);
+
+function displayOrderPage(page) {
+    const start = (page - 1) * orderRowsPerPage;
+    const end = start + orderRowsPerPage;
+    orderRows.forEach((row, index) => {
+        row.style.display = (index >= start && index < end) ? '' : 'none';
+    });
+}
+
+function setupOrderPagination() {
+    // Xóa các page cũ trước khi tạo mới
+    const oldPages = document.querySelectorAll('#pagination-order .page-item:not(#prevPageOrder):not(#nextPageOrder)');
+    oldPages.forEach(page => page.remove());
+
+    // Tạo trang mới
+    for (let i = 1; i <= orderPageCount; i++) {
+        const li = document.createElement('li');
+        li.className = 'page-item';
+        
+        // Cách cứng cáp nhất: dùng createElement
+        const a = document.createElement('a');
+        a.className = 'page-link';
+        a.href = '#';
+        a.textContent = i; // Số trang hiện rõ ở đây
+        li.appendChild(a);
+        
+        li.addEventListener('click', (e) => {
+            e.preventDefault();
+            currentOrderPage = i;
+            displayOrderPage(currentOrderPage);
+            updateOrderActivePage();
+        });
+        
+        document.getElementById('pagination-order').insertBefore(li, nextPageOrder);
+    }
+}
+
+function updateOrderActivePage() {
+    // Get all page items excluding prev/next buttons
+    const pageItems = Array.from(paginationOrder.querySelectorAll('.page-item:not(#prevPageOrder):not(#nextPageOrder)'));
+    
+    // Remove active class from all items
+    pageItems.forEach(item => item.classList.remove('active'));
+    
+    // Add active class to current page (need to subtract 1 for zero-based indexing)
+    const activePageItem = pageItems[currentOrderPage - 1];
+    if (activePageItem) {
+        activePageItem.classList.add('active');
+    }
+}
+
+prevPageOrder.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (currentOrderPage > 1) {
+        currentOrderPage--;
+        displayOrderPage(currentOrderPage);
+        updateOrderActivePage();
+    }
+});
+
+nextPageOrder.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (currentOrderPage < orderPageCount) {
+        currentOrderPage++;
+        displayOrderPage(currentOrderPage);
+        updateOrderActivePage();
+    }
+});
+
+// Init
+displayOrderPage(currentOrderPage);
+setupOrderPagination();
+updateOrderActivePage();
+</script>
+
     </body>
 </html>

@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.BookingDAO;
 import dao.ServiceItemDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,7 +12,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.BookingDetails;
 import model.ServiceItem;
+import model.User;
 
 /**
  *
@@ -59,6 +64,27 @@ public class ServicesItemDetailServlet extends HttpServlet {
             throws ServletException, IOException {
         int itemID = Integer.parseInt(request.getParameter("itemID"));
         ServiceItem item = ServiceItemDAO.getItemByID(itemID);
+
+
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("userA") != null) {
+            User user = (User) session.getAttribute("userA");
+            BookingDAO bookingDAO = new BookingDAO();
+
+            // Check for active bookings in database
+            boolean hasActiveBooking = bookingDAO.hasActiveBooking(user.getIDAccount());
+            request.setAttribute("hasActiveBooking", hasActiveBooking);
+
+            // If it's a bike rental and has active booking, get the booking details
+            if (item.getServiceID() == 3 && hasActiveBooking) {
+                List<BookingDetails> activeBookings = bookingDAO.getActiveBookings(user.getIDAccount());
+                request.setAttribute("activeBookings", activeBookings);
+
+                // Calculate total adults across all active bookings
+                int totalAdults = activeBookings.stream().mapToInt(BookingDetails::getAdult).sum();
+                request.setAttribute("totalAdults", totalAdults);
+            }
+        }
 
         request.setAttribute("item", item);
         request.getRequestDispatcher("services_itemDetails.jsp").forward(request, response);

@@ -1,0 +1,432 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Apr 24, 2025, 9:08:26 AM
+    Author     : trong
+*/
+
+.rating-stars {
+    display: inline-block;
+    color: #ffc107;
+    font-size: 16px;
+    position: relative;
+}
+.rating-value {
+    font-size: 14px;
+    color: #6c757d;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+.no-rating {
+    font-style: italic;
+    color: #6c757d;
+}
+.error {
+    display: block;
+    font-size: 0.875em;
+    color: red;
+    position: absolute;
+}
+.tooltip-container-custom {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    padding-right: 5px;
+}
+
+.tooltip-container-custom .tooltip-text-custom {
+    visibility: hidden;
+    background-color: #002c66;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 999;
+    top: 130%; /* Dưới icon */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    font-size: 13px;
+    font-family: 'Poppins', sans-serif;
+    min-width: max-content;
+}
+.price-vnd {
+    font-weight: bold;
+    color: #d70018; /* Màu đỏ đặc trưng của VND */
+}
+.tooltip-container-custom .tooltip-text-custom::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent #002c66 transparent;
+}
+
+.tooltip-container-custom:hover .tooltip-text-custom {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Star rating style for partial stars */
+.stars-container {
+    position: relative;
+    display: inline-block;
+    color: #ced4da; /* Gray for empty stars */
+}
+
+.stars-filled {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    color: #ffc107; /* Yellow/gold for filled stars */
+}
+.nice-select {
+    height: 37px; /* Điều chỉnh chiều cao của nút */
+    padding: 0.375rem 0.75rem; /* Giữ khoảng cách giữa nội dung và viền */
+}
+.form{
+    max-width: 100%;
+}
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.room-header {
+    background: linear-gradient(135deg, #007bff 0%, #00b4ff 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.room-card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    margin-bottom: 30px;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+}
+
+.room-image {
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.5s ease;
+}
+
+.room-image:hover {
+    transform: scale(1.03);
+}
+
+.room-details {
+    padding: 25px;
+    background-color: #fff;
+}
+
+.detail-item {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.detail-icon {
+    width: 30px;
+    text-align: center;
+    margin-right: 15px;
+    color: #007bff;
+    font-size: 1.1rem;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #495057;
+    min-width: 150px;
+}
+
+.detail-value {
+    color: #212529;
+}
+
+.back-btn {
+    background-color: #FEA116;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.back-btn:hover {
+    background-color: #e68a00;
+    color: white;
+    transform: translateX(-3px);
+}
+
+.back-btn i {
+    margin-right: 8px;
+}
+
+/* Reviews Section */
+.reviews-section {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    margin-top: 30px;
+}
+
+.section-title {
+    position: relative;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    color: #2c3e50;
+}
+
+.section-title:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(to right, #007bff, #00b4ff);
+    border-radius: 3px;
+}
+
+.review-count {
+    background-color: #007bff;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.review-card {
+    border-left: 4px solid #007bff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    background-color: #f8fafc;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-right: 15px;
+}
+
+.user-info {
+    flex-grow: 1;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 3px;
+}
+
+.review-date {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+}
+
+.review-rating {
+    color: #FFC107;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.review-content {
+    color: #34495e;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.review-reply {
+    background-color: white;
+    border-left: 4px solid #28a745;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    position: relative;
+}
+
+.reply-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #28a745;
+}
+
+.reply-header i {
+    margin-right: 8px;
+}
+
+.reply-author {
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.reply-content {
+    color: #495057;
+    line-height: 1.5;
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 40px 20px;
+    color: #7f8c8d;
+}
+
+.no-reviews i {
+    font-size: 3rem;
+    color: #bdc3c7;
+    margin-bottom: 15px;
+}
+
+.no-reviews p {
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: 8px;
+}
+
+.page-item {
+    margin: 0 5px;
+}
+
+.page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f8f9fa;
+    color: #007bff;
+    border: 1px solid #dee2e6;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.page-link:hover {
+    background-color: #e9ecef;
+    color: #0056b3;
+}
+
+.page-link.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.page-link.disabled {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #f8f9fa;
+}
+
+.page-link i {
+    font-size: 0.9rem;
+}
+
+.page-info {
+    text-align: center;
+    margin-top: 15px;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .detail-label {
+        margin-bottom: 5px;
+    }
+
+    .room-image {
+        height: 300px;
+        width: 100%;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+.room-title-banner {
+    margin-top: 80px; /* Adjust this value based on your header's height */
+    padding: 3rem 0;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+}
+
+.room-title-banner h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}

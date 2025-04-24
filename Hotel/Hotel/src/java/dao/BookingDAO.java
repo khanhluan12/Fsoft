@@ -204,4 +204,48 @@ public class BookingDAO {
             return 0;
         }
     }
+    public BookingDetails getBookingById(int bookingId) {
+        BookingDetails booking = null;
+        String query = "SELECT b.*, r.NameRoomType FROM BookingDetails b "
+                + "INNER JOIN BookingDetail bd ON b.IDBooking = bd.IDBookingDetail "
+                + "INNER JOIN RoomType r ON bd.IDRoomType = r.IDRoomType "
+                + "WHERE b.IDBooking = ?";
+        try {
+            conn = DBContext.getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, bookingId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                booking = new BookingDetails();
+                booking.setIDBooking(rs.getInt("IDBooking"));
+                booking.setFullName(rs.getString("FullName"));
+                booking.setEmail(rs.getString("Email"));
+                booking.setPhone(rs.getString("Phone"));
+                booking.setAdult(rs.getInt("Adult"));
+                booking.setChild(rs.getInt("Child"));
+                booking.setCheckIn(rs.getDate("Checkin").toString());  // Changed to match your entity field
+                booking.setCheckOut(rs.getDate("Checkout").toString()); // Changed to match your entity field
+                booking.setNote(rs.getString("Note"));
+                // Set other properties as needed
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return booking;
+    }
 }

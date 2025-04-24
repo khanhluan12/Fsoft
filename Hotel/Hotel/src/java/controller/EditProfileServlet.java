@@ -63,6 +63,21 @@ public class EditProfileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+       
         String id = request.getParameter("IDAccount");
         int i = Integer.parseInt(id);
         String FullName = request.getParameter("FullName");
@@ -89,21 +104,6 @@ public class EditProfileServlet extends HttpServlet {
 request.setAttribute("BookingDetails", list);
 
         request.getRequestDispatcher("profile.jsp").forward(request, response);
-
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
     }
 
     /**

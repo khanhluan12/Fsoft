@@ -7,12 +7,12 @@ package controller;
 import dao.ServiceItemDAO;
 import dao.UserDao;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import model.BookingDetails;
@@ -42,15 +42,25 @@ public class ProfileControl extends HttpServlet {
 
         User user = (User) request.getSession().getAttribute("userA");
         int accid = ((User) request.getSession().getAttribute("userA")).getIDAccount();
+DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         // Get booking details
         List<BookingDetails> list = ud.getBookingDetailsByUserId(accid);
-        list.sort((s1, s2) -> s1.getCheckIn().compareTo(s2.getCheckIn()));
+       list.sort((s1, s2) -> {
+    LocalDate d1 = LocalDate.parse(s1.getCheckIn(), formatter2);
+    LocalDate d2 = LocalDate.parse(s2.getCheckIn(), formatter2);
+    return d2.compareTo(d1); // mới nhất lên đầu
+});
         request.setAttribute("BookingDetails", list);
 
         // Get service orders
         List<ServiceOrder> serviceOrders = ServiceItemDAO.getServiceOrdersByUserId(accid);
-        serviceOrders.sort((s1, s2) -> s1.getOrderDate().compareTo(s2.getOrderDate()));
+       serviceOrders.sort((s1, s2) -> {
+    LocalDateTime d1 = LocalDateTime.parse(s1.getOrderDate().substring(0, 16), formatter1);
+    LocalDateTime d2 = LocalDateTime.parse(s2.getOrderDate().substring(0, 16), formatter1);
+    return d2.compareTo(d1);
+});
         request.setAttribute("serviceOrders", serviceOrders);
         request.getRequestDispatcher("profile.jsp").forward(request, response);
     }

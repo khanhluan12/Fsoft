@@ -88,14 +88,16 @@ public class FeedbackDAO {
         return list;
     }
 
-    public int countFeedbackByRoomType(String idRoomType) {
+   public int countFeedbackByRoomType(String idRoomType) {
         int count = 0;
         try {
             conn = DBContext.getConnection();
+            // Updated SQL query to correctly count feedback for a specific room type
             String sql = "SELECT COUNT(*) FROM Feedback fb "
                     + "JOIN BookingDetails bds ON fb.IDBooking = bds.IDBooking "
-                    + "JOIN BookingDetail bd ON bds.IDBooking = bd.IDBooking "
-                    + "WHERE bd.IDRoomType = ?";
+                    + "JOIN BookingDetail bd ON bds.IDBooking = bd.IDBookingDetail "
+                    + "JOIN RoomType rt ON bd.IDRoomType = rt.IDRoomType "
+                    + "WHERE rt.IDRoomType = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, idRoomType);
             rs = ps.executeQuery();
@@ -104,6 +106,20 @@ public class FeedbackDAO {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return count;
     }
@@ -356,6 +372,7 @@ public class FeedbackDAO {
             closeResources(rs, ps, conn);
         }
     }
+    
 
 // Hàm đóng tài nguyên tái sử dụng
     private void closeResources(ResultSet rs, PreparedStatement ps, Connection conn) {

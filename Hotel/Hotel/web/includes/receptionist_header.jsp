@@ -18,7 +18,14 @@
                 <ul class="nav navbar-nav menu_nav ml-auto">
                     <li class="nav-item"><a class="nav-link" href="manager_home.jsp">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="Shifts">Shifts</a></li>
-                    <li class="nav-item"><a class="nav-link" href="showBooking">Manage bookings</a></li>
+                      <li class="nav-item submenu dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manage Bookings</a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item"><a class="nav-link" href="showBooking">Booking Rooms</a></li>                         
+                            <li class="nav-item"><a class="nav-link" href="showServiceBooking">Services</a></li>
+                        </ul>
+                    </li> 
+<!--                    <li class="nav-item"><a class="nav-link" href="showBooking">Manage bookings</a></li>-->
 <!--                    <li class="nav-item"><a class="nav-link" href="showRoomCustomer">Room</a></li>-->
 <!--                    <li class="nav-item"><a class="nav-link" href="showContact">FAQ</a></li>-->
                     <c:if test="${sessionScope.userA != null}"> 

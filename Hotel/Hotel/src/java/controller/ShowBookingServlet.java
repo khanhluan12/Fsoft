@@ -34,10 +34,10 @@ public class ShowBookingServlet extends HttpServlet {
             roomMap.put(bookingId, roomDetails);
         }
 
-        ServiceOrderDAO serviceDao = new ServiceOrderDAO();
+
+               ServiceOrderDAO serviceDao = new ServiceOrderDAO();
 List<ServiceOrder> serviceList = serviceDao.getServiceOrderDetails(); // Lấy toàn bộ dịch vụ
 request.setAttribute("serviceList", serviceList);
-
         request.setAttribute("listB", bookingList);
         request.setAttribute("roomMap", roomMap);
         request.getRequestDispatcher("manager_booking.jsp").forward(request, response);

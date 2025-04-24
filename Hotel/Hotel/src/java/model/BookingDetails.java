@@ -81,6 +81,10 @@ public BookingDetails(int IDBooking, int IDAccount, int IDDiscount, String FullN
     this.Cancel = IsCancel; 
 }
 
+    public BookingDetails() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public int getIDAccount() {
         return IDAccount;
     }

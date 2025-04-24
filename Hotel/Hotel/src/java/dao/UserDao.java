@@ -563,7 +563,46 @@ public List<BookingDetails> getBookingDetailsByUserId(int accountId) {
     return unavailableDates;
 }
 
+// Add this method to your AccountDAO class
 
+    public List<User> getAllReceptionists() {
+        List<User> receptionists = new ArrayList<>();
+        String query = "SELECT * FROM Account WHERE IDRole = 3 AND IsActive = 1";
+        try {
+            conn = DBContext.getConnection();
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                User account = new User();
+                account.setIDAccount(rs.getInt("IDAccount"));
+                account.setFullName(rs.getString("FullName"));
+                account.setEmail(rs.getString("Email"));
+                account.setPhone(rs.getString("Phone"));
+                account.setUserName(rs.getString("UserName"));
+                account.setIDRole(rs.getInt("IDRole"));
+                // Set other properties as needed
+                receptionists.add(account);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return receptionists;
+    }
 
 
 

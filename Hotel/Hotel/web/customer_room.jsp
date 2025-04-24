@@ -25,98 +25,7 @@
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <style>
-            .rating-stars {
-                display: inline-block;
-                color: #ffc107;
-                font-size: 16px;
-                position: relative;
-            }
-            .rating-value {
-                font-size: 14px;
-                color: #6c757d;
-                margin-left: 5px;
-                vertical-align: middle;
-            }
-            .no-rating {
-                font-style: italic;
-                color: #6c757d;
-            }
-            .error {
-                display: block;
-                font-size: 0.875em;
-                color: red;
-                 position: absolute;
-            }
-            .tooltip-container-custom {
-                position: relative;
-                display: inline-block;
-                cursor: pointer;
-                padding-right: 5px;
-            }
-
-            .tooltip-container-custom .tooltip-text-custom {
-                visibility: hidden;
-                background-color: #002c66;
-                color: #fff;
-                text-align: center;
-                border-radius: 6px;
-                padding: 8px 12px;
-                position: absolute;
-                z-index: 999;
-                top: 130%; /* Dưới icon */
-                left: 50%;
-                transform: translateX(-50%);
-                opacity: 0;
-                transition: opacity 0.3s ease;
-                white-space: nowrap;
-                font-size: 13px;
-                font-family: 'Poppins', sans-serif;
-                min-width: max-content;
-            }
-            .price-vnd {
-                font-weight: bold;
-                color: #d70018; /* Màu đỏ đặc trưng của VND */
-            }
-            .tooltip-container-custom .tooltip-text-custom::after {
-                content: "";
-                position: absolute;
-                top: -8px;
-                left: 50%;
-                transform: translateX(-50%);
-                border-width: 6px;
-                border-style: solid;
-                border-color: transparent transparent #002c66 transparent;
-            }
-
-            .tooltip-container-custom:hover .tooltip-text-custom {
-                visibility: visible;
-                opacity: 1;
-            }
-
-            /* Star rating style for partial stars */
-            .stars-container {
-                position: relative;
-                display: inline-block;
-                color: #ced4da; /* Gray for empty stars */
-            }
-
-            .stars-filled {
-                position: absolute;
-                top: 0;
-                left: 0;
-                white-space: nowrap;
-                overflow: hidden;
-                color: #ffc107; /* Yellow/gold for filled stars */
-            }
-           .nice-select {
-    height: 37px; /* Điều chỉnh chiều cao của nút */
-    padding: 0.375rem 0.75rem; /* Giữ khoảng cách giữa nội dung và viền */
-}
-.form{
-    max-width: 100%;
-}
-        </style>
+        <link rel="stylesheet" href="css/mystyle.css">
     </head>
     <body>
         <c:if test="${sessionScope.userA.IDRole == 1 || sessionScope.userA == null}">
@@ -153,37 +62,38 @@
                 </div>
 
                 <!-- Search Form - Combined from both files -->
-   <form action="checkRoomValid" method="get" class="mb-5 p-4 bg-light shadow-sm rounded">
-    <div class="row align-items-end">
-        <div class="col-md-3 mb-3">
-            <label for="check_in" class="form-label">Check-in Date</label>
-            <input type="date" class="form-control" id="check_in" name="check_in" value="${param.check_in}">
-            <span id="checkin" class="error"></span>
-        </div>
-       <div class="col-md-3 mb-3 position-relative">
-    <label for="check_out" class="form-label">Check-out Date</label>
-    <input type="date" class="form-control" id="check_out" name="check_out" value="${param.check_out}">
-    <span id="checkout" class="error d-block"></span>
-</div>
+                <form action="checkRoomValid" method="get" class="mb-5 p-4 bg-light shadow-sm rounded">
+                    <div class="row align-items-end">
+                        <div class="col-md-3 mb-3">
+                            <label for="check_in" class="form-label">Check-in Date</label>
+                            <input type="date" class="form-control" id="check_in" name="check_in" value="${param.check_in}">
+                            <span id="checkin" class="error"></span>
+                        </div>
+                        <div class="col-md-3 mb-3 position-relative">
+                            <label for="check_out" class="form-label">Check-out Date</label>
+                            <input type="date" class="form-control" id="check_out" name="check_out" value="${param.check_out}">
+                            <span id="checkout" class="error d-block"></span>
+                        </div>
+ <input type="hidden" id="last-searched-checkin" value="${param.check_in}" />
+        <input type="hidden" id="last-searched-checkout" value="${param.check_out}" />
+                        <div class="col-md-3 mb-3">
+                            <label for="roomType" class="form-label">Room Type</label>
+                            <select class="form-control" name="roomType" id="roomType">
+                                <option value="">All</option>
+                                <c:forEach var="rt" items="${allRoomTypes}">
+                                    <option value="${rt.nameRoomType}"
+                                            <c:if test="${roomType eq rt.nameRoomType}">selected</c:if>>
+                                        ${rt.nameRoomType}
+                                    </option>
 
-        <div class="col-md-3 mb-3">
-            <label for="roomType" class="form-label">Room Type</label>
-            <select class="form-control" name="roomType" id="roomType">
-                <option value="">All</option>
-                <c:forEach var="rt" items="${allRoomTypes}">
-                  <option value="${rt.nameRoomType}"
-    <c:if test="${roomType eq rt.nameRoomType}">selected</c:if>>
-    ${rt.nameRoomType}
-</option>
-
-                </c:forEach>
-            </select>
-        </div>
-        <div class="col-md-3 mb-3">
-            <button type="submit" class="btn btn-dark w-100 mt-3 mt-md-0">Search Rooms</button>
-        </div>
-    </div>
-</form>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <button type="submit" class="btn btn-dark w-100 mt-3 mt-md-0" id="search-button">Search Rooms</button>
+                        </div>
+                    </div>
+                </form>
 
 
                 <!-- No rooms found message -->
@@ -202,8 +112,8 @@
 
                 <form id="bookForm"  action="loadRoomToBook" method="get"  onsubmit="return validateBooking()">
                     <input type="hidden" name="numOfDays" value="${numOfDays}">
-                    
-                  
+
+
 
                     <div class="row g-4">
                         <!--================Database (Khi nao co database thi dung)=================--> 
@@ -298,9 +208,9 @@
                                 </div>
                             </c:if>
                         </c:forEach>
-                          <c:if test="${requestScope.pagegRoom == null && sessionScope.userA != null && hasRoom}">
-                        <button type="submit" class="btn btn-sm btn-dark rounded mb-5 w-100 p-3">Book Now</button>
-                    </c:if>
+                        <c:if test="${requestScope.pagegRoom == null && sessionScope.userA != null && hasRoom}">
+                            <button type="submit" class="btn btn-sm btn-dark rounded mb-5 w-100 p-3" onclick="return checkBookingDate()">Book Now</button>
+                        </c:if>
                         <!--================Database =================-->
                     </div>
                 </form>
@@ -326,134 +236,190 @@
         <script src="js/filter_room.js"></script>
 
         <script>
+                    function setMinDate() {
+                        var dtToday = new Date();
 
+                        // Increment the date by one day to set tomorrow's date
+                        dtToday.setDate(dtToday.getDate() + 1);
 
-            function setMinDate() {
-                var dtToday = new Date();
+                        var month = dtToday.getMonth() + 1;
+                        var day = dtToday.getDate();
+                        var year = dtToday.getFullYear();
 
-                // Increment the date by one day to set tomorrow's date
-                dtToday.setDate(dtToday.getDate() + 1);
+                        // Format month and day with leading zeros if needed
+                        if (month < 10) {
+                            month = '0' + month.toString();
+                        }
+                        if (day < 10) {
+                            day = '0' + day.toString();
+                        }
 
-                var month = dtToday.getMonth() + 1;
-                var day = dtToday.getDate();
-                var year = dtToday.getFullYear();
+                        var minDate = year + '-' + month + '-' + day;
 
-                // Format month and day with leading zeros if needed
-                if (month < 10) {
-                    month = '0' + month.toString();
-                }
-                if (day < 10) {
-                    day = '0' + day.toString();
-                }
+                        // Set the min attribute for check-in and check-out date inputs
+                        document.getElementById('check_in').setAttribute('min', minDate);
+                        document.getElementById('check_out').setAttribute('min', minDate);
 
-                var minDate = year + '-' + month + '-' + day;
+                        console.log(minDate);
+                    }
 
-                // Set the min attribute for check-in and check-out date inputs
-                document.getElementById('check_in').setAttribute('min', minDate);
-                document.getElementById('check_out').setAttribute('min', minDate);
+                    setMinDate();
 
-                console.log(minDate);
-            }
+                    document.getElementById('check_in').addEventListener('change', handleDateChange);
+                    document.getElementById('check_out').addEventListener('change', handleDateChange);
 
-            setMinDate();
+                    function handleDateChange() {
+                        const currentDate = new Date();
+                        currentDate.setDate(currentDate.getDate() - 1);
+                        var checkInDate = new Date(document.getElementById('check_in').value);
+                        var checkOutDate = new Date(document.getElementById('check_out').value);
 
-            document.getElementById('check_in').addEventListener('change', handleDateChange);
-            document.getElementById('check_out').addEventListener('change', handleDateChange);
+                        if (checkOutDate <= checkInDate) {
+                            document.getElementById('checkout').textContent = 'Your checkout date is less than or equal checkin date.';
+                            document.getElementById('check_out').value = '';
+                        } else if (checkOutDate <= currentDate) {
+                            document.getElementById('checkout').textContent = 'Your checkout date is less than or equal currentDate.';
+                            document.getElementById('check_out').value = '';
+                        } else {
+                            document.getElementById('checkout').textContent = '';
+                        }
 
-            function handleDateChange() {
-                const currentDate = new Date();
-                currentDate.setDate(currentDate.getDate() - 1);
-                var checkInDate = new Date(document.getElementById('check_in').value);
-                var checkOutDate = new Date(document.getElementById('check_out').value);
-
-                if (checkOutDate <= checkInDate) {
-                    document.getElementById('checkout').textContent = 'Your checkout date is less than or equal checkin date.';
-                    document.getElementById('check_out').value = '';
-                } else if (checkOutDate <= currentDate) {
-                    document.getElementById('checkout').textContent = 'Your checkout date is less than or equal currentDate.';
-                    document.getElementById('check_out').value = '';
-                } else {
-                    document.getElementById('checkout').textContent = '';
-                }
-
-                if (checkInDate <= currentDate) {
-                    document.getElementById('checkin').textContent = 'Your checkin date is less than current date.';
-                    document.getElementById('check_in').value = '';
-                } else {
-                    document.getElementById('checkin').textContent = '';
-                }
-            }
-            // Hàm định dạng số tiền VND
-            function formatVND(amount) {
-                return new Intl.NumberFormat('vi-VN').format(amount);
-            }
+                        if (checkInDate <= currentDate) {
+                            document.getElementById('checkin').textContent = 'Your checkin date is less than current date.';
+                            document.getElementById('check_in').value = '';
+                        } else {
+                            document.getElementById('checkin').textContent = '';
+                        }
+                    }
+                    // Hàm định dạng số tiền VND
+                    function formatVND(amount) {
+                        return new Intl.NumberFormat('vi-VN').format(amount);
+                    }
 
 // Áp dụng định dạng cho tất cả các phần tử có class 'price-amount'
-            document.querySelectorAll('.price-amount').forEach(element => {
-                if (element.textContent) {
-                    const amount = parseFloat(element.textContent.replace(/[^0-9]/g, ''));
-                    element.textContent = formatVND(amount) + ' VND';
-                }
-            });
-          document.getElementById('bookForm').addEventListener('submit', function () {
-    document.querySelectorAll('input[name="price"]').forEach(input => {
-        input.value = input.value.replace(/[^0-9]/g, '');
-    });
+                    document.querySelectorAll('.price-amount').forEach(element => {
+                        if (element.textContent) {
+                            const amount = parseFloat(element.textContent.replace(/[^0-9]/g, ''));
+                            element.textContent = formatVND(amount) + ' VND';
+                        }
+                    });
+                    document.getElementById('bookForm').addEventListener('submit', function () {
+                        document.querySelectorAll('input[name="price"]').forEach(input => {
+                            input.value = input.value.replace(/[^0-9]/g, '');
+                        });
 
-                // Khi submit form, chuyển về số nguyên không dấu chấm
-                input.form.addEventListener('submit', function () {
-                    input.value = input.value.replace(/[^0-9]/g, '');
-                });
-            });
+                        // Khi submit form, chuyển về số nguyên không dấu chấm
+                        input.form.addEventListener('submit', function () {
+                            input.value = input.value.replace(/[^0-9]/g, '');
+                        });
+                    });
         </script>
         <script>
-          // Chỉ gắn sự kiện cho nút 'Book Now'
-document.querySelector('.btn.btn-sm.btn-dark').addEventListener('click', function(event) {
-    var checkInDate = document.getElementById('check_in').value;
-    var checkOutDate = document.getElementById('check_out').value;
+  // Chờ đến khi DOM được tải hoàn tất
+document.addEventListener('DOMContentLoaded', function() {
+    // Thêm event listener cho form tìm kiếm
+    const searchForm = document.querySelector('form[action="checkRoomValid"]');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function() {
+            // Khi form được submit, lưu các giá trị tìm kiếm hiện tại
+            const currentCheckin = document.getElementById('check_in').value;
+            const currentCheckout = document.getElementById('check_out').value;
+            
+            // Lưu vào các input hidden
+            document.getElementById('last-searched-checkin').value = currentCheckin;
+            document.getElementById('last-searched-checkout').value = currentCheckout;
+        });
+    }
     
-    // Kiểm tra xem người dùng đã chọn ngày chưa
-    if (!checkInDate || !checkOutDate) {
-        event.preventDefault(); // Ngừng việc gửi form
-        alert('Vui lòng chọn ngày check-in và check-out trước khi đặt phòng.');
+    // Thêm event listener cho form đặt phòng
+    const bookForm = document.getElementById('bookForm');
+    if (bookForm) {
+        bookForm.addEventListener('submit', function(event) {
+            // Kiểm tra xem các ngày hiện tại có khớp với ngày đã tìm kiếm không
+            const currentCheckin = document.getElementById('check_in').value;
+            const currentCheckout = document.getElementById('check_out').value;
+            const lastSearchedCheckin = document.getElementById('last-searched-checkin').value;
+            const lastSearchedCheckout = document.getElementById('last-searched-checkout').value;
+            
+            // Nếu có sự thay đổi về ngày nhưng chưa search lại
+            if (currentCheckin !== lastSearchedCheckin || currentCheckout !== lastSearchedCheckout) {
+                event.preventDefault(); // Ngăn việc submit form
+                alert('Bạn đã thay đổi ngày check-in hoặc check-out nhưng chưa bấm Search. Vui lòng tìm kiếm lại phòng trống trước khi đặt phòng.');
+                return false;
+            }
+            
+            // Kiểm tra xem đã chọn ít nhất một phòng chưa
+ const inputs = document.querySelectorAll('input[name="roomBook"]');
+            let totalRooms = 0;
+            
+            inputs.forEach(input => {
+                totalRooms += parseInt(input.value) || 0;
+            });
+
+            if (totalRooms <= 0) {
+                event.preventDefault(); // Ngừng submit form
+                alert("Vui lòng chọn ít nhất 1 phòng để đặt.");
+                return false; // Ngăn submit form
+            }
+        });
+    
+    }
+    
+    // Thêm event listener cho các input date để phát hiện thay đổi
+    const checkinInput = document.getElementById('check_in');
+    const checkoutInput = document.getElementById('check_out');
+    
+    if (checkinInput) {
+        checkinInput.addEventListener('change', function() {
+            // Thêm class để đánh dấu rằng ngày đã thay đổi
+            document.body.classList.add('dates-changed');
+        });
+    }
+    
+    if (checkoutInput) {
+        checkoutInput.addEventListener('change', function() {
+            // Thêm class để đánh dấu rằng ngày đã thay đổi
+            document.body.classList.add('dates-changed');
+        });
     }
 });
 
 
+</script>
+
+        <script>
+            // Chỉ gắn sự kiện cho nút 'Book Now'
+            document.querySelector('.btn.btn-sm.btn-dark').addEventListener('click', function (event) {
+                var checkInDate = document.getElementById('check_in').value;
+                var checkOutDate = document.getElementById('check_out').value;
+
+                // Kiểm tra xem người dùng đã chọn ngày chưa
+                if (!checkInDate || !checkOutDate) {
+                    event.preventDefault(); // Ngừng việc gửi form
+                    alert('Vui lòng chọn ngày check-in và check-out trước khi đặt phòng.');
+                }
+            });
+
+
         </script>
         <script>
-    function validateBooking() {
-        const inputs = document.querySelectorAll('input[name="roomBook"]');
-        let totalRooms = 0;
+         
+            function validateRange(input, maxValue) {
+                const value = parseInt(input.value) || 0;
+                const warning = input.nextElementSibling;
 
-        inputs.forEach(input => {
-            totalRooms += parseInt(input.value) || 0;
-        });
-
-        if (totalRooms <= 0) {
-            alert("Vui lòng chọn ít nhất 1 phòng để đặt.");
-            return false; // Ngăn submit form
-        }
-
-        return true; // Cho phép submit
-    }
-
-   function validateRange(input, maxValue) {
-    const value = parseInt(input.value) || 0;
-    const warning = input.nextElementSibling;
-
-    if (value < 0) {
-        input.value = 0;
-    } else if (value > maxValue) {
-        input.value = maxValue;
-        if (warning) warning.textContent = "Số phòng tối đa: " + maxValue;
-    } else {
-        if (warning) warning.textContent = "";
-    }
-}
-
-
-</script>
+                if (value < 0) {
+                    input.value = 0;
+                } else if (value > maxValue) {
+                    input.value = maxValue;
+                    if (warning)
+                        warning.textContent = "Số phòng tối đa: " + maxValue;
+                } else {
+                    if (warning)
+                        warning.textContent = "";
+                }
+            }
+        </script>
 
     </body>
 </html>

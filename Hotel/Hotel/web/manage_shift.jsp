@@ -424,23 +424,40 @@
 </script>
 <script>
 $(document).ready(function () {
+    var selectedID = null;
+
     $(".btn-edit").click(function () {
         const shiftID = $(this).data("shiftid");
         const shiftName = $(this).data("shiftname");
         const startTime = $(this).data("starttime");
         const endTime = $(this).data("endtime");
-        const IDAccount = $(this).data("idaccount");
+        selectedID = $(this).data("idaccount") + ""; // ép về string
         const employeeName = $(this).data("employeename");
-console.log("IDAccount:", IDAccount);
-console.log("Name:", employeeName);
+
+        console.log(">>> Setting select to ID:", selectedID);
+        console.log("Name:", employeeName);
 
         // Đưa dữ liệu vào form
         $("#shiftID").val(shiftID);
         $("#editShiftName").val(shiftName);
         $("#editStartTime").val(startTime);
         $("#editEndTime").val(endTime);
-           $("#editEmployeeID").val(IDAccount);
+
+        // In thử các option trong select
+        $("#editEmployeeID option").each(function () {
+            console.log("Option value:", $(this).val());
+        });
+
+        // Hiển thị modal
         $("#editShiftModal").modal("show");
+    });
+
+    // Chỉ gắn 1 lần sau khi modal hiển thị
+    $("#editShiftModal").on("shown.bs.modal", function () {
+        if (selectedID) {
+            console.log("➡️ Setting selectedID in modal:", selectedID);
+            $("#editEmployeeID").val(selectedID).trigger("change");
+        }
     });
 });
 

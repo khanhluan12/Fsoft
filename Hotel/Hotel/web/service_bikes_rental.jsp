@@ -30,7 +30,7 @@
             <div class="overlay bg-parallax" data-stellar-ratio="0.8" data-stellar-vertical-offset="0"></div>
             <div class="container">
                 <div class="page-cover text-center">
-                    <h2 class="page-cover-tittle">Car Rental Service</h2>
+                    <h2 class="page-cover-tittle">Bikes Rental Service</h2>
                 </div>
             </div>
         </section>
@@ -38,7 +38,7 @@
         <section class="services py-5">
             <div class="container">
                 <div class="section-title text-center mb-5">
-                    <h1>Car Rental Options</h1>
+                    <h1>Bikes Rental Options</h1>
                     <p class="text-muted">Choose from a range of comfortable and stylish vehicles</p>
                 </div>
                 <c:choose>
