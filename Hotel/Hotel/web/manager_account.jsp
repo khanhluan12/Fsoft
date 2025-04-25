@@ -142,6 +142,9 @@
                 background-color: #17a2b8;
                 color: white;
             }
+            .btn.btn-success{
+                margin-top:25px;
+            }
         </style>
     </head>
     <body>
@@ -232,10 +235,10 @@
                 </c:if>
                 <form action="register" method="get">
                     <div class="row">
-                        <div class="form-group col-md-6 mb-3">
+<!--                        <div class="form-group col-md-6 mb-3">
                             <label>ID</label><br>
                             <label>Auto Generate</label>
-                        </div>
+                        </div>-->
                         <div class="form-group col-md-6 mb-3">
                             <label>Full Name</label>
                             <input type="text" class="form-control" name="fullname" required>

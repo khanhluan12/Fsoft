@@ -372,6 +372,68 @@ window.onload = function () {
 
 
         </script>
+        <script>function confirmCancel(bookingId) {
+                // Create modal if it doesn't exist
+                if (!document.getElementById('cancelModal')) {
+                    var modalHtml = `
+            <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cancelModalLabel">Confirm Booking Cancellation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to cancel this booking?</p>
+                            <div class="form-group">
+                                <label for="contactPhone">Please provide your contact phone number:</label>
+                               <input type="text" class="form-control" id="Phone" name="Phone" 
+       placeholder="Enter customer phone number" 
+       maxlength="10"
+       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+       required>
 
+                                <small class="form-text text-muted">Our receptionist may contact you regarding your cancellation.</small>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No, Keep Booking</button>
+                            <button type="button" class="btn btn-danger" id="confirmCancelBtn">Yes, Cancel Booking</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+                    // Append modal to body
+                    var modalDiv = document.createElement('div');
+                    modalDiv.innerHTML = modalHtml;
+                    document.body.appendChild(modalDiv);
+
+                    // Add event listener to the confirm button
+                    document.getElementById('confirmCancelBtn').addEventListener('click', function () {
+                        var contactPhone = document.getElementById('contactPhone').value;
+                        if (!contactPhone || contactPhone.trim() === '') {
+                            alert('Please enter your contact phone number');
+                            return;
+                        }
+
+                        // Hide modal
+                        $('#cancelModal').modal('hide');
+
+                        // Redirect to cancel booking servlet
+                        window.location.href = './CancelBooking?bookingId=' + window.currentBookingId + '&contactInfo=' + encodeURIComponent(contactPhone);
+                    });
+                }
+                // Set current booking ID
+                window.currentBookingId = bookingId;
+
+                // Show modal
+                $('#cancelModal').modal('show');
+            }
+                    
+        </script>
     </body>
 </html>

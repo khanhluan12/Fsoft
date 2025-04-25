@@ -309,9 +309,9 @@
 
                 <div class="search-section">
                     <div class="form-group">
-                        <label for="search">Search:</label>
+                        <label for="search" >Search:</label>
                         <form action="searchFeedback" method="GET" class="d-flex">
-                            <input type="text" name="txtSearch" value="${param.txtSearch}" class="form-control" placeholder="Search feedback...">
+                            <input type="text" name="txtSearch" value="${param.txtSearch}" class="form-control" placeholder="Search feedback..." required>
                             <button class="btn btn-primary ml-2"><i class="fa fa-search"></i></button>
                         </form>
                     </div>

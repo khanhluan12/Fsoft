@@ -60,6 +60,26 @@
                     <h2 class="title_color">LIST ROOM TYPE</h2>
                     <p>Celebrate in stylish ease in our guest accommodations, which offer generous indoor-outdoor areas to enjoy time with loved ones, calmed by fresh breezes and secluded in nature.</p>
                 </div>
+<div class="check-time-info text-center mb-4">
+    <div class="bg-light p-3 rounded shadow-sm d-inline-block">
+        <div class="d-flex align-items-center">
+            <div class="me-4">
+                <i class="fa fa-sign-in-alt text-success me-2"></i>
+                <strong>Check-in:</strong> From <span class="text-primary">9:00 AM</span>
+                <div class="text-muted small">(on arrival day)</div>
+            </div>
+            <div>
+                <i class="fa fa-sign-out-alt text-danger me-2"></i>
+                <strong>Check-out:</strong> Till <span class="text-primary">12:00 PM</span>
+                <div class="text-muted small">(the next day)</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 
                 <!-- Search Form - Combined from both files -->
                 <form action="checkRoomValid" method="get" class="mb-5 p-4 bg-light shadow-sm rounded">
@@ -122,7 +142,7 @@
                                 <div class="col-lg-4 col-md-12 wow fadeInUp" data-wow-delay="0.1s">
                                     <div class="room-item shadow rounded overflow-hidden">
                                         <div class="position-relative">
-                                            <img class="img-fluid" src="images/${r.getImage()}" alt="">
+                                            <img class="img-fluid" src="images/${r.getImage()}" alt="" style="height:223px;">
                                             <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">
                                                 <fmt:formatNumber value="${r.getPrice()}" pattern="#,##0" /> VND/Night
                                             </small>

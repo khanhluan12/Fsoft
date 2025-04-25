@@ -431,7 +431,7 @@ $(document).ready(function () {
         const shiftName = $(this).data("shiftname");
         const startTime = $(this).data("starttime");
         const endTime = $(this).data("endtime");
-        selectedID = $(this).data("idaccount") + ""; // ép về string
+        selectedID = $(this).data("idaccount"); 
         const employeeName = $(this).data("employeename");
 
         console.log(">>> Setting select to ID:", selectedID);
@@ -460,8 +460,6 @@ $(document).ready(function () {
         }
     });
 });
-
-
 </script>
 
 <script>

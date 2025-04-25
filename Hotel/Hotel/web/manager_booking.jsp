@@ -368,7 +368,12 @@
                 <form action="searchBooking" method="get" onsubmit="return validateSearch()">
                     <div class="row">
                         <div class="col-md-9">
-                            <input type="text" class="form-control" id="Phone" name="Phone" placeholder="Enter customer phone number" required>
+                          <input type="text" class="form-control" id="Phone" name="Phone" 
+       placeholder="Enter customer phone number" 
+       maxlength="10" pattern="\d{10}" 
+       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+       required>
+
                         </div>
                         <div class="col-md-3">
                             <button type="submit" class="btn btn-primary btn-block">
@@ -686,18 +691,31 @@ function handleStatusUpdate(form) {
 }
 
 // Form validation
-function validateSearch() {
-    const phoneInput = document.getElementById('Phone');
-    if (phoneInput.value.trim() === '') {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Please enter a phone number to search!',
-        });
-        return false;
+  function validateSearch() {
+        const phoneInput = document.getElementById('Phone');
+        const phone = phoneInput.value.trim();
+        const phoneRegex = /^\d{10}$/;
+
+        if (phone === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please enter a phone number to search!',
+            });
+            return false;
+        }
+
+        if (!phoneRegex.test(phone)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid phone number',
+                text: 'Phone number must be exactly 10 digits!',
+            });
+            return false;
+        }
+
+        return true;
     }
-    return true;
-}
 
 // Pagination functionality
 document.addEventListener('DOMContentLoaded', function () {

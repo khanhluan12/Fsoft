@@ -138,7 +138,7 @@
                 </div>
             </c:if>
 
-            <button class="btn btn-success mb-3" onclick="openAddServiceModal()">+ Add New Service</button>
+<!--            <button class="btn btn-success mb-3" onclick="openAddServiceModal()">+ Add New Service</button>-->
             <table>
                 <tr>
                     <th>ID</th>
@@ -154,8 +154,8 @@
                             <div class="action-buttons">
                                 <a href="ServiceDetailServlet?id=${service.serviceID}" class="btn btn-info btn-sm">Details</a>
                                 <button class="btn btn-warning btn-sm" onclick="openEditServiceModal(${service.serviceID}, '${service.serviceName}')">Edit</button>
-                                <a href="ManageService?action=deleteService&id=${service.serviceID}" class="btn btn-danger btn-sm"
-                                   onclick="return confirm('Delete this service?')">Delete</a>
+<!--                                <a href="ManageService?action=deleteService&id=${service.serviceID}" class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Delete this service?')">Delete</a>-->
                             </div>
                         </td>
 

@@ -262,6 +262,7 @@
                 margin-top: 0.25rem;
                 display: none;
             }
+          
         </style>
     </head>
     <body>
@@ -325,7 +326,7 @@
                         <div class="col-lg-4 col-md-12 wow fadeInUp" data-wow-delay="0.1s">
                             <div class="room-item shadow rounded overflow-hidden">
                                 <div class="position-relative">
-                                    <img class="img-fluid" src="images/${room.getImage()}" alt="" style="height: 220px; width: 100%; object-fit: cover;">
+                                    <img class="img-fluid" src="images/${room.getImage()}" alt="" style="height: 223px; width: 100%; object-fit: cover;">
                                     <small class="position-absolute start-0 top-100 translate-middle-y bg-primary text-white rounded py-1 px-3 ms-4">
                                         <fmt:formatNumber value="${room.getPrice()}" pattern="#,##0" /> VND/Night
                                     </small>

@@ -22,14 +22,14 @@
             <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                 <ul class="nav navbar-nav menu_nav ml-auto">
                     <li class="nav-item"><a class="nav-link" href="loadRevenue">Static</a></li> 
-                    <li class="nav-item submenu dropdown">
+<!--                    <li class="nav-item submenu dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manage Bookings</a>
                         <ul class="dropdown-menu">
                             <li class="nav-item"><a class="nav-link" href="showBooking">Booking Rooms</a></li>                         
                             <li class="nav-item"><a class="nav-link" href="showServiceBooking">Services</a></li>
                         </ul>
-                    </li> 
-<!--                    <li class="nav-item"><a class="nav-link" href="showBooking">Manage bookings</a></li>-->
+                    </li> -->
+                    <li class="nav-item"><a class="nav-link" href="showBooking">Manage bookings</a></li>
                     <li class="nav-item"><a class="nav-link" href="showRoomType">Manage rooms</a></li>
                     <li class="nav-item"><a class="nav-link" href="showServices">Manage Services</a></li>
 <!--                    <li class="nav-item"><a class="nav-link" href="showContact">FAQ</a></li>-->
